@@ -1,0 +1,29 @@
+{
+    "example-bcert": {
+        "source-type": "birth-certificate",
+        "name": "",
+        "date": "",
+        "place": "",
+        "link": ""
+    },
+    "example-mcert": {
+        "source-type": "marriage-certificate",
+        "party-one": "",
+        "party-two": "",
+        "date": "",
+        "place": "",
+        "link": ""
+    },
+    "example-dcert": {
+        "source-type": "death-certificate",
+        "name": "",
+        "date": "",
+        "place": "",
+        "link": 
+    },
+    "example-census": {
+        "source-type": "census",
+        "year": "",
+        "link": ""
+    }
+}

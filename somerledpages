@@ -1,0 +1,75 @@
+#!/bin/bash
+
+PROGRAM_PATH=/home/jack/Development/Somerled-Pages
+
+if [[ "$1" == "init" && "$1" == "init" ]]; then
+
+    mkdir $1
+
+elif [ "$1" == "build" ]; then
+
+    rm -r wiki/*.html
+    cp data/quick_references.json $PROGRAM_PATH/copied/
+    node $PROGRAM_PATH/main.js
+    rm $PROGRAM_PATH/copied/*
+
+elif [[ $# -eq 2 && "$1" == "new-article" ]]; then
+
+    PAGE_NAME=$2
+
+    if [ -f data/wiki_source/$PAGE_NAME ]; then
+        echo Error: page $PAGE_NAME already exists
+        exit 1
+    fi
+
+    cp res/wiki_boilerplate data/wiki_source/$PAGE_NAME
+
+    echo Page created: $PAGE_NAME
+
+elif [[ $# -eq 2 && "$1" == "new-sheet" ]]; then
+
+    PAGE_NAME=$2
+
+    if [ -f data/sheet_source/$PAGE_NAME ]; then
+        echo Error: page $PAGE_NAME already exists
+        exit 1
+    fi
+
+    cp res/sheet_boilerplate data/sheet_source/$PAGE_NAME
+
+    echo Page created: $PAGE_NAME
+
+elif [[ $# -ge 2 && "$1" == "add-media" ]]; then
+
+    for (( i=2; i<=$#; i+=1 ))
+    do
+        MEDIA_NAME=${!i}
+
+        if [ -f media/$MEDIA_NAME ]; then
+            echo Error: media $MEDIA_NAME already exists
+            exit 1
+        else
+            echo $MEDIA_NAME
+            cp $MEDIA_NAME media/$MEDIA_NAME
+            mat2 --inplace media/$MEDIA_NAME
+            cp res/metadata_boilerplate.json media/$MEDIA_NAME.json
+        fi
+
+    done
+
+else
+
+    if [ "$1" != "--help" ]; then
+        echo "Invalid parameters"
+        echo
+    fi
+
+    echo "usage:"
+    echo "  somerledpages build                 build the encyclopedia"
+    echo "  somerledpages new-article <name>    create a new article"
+    echo "  somerledpages new-sheet <name>      create a new sheet"
+    echo "  somerledpages add-media <files>     add a file to the media repository"
+    echo "  somerledpages --help                display this help page"
+
+fi
+
