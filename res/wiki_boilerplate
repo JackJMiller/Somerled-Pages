@@ -1,0 +1,32 @@
+{
+    "type": "info",
+    "article-type": "person",
+    "name": "BLANK",
+    "born": "",
+    "died": "",
+    "images": [
+    ]
+}
+
+{
+    "type": "infobox",
+    "image": "silhouette.png",
+    "image-caption": "",
+    "entries": {
+        "Born": "",
+        "Mother": "",
+        "Father": "",
+        "Siblings": [
+        ],
+        "Spouse": "",
+        "Children": [
+        ],
+        "Died": ""
+    }
+}
+
+<b>BLANK</b> was a person.
+
+# References
+
+No references yet.
