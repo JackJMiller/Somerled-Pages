@@ -1,7 +1,7 @@
 export interface Metadata {
     "infobox": any,
-    "name": string,
     "type": string,
+    "name": string,
     "article-type": string,
     "headings": any[],
     "born": string,

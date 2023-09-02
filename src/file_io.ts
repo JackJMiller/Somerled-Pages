@@ -8,7 +8,7 @@ export function readArticle(type: string, name: string): string {
 }
 
 export function createInlineElement(q: any, v: string, metadata: Metadata): any {
-    if (q === "text") {
+    if (q[0] === "text") {
         const obj = { "type": "element", "tag": "p", "inner": v };
         return obj;
     }
@@ -28,20 +28,20 @@ export function createInlineElement(q: any, v: string, metadata: Metadata): any 
 export function parseRawArticle(raw: string, metadata: Metadata): any[] {
     const parsed = new Array();
     // "sol" stands for "start of line"
-    let q: any = "sol"
+    let q: any[] = ["sol"];
     let v = "";
     for (let i = 0; i < raw.length; i++) {
         let c = raw[i];
         if (c === "\n") {
-            if (q === "text" || q.constructor.name === "Array" && q[0] === "h") {
+            if (q[0] === "text" || q[0] === "h") {
                 if (v !== "") {
                     parsed.push(createInlineElement(q, v, metadata));
                 }
-                q = "sol";
+                q = ["sol"];
                 v = "";
             }
         }
-        else if (q === "sol") {
+        else if (q[0] === "sol") {
             if (c === "#") {
                 q = ["h", 1];
             }
@@ -50,11 +50,11 @@ export function parseRawArticle(raw: string, metadata: Metadata): any[] {
                 v = v + c;
             }
             else {
-                q = "text";
+                q = ["text"];
                 v = v + c;
             }
         }
-        else if (q.constructor.name === "Array" && q[0] === "obj") {
+        else if (q[0] === "obj") {
             if (c === "{") {
                 q[1] = q[1] + 1;
                 v = v + c;
@@ -64,7 +64,7 @@ export function parseRawArticle(raw: string, metadata: Metadata): any[] {
                 v = v + c;
                 if (q[1] === 0) {
                     parsed.push(createInlineElement(q, v, metadata));
-                    q = "text";
+                    q = ["text"];
                     v = "";
                 }
             }
@@ -72,7 +72,7 @@ export function parseRawArticle(raw: string, metadata: Metadata): any[] {
                 v = v + c;
             }
         }
-        else if (q === "text") {
+        else if (q[0] === "text") {
             if (c == "{") {
                 parsed.push(createInlineElement(q, v, metadata));
                 q = ["obj", 1];
@@ -82,7 +82,7 @@ export function parseRawArticle(raw: string, metadata: Metadata): any[] {
                 v = v + c;
             }
         }
-        else if (q.constructor.name === "Array" && q[0] === "h") {
+        else if (q[0] === "h") {
             if (c === "#") {
                 q[1] = q[1] + 1;
             }

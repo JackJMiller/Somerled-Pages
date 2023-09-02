@@ -1,4 +1,4 @@
-import { InfoBox } from "./interfaces";
+import { InfoBox, Metadata } from "./interfaces";
 
 export function createEmptyInfobox(): InfoBox {
     return {
@@ -8,4 +8,17 @@ export function createEmptyInfobox(): InfoBox {
         "entries": {
         }
     }
+}
+
+export function createInitialMetadata(name: string, type: string): Metadata {
+    return {
+        "infobox": createEmptyInfobox(),
+        "type": type,
+        "name": name,
+        "article-type": "",
+        "headings": [],
+        "born": "",
+        "died": "",
+        "images": []
+    };
 }

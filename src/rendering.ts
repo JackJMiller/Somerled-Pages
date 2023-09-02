@@ -111,23 +111,23 @@ export function renderBody(source: any, metadata: Metadata) {
 }
 
 export function substituteReferences(text: string) {
-    let q = "text";
+    let q: any[] = ["text"];
     let v = "";
     let output = "";
     for (let i = 0; i < text.length; i++) {
         let c = text[i];
-        if (q === "text") {
+        if (q[0] === "text") {
             if (c === "[") {
-                q = "ref";
+                q = ["ref"];
                 v = "";
             }
             else {
                 output = output + c;
             }
         }
-        else if (q === "ref") {
+        else if (q[0] === "ref") {
             if (c === "]") {
-                q = "text";
+                q = ["text"];
                 output = output + renderCitation(v);
             }
             else {
