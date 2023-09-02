@@ -1,12 +1,15 @@
 import fs from "fs";
 import { parseRawArticle, readArticle, saveArticle } from "./src/file_io";
+import { Metadata } from "./src/interfaces";
 import { renderArticle } from "./src/rendering";
 
 for (let type of ["wiki", "sheet"]) {
     let files = fs.readdirSync(`./data/${type}_source/`);
     for (let name of files) {
         const c = readArticle(type, name);
-        const metadata = {
+        const metadata: Metadata = {
+            "infobox": {},
+            "name": name,
             "type": type,
             "article-type": "",
             "headings": [],

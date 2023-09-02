@@ -1,6 +1,8 @@
+import { Metadata } from "./interfaces";
+
 const QUICK_REFERENCES = require("../copied/quick_references.json");
 
-export function renderArticle(source: any, metadata: any): string {
+export function renderArticle(source: any, metadata: Metadata): string {
     const headerHTML = renderHeader(source, metadata);
     const renderedBody = renderBody(source, metadata);
     return `
@@ -34,7 +36,7 @@ export function renderArticle(source: any, metadata: any): string {
     `;
 }
 
-export function renderImages(metadata: any) {
+export function renderImages(metadata: Metadata) {
 
     let images = "";
     if (metadata["infobox"]) {
@@ -55,7 +57,7 @@ export function renderImages(metadata: any) {
 }
 
 
-export function renderHeader(source: any, metadata: any): string {
+export function renderHeader(source: any, metadata: Metadata): string {
     let header;
     const infoObject = source.find((element: any) => element.type === "info");
 
@@ -85,7 +87,7 @@ export function renderHeader(source: any, metadata: any): string {
 </div>`;
 }
 
-export function renderNavbar(metadata: any): string {
+export function renderNavbar(metadata: Metadata): string {
     let navbar = `
 <div class="navbar">
     <div class="navbar-items" style="grid-template-columns:${" 1fr".repeat(metadata.headings.length - 1)}">\n`;
@@ -99,7 +101,7 @@ export function renderNavbar(metadata: any): string {
     return navbar;
 }
 
-export function renderBody(source: any, metadata: any) {
+export function renderBody(source: any, metadata: Metadata) {
     let rendered = "";
     source.forEach((element: any) => {
         rendered = rendered + renderElement(element, metadata) + "\n";
@@ -137,7 +139,7 @@ export function substituteReferences(text: string) {
     return output;
 }
 
-export function renderElement(element: any, metadata: any) {
+export function renderElement(element: any, metadata: Metadata) {
     if (element.type === "element") {
         return renderStandardElement(element);
     }
@@ -279,7 +281,7 @@ export function renderStandardElement(element: any) {
     return `<${tag}${(element.id !== undefined) ? " id=\""+element.id+"\"" : ""}${(element.class !== undefined) ? " class=\""+element.class+"\"" : ""}>${element.inner}</${tag}>`;
 }
 
-export function renderInfobox(infobox: any, metadata: any) {
+export function renderInfobox(infobox: any, metadata: Metadata) {
     return `
 <div class="box infobox">
     ${infobox.image ? `<img src="../media/${infobox.image}"/>` : ""}
@@ -290,7 +292,7 @@ export function renderInfobox(infobox: any, metadata: any) {
 </div>`;
 }
 
-export function renderInfoboxEntries(entries: any, metadata: any) {
+export function renderInfoboxEntries(entries: any, metadata: Metadata) {
     let output = "";
     let keys = Object.keys(entries);
     if (metadata["born"]) {
@@ -318,7 +320,7 @@ export function renderInfoboxEntries(entries: any, metadata: any) {
     return output;
 }
 
-export function renderBoxValue(key: string, value: string, metadata: any): string {
+export function renderBoxValue(key: string, value: string, metadata: Metadata): string {
     if (value.constructor.name === "Array") {
         let output = "<div>"
         for (let v of value) {

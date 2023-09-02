@@ -1,3 +1,5 @@
+import { Metadata } from "./interfaces";
+
 const fs = require("fs");
 
 export function readArticle(type: string, name: string): string {
@@ -5,7 +7,7 @@ export function readArticle(type: string, name: string): string {
     return contents.toString();
 }
 
-export function createInlineElement(q: any, v: string, metadata: any): any {
+export function createInlineElement(q: any, v: string, metadata: Metadata): any {
     if (q === "text") {
         const obj = { "type": "element", "tag": "p", "inner": v };
         return obj;
@@ -23,7 +25,7 @@ export function createInlineElement(q: any, v: string, metadata: any): any {
     }
 }
 
-export function parseRawArticle(raw: string, metadata: object): any[] {
+export function parseRawArticle(raw: string, metadata: Metadata): any[] {
     const parsed = new Array();
     // "sol" stands for "start of line"
     let q: any = "sol"
