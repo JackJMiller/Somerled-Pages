@@ -4,11 +4,11 @@
 **  Licensed under version 3 of the GNU General Public License
 */
 
-import { Metadata } from "./interfaces";
+import { InfoBox, InlineElement, Metadata } from "./interfaces";
 
 const QUICK_REFERENCES = require("../copied/quick_references.json");
 
-export function renderArticle(source: any, metadata: Metadata): string {
+export function renderArticle(source: InlineElement[], metadata: Metadata): string {
     const headerHTML = renderHeader(source, metadata);
     const renderedBody = renderBody(source, metadata);
     return `
@@ -45,8 +45,8 @@ export function renderArticle(source: any, metadata: Metadata): string {
 export function renderImages(metadata: Metadata) {
 
     let images = "";
-    if (metadata["infobox"]) {
-        images = images + metadata["infobox"];
+    if (metadata["infobox-rendered"]) {
+        images = images + metadata["infobox-rendered"];
     }
 
     if (!metadata["images"]) return images;
@@ -155,7 +155,7 @@ export function renderElement(element: any, metadata: Metadata) {
         return renderImage(element);
     }
     else if (element.type == "infobox") {
-        metadata["infobox"] = renderInfobox(element, metadata);
+        metadata["infobox-rendered"] = renderInfobox(element, metadata);
         return "";
     }
     else if (element.type == "ref-listing" || element.type == "quick-ref") {
@@ -289,7 +289,7 @@ export function renderStandardElement(element: any) {
     return `<${tag}${(element.id !== undefined) ? " id=\""+element.id+"\"" : ""}${(element.class !== undefined) ? " class=\""+element.class+"\"" : ""}>${element.inner}</${tag}>`;
 }
 
-export function renderInfobox(infobox: any, metadata: Metadata) {
+export function renderInfobox(infobox: InfoBox, metadata: Metadata) {
     return `
 <div class="box infobox">
     ${infobox.image ? `<img src="../media/${infobox.image}"/>` : ""}

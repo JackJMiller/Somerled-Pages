@@ -36,7 +36,7 @@ export function createInlineElement(q: any, v: string, metadata: Metadata): Inli
 ** This function goes through a markup file and parses it by separating the
 ** objects and the plaintext. It uses a basic state machine.
 */
-export function parseRawArticle(raw: string, metadata: Metadata): any[] {
+export function parseRawArticle(raw: string, metadata: Metadata): InlineElement[] {
 
     // array containing the elements extracted from the markup
     const parsed: InlineElement[] = new Array();

@@ -4,8 +4,16 @@
 **  Licensed under version 3 of the GNU General Public License
 */
 
+export interface InfoBox {
+    "type": string,
+    "image": string,
+    "image-caption": string,
+    "entries": any
+};
+
 export interface Metadata {
-    "infobox": any,
+    "infobox": InfoBox,
+    "infobox-rendered": string,
     "type": string,
     "name": string,
     "article-type": string,
@@ -13,13 +21,6 @@ export interface Metadata {
     "born": string,
     "died": string,
     "images": any[]
-};
-
-export interface InfoBox {
-    "type": string,
-    "image": string,
-    "image-caption": string,
-    "entries": any
 };
 
 export interface InlineElement {
