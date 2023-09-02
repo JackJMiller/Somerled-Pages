@@ -5,6 +5,8 @@
 */
 
 import { InfoBox, InlineElement, Metadata } from "./interfaces";
+import { BirthCertificateRefListing, BookRefListing, CensusRefListing, DeathCertificateRefListing, JournalRefListing, LazyRefListing, MarriageCertificateRefListing, NewspaperRefListing, QuickRefListing, RefListing, TestimonialRefListing, ValuationRollRefListing, WebsiteRefListing } from "./ref_listing_interfaces";
+import HTMLRendering from "./html_rendering";
 
 const QUICK_REFERENCES = require("../copied/quick_references.json");
 
@@ -109,7 +111,7 @@ export function renderNavbar(metadata: Metadata): string {
     return navbar;
 }
 
-export function renderBody(source: any, metadata: Metadata) {
+export function renderBody(source: InlineElement[], metadata: Metadata) {
     let rendered = "";
     source.forEach((element: any) => {
         rendered = rendered + renderElement(element, metadata) + "\n";
@@ -147,7 +149,7 @@ export function substituteReferences(text: string) {
     return output;
 }
 
-export function renderElement(element: any, metadata: Metadata) {
+export function renderElement(element: any, metadata: Metadata): string {
     if (element.type === "element") {
         return renderStandardElement(element);
     }
@@ -158,8 +160,11 @@ export function renderElement(element: any, metadata: Metadata) {
         metadata["infobox-rendered"] = renderInfobox(element, metadata);
         return "";
     }
-    else if (element.type == "ref-listing" || element.type == "quick-ref") {
-        return renderRefListing(element);
+    else if (element.type == "ref-listing") {
+        return renderRefListing(element as RefListing);
+    }
+    else if (element.type == "quick-ref") {
+        return renderQuickRefListing(element as QuickRefListing);
     }
     else if (element.type == "gallery") {
         return renderGallery(element);
@@ -189,79 +194,49 @@ export function renderGallery(element: any){
 </div>`;
 }
 
-export function renderRefListing(element: any) {
-    const pages = element["pages"];
+function renderQuickRefListing(element: any): string {
+    const refElement = JSON.parse(JSON.stringify(QUICK_REFERENCES[element["quick-id"]]))
+    refElement.id = element.id;
+    return renderRefListing(refElement as RefListing);
+}
 
-    if (element["type"] == "quick-ref") {
-        const refElement = JSON.parse(JSON.stringify(QUICK_REFERENCES[element["quick-id"]]))
-        refElement.id = element.id;
-        return renderRefListing(refElement);
-    }
-    else if (element["source-type"] == "newspaper") {
-        return `<div class="reference">${element.id}. <a href="${element["source-link"]}">"${element["source-title"]}"</a>. <i>${element["name-of-publication"]}</i>. ${element["source-date"]}. pp. ${pages}</div>`;
+export function renderRefListing(element: RefListing): string {
+    if (element["source-type"] == "newspaper") {
+        return HTMLRendering.renderNewspaperRefListing(element as NewspaperRefListing);
     }
     else if (element["source-type"] == "journal") {
-        return `<div class="reference">${element.id}. <a href="${element["source-link"]}">${element["name-of-publication"]}</a>. ${element["source-date"]}. pp. ${pages}</div>`;
+        return HTMLRendering.renderJournalRefListing(element as JournalRefListing);
     }
     else if (element["source-type"] == "book") {
-        return `<div class="reference">${element.id}. ${element["last-name"]}, ${element["first-name"]} (${element["source-year"]}) <a href="${element["source-link"]}"><i>${element["source-title"]}</i></a>. pp. ${pages}</div>`;
+        return HTMLRendering.renderBookRefListing(element as BookRefListing);
     }
     else if (element["source-type"] == "lazy") {
-        if (element["source-link"]) {
-            return `<div class="reference">${element.id}. <a href=\"${element["source-link"]}\">${element["source-value"]}</a></div>`;
-        }
-        else {
-            return `<div class="reference">${element.id}. ${element["source-value"]}</div>`;
-        }
+        return HTMLRendering.renderLazyRefListing(element as LazyRefListing);
     }
     else if (element["source-type"] == "webpage") {
-        return `<div class="reference">${element.id}. Website <a href="${element["source-link"]}">${element["name-of-website"]}</a>. Retrieved ${element["date-retrieved"]}.</div>`;
+        return HTMLRendering.renderWebsiteRefListing(element as WebsiteRefListing);
     }
     else if (element["source-type"] == "marriage-certificate") {
-        let opening = element["is-copy"] ? "Copy of the marriage certificate" : "Marriage certificate";
-        const ending = element["is-copy"] ? "Issued" : "Registered";
-        const date = element["date"] || "on an unknown date";
-        if (element["link"]) {
-            opening = `<a target="_blank" href="../certificates/${element["link"]}">${opening}</a>`;
-        }
-        return `<div class="reference">${element.id}. ${opening} of ${element["party-one"]} and ${element["party-two"]}. ${ending} ${date}, ${element["place"]}.</div>`;
+        return HTMLRendering.renderMarriageCertificateRefListing(element as MarriageCertificateRefListing);
     }
     else if (element["source-type"] == "birth-certificate") {
-        let opening = element["is-copy"] ? "Copy of the birth certificate" : "Birth certificate";
-        const ending = element["is-copy"] ? "Issued" : "Registered";
-        const date = element["date"] || "on an unknown date";
-        if (element["link"]) {
-            opening = `<a target="_blank" href="../certificates/${element["link"]}">${opening}</a>`;
-        }
-        return `<div class="reference">${element.id}. ${opening} of ${element["name"]}. ${ending} ${date}, ${element["place"]}.</div>`;
+        return HTMLRendering.renderBirthCertificateRefListing(element as BirthCertificateRefListing);
     }
     else if (element["source-type"] == "death-certificate") {
-        let opening = element["is-copy"] ? "Copy of the death certificate" : "Death certificate";
-        const ending = element["is-copy"] ? "Issued" : "Registered";
-        const date = element["date"] || "on an unknown date";
-        if (element["link"]) {
-            opening = `<a target="_blank" href="../certificates/${element["link"]}">${opening}</a>`;
-        }
-        return `<div class="reference">${element.id}. ${opening} of ${element["name"]}. ${ending} ${date}, ${element["place"]}.</div>`;
+        return HTMLRendering.renderDeathCertificateRefListing(element as DeathCertificateRefListing);
     }
     else if (element["source-type"] == "census") {
-        let text = `${element["year"]} census`;
-        if (element["link"]) {
-            text = `<a target="_blank" href="../certificates/${element["link"]}">${text}</a>`;
-        }
-        text = "The " + text + " of Scotland";
-        return `<div class="reference">${element.id}. ${text}.</div>`;
+        return HTMLRendering.renderCensusRefListing(element as CensusRefListing);
     }
     else if (element["source-type"] == "testimonial") {
-        return `<div class="reference">${element.id}. Told by ${element["name"]} to ${element["witness"]}. Testified ${element["date"]}.</div>`;
+        return HTMLRendering.renderTestimonialRefListing(element as TestimonialRefListing);
     }
     else if (element["source-type"] == "valuation-roll") {
-        if (element["source-link"]) {
-            return `<div class="reference">${element.id}. <a href="../certificates/${element["source-link"]}">Valuation roll</a> at ${element["source-location"]}. Dated ${element["source-date"]}.</div>`;
-        }
-        else {
-            return `<div class="reference">${element.id}. Valuation roll at ${element["source-location"]}. Dated ${element["source-date"]}.</div>`;
-        }
+        return HTMLRendering.renderValuationRollRefListing(element as ValuationRollRefListing);
+    }
+    else {
+        // TODO: throw error
+        return "";
     }
 }
 

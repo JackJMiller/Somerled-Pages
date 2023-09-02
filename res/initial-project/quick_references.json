@@ -25,5 +25,30 @@
         "source-type": "census",
         "year": "",
         "link": ""
+    },
+    "example-newspaper": {
+        "source-type": "newspaper",
+        "name-of-publication": "",
+        "source-link": "",
+        "source-title": "",
+        "source-date": "",
+        "pages": ""
+    },
+    "example-valuation-roll": {
+        "source-type": "valuation-roll",
+        "source-location": "",
+        "source-date": "",
+        "source-link": ""
+    },
+    "example-website": {
+        "source-type": "webpage",
+        "name-of-website": "",
+        "source-link": "",
+        "date-retrieved": ""
+    },
+    "example-lazy": {
+        "source-type": "lazy",
+        "source-value": "",
+        "source-link": ""
     }
 }
