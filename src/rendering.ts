@@ -65,32 +65,27 @@ export function renderImages(metadata: Metadata) {
 }
 
 
-export function renderHeader(source: any, metadata: Metadata): string {
+export function renderHeader(source: InlineElement[], metadata: Metadata): string {
     let header;
-    const infoObject = source.find((element: any) => element.type === "info");
 
-    console.log(infoObject);
-
-    if (infoObject === undefined) return "";
-
-    metadata["name"] = infoObject["name"];
-    metadata["article-type"] = infoObject["article-type"];
-    metadata["born"] = infoObject["born"];
-    metadata["died"] = infoObject["died"];
-    metadata["images"] = infoObject["images"];
+    metadata["name"] = metadata["info"]["name"];
+    metadata["article-type"] = metadata["info"]["article-type"];
+    metadata["born"] = metadata["info"]["born"];
+    metadata["died"] = metadata["info"]["died"];
+    metadata["images"] = metadata["info"]["images"];
 
     let subtitle = "";
-    if (infoObject["article-type"] === "person") {
-        subtitle = `<h4 class="page-subtitle">${infoObject.born || "Unknown"} — ${infoObject.died || "Unknown"}</h4>`;
+    if (metadata["info"]["article-type"] === "person") {
+        subtitle = `<h4 class="page-subtitle">${metadata["info"].born || "Unknown"} — ${metadata["info"].died || "Unknown"}</h4>`;
     }
-    if (infoObject["subtitle"]) {
-        subtitle = subtitle + `<h4 class="page-subtitle">${infoObject["subtitle"]}</h4>`;
+    if (metadata["info"]["subtitle"]) {
+        subtitle = subtitle + `<h4 class="page-subtitle">${metadata["info"]["subtitle"]}</h4>`;
     }
 
     return `
 <div class="header">
     <div class="container">
-        <h1 class="page-title">${infoObject.name}</h1>
+        <h1 class="page-title">${metadata["info"].name}</h1>
         ${subtitle}
         <div class="somerled-pages-logo">A <span class="logo-somerled">Somerled</span> <span class="logo-pages">Pages</span> family encyclopedia</div>
     </div>
@@ -102,7 +97,7 @@ export function renderNavbar(metadata: Metadata): string {
 <div class="navbar">
     <div class="navbar-items" style="grid-template-columns:${" 1fr".repeat(metadata.headings.length - 1)}">\n`;
 
-    metadata.headings.forEach((heading: any) => {
+    metadata.headings.forEach((heading: string) => {
         if (heading !== "References") {
             navbar = navbar + `<a href="" class="navbar-item"><h3>${heading}</h3></a>\n`;
         }
@@ -113,7 +108,7 @@ export function renderNavbar(metadata: Metadata): string {
 
 export function renderBody(source: InlineElement[], metadata: Metadata) {
     let rendered = "";
-    source.forEach((element: any) => {
+    source.forEach((element: InlineElement) => {
         rendered = rendered + renderElement(element, metadata) + "\n";
     });
     rendered = substituteReferences(rendered);

@@ -20,6 +20,7 @@ export function createInitialMetadata(name: string, type: string): Metadata {
     return {
         "infobox": createEmptyInfobox(),
         "infobox-rendered": "",
+        "info": {},
         "type": type,
         "name": name,
         "article-type": "",

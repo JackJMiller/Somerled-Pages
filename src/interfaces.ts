@@ -14,6 +14,7 @@ export interface InfoBox {
 export interface Metadata {
     "infobox": InfoBox,
     "infobox-rendered": string,
+    "info": any,
     "type": string,
     "name": string,
     "article-type": string,

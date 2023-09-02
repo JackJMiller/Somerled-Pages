@@ -13,7 +13,7 @@ export function readArticle(type: string, name: string): string {
     return contents.toString();
 }
 
-export function createInlineElement(q: any, v: string, metadata: Metadata): InlineElement {
+export function createInlineElement(q: any[], v: string, metadata: Metadata): InlineElement {
     if (q[0] === "text") {
         const obj = { "type": "element", "tag": "p", "inner": v };
         return obj;
@@ -25,10 +25,9 @@ export function createInlineElement(q: any, v: string, metadata: Metadata): Inli
         }
         return obj;
     }
-    // previous if: q.constructor.name === "Array" && q[0] === "obj"
     else {
-        const obj = JSON.parse(v) as InlineElement;
-        return obj;
+        // TODO: throw error
+        return { "type": "element", "tag": "p", "inner": "" };
     }
 }
 
@@ -91,7 +90,13 @@ export function parseRawArticle(raw: string, metadata: Metadata): InlineElement[
                 q[1] = q[1] - 1;
                 v = v + c;
                 if (q[1] === 0) {
-                    parsed.push(createInlineElement(q, v, metadata));
+                    const obj = JSON.parse(v) as InlineElement;
+                    if (obj["type"] === "info") {
+                        metadata["info"] = obj;
+                    }
+                    else {
+                        parsed.push(obj as InlineElement);
+                    }
                     q = ["text"];
                     v = "";
                 }
