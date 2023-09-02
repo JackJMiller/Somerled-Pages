@@ -64,10 +64,7 @@ export function renderImages(metadata: Metadata) {
     return images
 }
 
-
 export function renderHeader(source: InlineElement[], metadata: Metadata): string {
-    let header;
-
     metadata["name"] = metadata["info"]["name"];
     metadata["article-type"] = metadata["info"]["article-type"];
     metadata["born"] = metadata["info"]["born"];

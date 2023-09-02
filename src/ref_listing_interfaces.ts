@@ -1,3 +1,9 @@
+/*
+**  Somerled Pages - A program for creating family encyclopedias
+**  Copyright (C) 2023 Jack J. Miller
+**  Licensed under version 3 of the GNU General Public License
+*/
+
 export type RefListing = TestimonialRefListing | CensusRefListing | DeathCertificateRefListing | BirthCertificateRefListing | MarriageCertificateRefListing | ValuationRollRefListing | LazyRefListing | BookRefListing | JournalRefListing | NewspaperRefListing | WebsiteRefListing;
 
 export interface _RefListing {
