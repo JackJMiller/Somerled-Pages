@@ -15,3 +15,17 @@ export interface InfoBox {
     "image-caption": string,
     "entries": any
 };
+
+export interface InlineElement {
+    "type": string,
+    "tag": string,
+    "inner": string
+};
+
+export interface HeaderElement {
+    "type": string,
+    "tag": string,
+    "inner": string,
+    "id": string,
+    "class": string
+};

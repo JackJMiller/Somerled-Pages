@@ -1,4 +1,4 @@
-import { Metadata } from "./interfaces";
+import { InlineElement, Metadata } from "./interfaces";
 
 const fs = require("fs");
 
@@ -7,7 +7,7 @@ export function readArticle(type: string, name: string): string {
     return contents.toString();
 }
 
-export function createInlineElement(q: any, v: string, metadata: Metadata): any {
+export function createInlineElement(q: any, v: string, metadata: Metadata): InlineElement {
     if (q[0] === "text") {
         const obj = { "type": "element", "tag": "p", "inner": v };
         return obj;
@@ -19,21 +19,41 @@ export function createInlineElement(q: any, v: string, metadata: Metadata): any 
         }
         return obj;
     }
-    else if (q.constructor.name === "Array" && q[0] === "obj") {
-        const obj = JSON.parse(v);
+    // previous if: q.constructor.name === "Array" && q[0] === "obj"
+    else {
+        const obj = JSON.parse(v) as InlineElement;
+        console.log(obj);
         return obj;
     }
 }
 
+/*
+** This function goes through a markup file and parses it by separating the
+** objects and the plaintext. It uses a basic state machine.
+*/
 export function parseRawArticle(raw: string, metadata: Metadata): any[] {
-    const parsed = new Array();
-    // "sol" stands for "start of line"
+
+    // array containing the elements extracted from the markup
+    const parsed: InlineElement[] = new Array();
+
+    // q denotes the current state
+    // - ["sol"] denotes the start of a line
+    // - ["h", 1] denotes <h1>; ["h", 2] denotes <h2>; etc.
+    // - ["text"] denotes plaintext; <p> in the case of HTML output
+    // - ["{", 1] denotes an object; ["{", 2] denotes an object within an
+    //   object; etc.
     let q: any[] = ["sol"];
+
+    // the value of the elements; innerHTML in the case of HTML output
     let v = "";
+
+    // iterate through the markup file to parse it
     for (let i = 0; i < raw.length; i++) {
         let c = raw[i];
         if (c === "\n") {
+            // if holding text then newline marks the end of a paragraph
             if (q[0] === "text" || q[0] === "h") {
+                // add a text element if text is being held
                 if (v !== "") {
                     parsed.push(createInlineElement(q, v, metadata));
                 }
@@ -42,9 +62,12 @@ export function parseRawArticle(raw: string, metadata: Metadata): any[] {
             }
         }
         else if (q[0] === "sol") {
+            // hash symbol at the start of a line denotes a heading
             if (c === "#") {
                 q = ["h", 1];
             }
+            // curly brackets contain elements
+            // TODO: respond to break characters e.g. backslash
             else if (c === "{") {
                 q = ["obj", 1]
                 v = v + c;
