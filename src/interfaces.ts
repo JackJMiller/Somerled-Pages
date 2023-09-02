@@ -8,3 +8,10 @@ export interface Metadata {
     "died": string,
     "images": any[]
 };
+
+export interface InfoBox {
+    "type": string,
+    "image": string,
+    "image-caption": string,
+    "entries": any
+};

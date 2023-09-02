@@ -1,5 +1,6 @@
 import fs from "fs";
 import { parseRawArticle, readArticle, saveArticle } from "./src/file_io";
+import { createEmptyInfobox } from "./src/functions";
 import { Metadata } from "./src/interfaces";
 import { renderArticle } from "./src/rendering";
 
@@ -8,7 +9,7 @@ for (let type of ["wiki", "sheet"]) {
     for (let name of files) {
         const c = readArticle(type, name);
         const metadata: Metadata = {
-            "infobox": {},
+            "infobox": createEmptyInfobox(),
             "name": name,
             "type": type,
             "article-type": "",
