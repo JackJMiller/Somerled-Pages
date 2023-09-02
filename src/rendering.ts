@@ -61,6 +61,8 @@ export function renderHeader(source: any, metadata: Metadata): string {
     let header;
     const infoObject = source.find((element: any) => element.type === "info");
 
+    console.log(infoObject);
+
     if (infoObject === undefined) return "";
 
     metadata["name"] = infoObject["name"];
@@ -70,7 +72,7 @@ export function renderHeader(source: any, metadata: Metadata): string {
     metadata["images"] = infoObject["images"];
 
     let subtitle = "";
-    if (metadata["type"] === "wiki" && infoObject["article-type"] === "person") {
+    if (infoObject["article-type"] === "person") {
         subtitle = `<h4 class="page-subtitle">${infoObject.born || "Unknown"} — ${infoObject.died || "Unknown"}</h4>`;
     }
     if (infoObject["subtitle"]) {

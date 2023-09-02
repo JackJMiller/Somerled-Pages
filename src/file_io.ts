@@ -22,7 +22,6 @@ export function createInlineElement(q: any, v: string, metadata: Metadata): Inli
     // previous if: q.constructor.name === "Array" && q[0] === "obj"
     else {
         const obj = JSON.parse(v) as InlineElement;
-        console.log(obj);
         return obj;
     }
 }
