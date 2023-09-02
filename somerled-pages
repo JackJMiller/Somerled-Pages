@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Somerled Pages - A program for creating family encyclopedias
+# Copyright (C) 2023 Jack J. Miller
+# Licensed under version 3 of the GNU General Public License
+
 PROGRAM_PATH=/home/jack/Development/Somerled-Pages
 
 if [[ "$1" == "init" && "$1" == "init" ]]; then
@@ -72,4 +76,3 @@ else
     echo "  somerled-pages --help                display this help page"
 
 fi
-

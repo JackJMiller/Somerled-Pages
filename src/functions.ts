@@ -1,3 +1,9 @@
+/*
+**  Somerled Pages - A program for creating family encyclopedias
+**  Copyright (C) 2023 Jack J. Miller
+**  Licensed under version 3 of the GNU General Public License
+*/
+
 import { InfoBox, Metadata } from "./interfaces";
 
 export function createEmptyInfobox(): InfoBox {

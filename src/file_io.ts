@@ -1,3 +1,9 @@
+/*
+**  Somerled Pages - A program for creating family encyclopedias
+**  Copyright (C) 2023 Jack J. Miller
+**  Licensed under version 3 of the GNU General Public License
+*/
+
 import { InlineElement, Metadata } from "./interfaces";
 
 const fs = require("fs");
