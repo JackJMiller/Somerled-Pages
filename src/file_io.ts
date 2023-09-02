@@ -1,41 +1,37 @@
 const fs = require("fs");
 
-function readArticle(type, name) {
+export function readArticle(type: string, name: string): string {
     const contents = fs.readFileSync(`./data/${type}_source/${name}`);
     return contents.toString();
 }
 
-function isArray(x) {
-    return x.constructor.name === "Array";
-}
-
-function createInlineElement(q, v, metadata) {
+export function createInlineElement(q: any, v: string, metadata: any): any {
     if (q === "text") {
         const obj = { "type": "element", "tag": "p", "inner": v };
         return obj;
     }
-    else if (isArray(q) && q[0] === "h") {
+    else if (q.constructor.name === "Array" && q[0] === "h") {
         const obj = { "type": "element", "tag": `h${q[1]}`, "inner": v, "id": v, "class": "title" };
         if (q[1] === 1) {
             metadata.headings.push(v);
         }
         return obj;
     }
-    else if (isArray(q) && q[0] === "obj") {
-        obj = JSON.parse(v);
+    else if (q.constructor.name === "Array" && q[0] === "obj") {
+        const obj = JSON.parse(v);
         return obj;
     }
 }
 
-function parseRawArticle(raw, metadata) {
+export function parseRawArticle(raw: string, metadata: object): any[] {
     const parsed = new Array();
     // "sol" stands for "start of line"
-    let q = "sol"
+    let q: any = "sol"
     let v = "";
     for (let i = 0; i < raw.length; i++) {
         let c = raw[i];
         if (c === "\n") {
-            if (q === "text" || isArray(q) && q[0] === "h") {
+            if (q === "text" || q.constructor.name === "Array" && q[0] === "h") {
                 if (v !== "") {
                     parsed.push(createInlineElement(q, v, metadata));
                 }
@@ -56,7 +52,7 @@ function parseRawArticle(raw, metadata) {
                 v = v + c;
             }
         }
-        else if (isArray(q) && q[0] === "obj") {
+        else if (q.constructor.name === "Array" && q[0] === "obj") {
             if (c === "{") {
                 q[1] = q[1] + 1;
                 v = v + c;
@@ -84,7 +80,7 @@ function parseRawArticle(raw, metadata) {
                 v = v + c;
             }
         }
-        else if (isArray(q) && q[0] === "h") {
+        else if (q.constructor.name === "Array" && q[0] === "h") {
             if (c === "#") {
                 q[1] = q[1] + 1;
             }
@@ -101,12 +97,6 @@ function parseRawArticle(raw, metadata) {
     return parsed;
 }
 
-function saveArticle(type, name, content) {
+export function saveArticle(type: string, name: string, content: string) {
     fs.writeFileSync(`./${type}/${name}.html`, content);
 }
-
-module.exports = {
-    parseRawArticle,
-    readArticle,
-    saveArticle
-};

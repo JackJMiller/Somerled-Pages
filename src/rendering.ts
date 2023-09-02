@@ -1,6 +1,6 @@
-const QUICK_REFERENCES = require("./copied/quick_references.json");
+const QUICK_REFERENCES = require("../copied/quick_references.json");
 
-function renderArticle(source, metadata) {
+export function renderArticle(source: any, metadata: any): string {
     const headerHTML = renderHeader(source, metadata);
     const renderedBody = renderBody(source, metadata);
     return `
@@ -34,7 +34,7 @@ function renderArticle(source, metadata) {
     `;
 }
 
-function renderImages(metadata) {
+export function renderImages(metadata: any) {
 
     let images = "";
     if (metadata["infobox"]) {
@@ -43,7 +43,7 @@ function renderImages(metadata) {
 
     if (!metadata["images"]) return images;
 
-    metadata["images"].forEach(image => {
+    metadata["images"].forEach((image: any) => {
         images = images + `
 <div class="box">
     <img src="../media/${image.src}"/>
@@ -55,14 +55,9 @@ function renderImages(metadata) {
 }
 
 
-function renderHeader(source, metadata) {
+export function renderHeader(source: any, metadata: any): string {
     let header;
-    source.forEach(element => {
-        if (element.type === "info") {
-            infoObject = element;
-            return
-        }
-    });
+    const infoObject = source.find((element: any) => element.type === "info");
 
     if (infoObject === undefined) return "";
 
@@ -90,12 +85,12 @@ function renderHeader(source, metadata) {
 </div>`;
 }
 
-function renderNavbar(metadata) {
+export function renderNavbar(metadata: any): string {
     let navbar = `
 <div class="navbar">
     <div class="navbar-items" style="grid-template-columns:${" 1fr".repeat(metadata.headings.length - 1)}">\n`;
 
-    metadata.headings.forEach(heading => {
+    metadata.headings.forEach((heading: any) => {
         if (heading !== "References") {
             navbar = navbar + `<a href="" class="navbar-item"><h3>${heading}</h3></a>\n`;
         }
@@ -104,16 +99,16 @@ function renderNavbar(metadata) {
     return navbar;
 }
 
-function renderBody(source, metadata) {
+export function renderBody(source: any, metadata: any) {
     let rendered = "";
-    source.forEach(element => {
+    source.forEach((element: any) => {
         rendered = rendered + renderElement(element, metadata) + "\n";
     });
     rendered = substituteReferences(rendered);
     return rendered;
 }
 
-function substituteReferences(text) {
+export function substituteReferences(text: string) {
     let q = "text";
     let v = "";
     let output = "";
@@ -142,7 +137,7 @@ function substituteReferences(text) {
     return output;
 }
 
-function renderElement(element, metadata) {
+export function renderElement(element: any, metadata: any) {
     if (element.type === "element") {
         return renderStandardElement(element);
     }
@@ -164,7 +159,7 @@ function renderElement(element, metadata) {
     }
 }
 
-function renderGallery(element){ 
+export function renderGallery(element: any){ 
     let output = "";
     let id = 0;
     for (let image of element.images) {
@@ -184,11 +179,11 @@ function renderGallery(element){
 </div>`;
 }
 
-function renderRefListing(element) {
+export function renderRefListing(element: any) {
     const pages = element["pages"];
 
     if (element["type"] == "quick-ref") {
-        refElement = JSON.parse(JSON.stringify(QUICK_REFERENCES[element["quick-id"]]))
+        const refElement = JSON.parse(JSON.stringify(QUICK_REFERENCES[element["quick-id"]]))
         refElement.id = element.id;
         return renderRefListing(refElement);
     }
@@ -260,11 +255,11 @@ function renderRefListing(element) {
     }
 }
 
-function renderCitation(id) {
+export function renderCitation(id: string) {
     return `<sup><a href="">[${id}]</a></sup>`;
 }
 
-function renderImage(element) {
+export function renderImage(element: any) {
     let floatValue = "";
     if (element["float"] === "left") {
         floatValue = "left";
@@ -279,12 +274,12 @@ function renderImage(element) {
 </div>`;
 }
 
-function renderStandardElement(element) {
+export function renderStandardElement(element: any) {
     const tag = element.tag;
     return `<${tag}${(element.id !== undefined) ? " id=\""+element.id+"\"" : ""}${(element.class !== undefined) ? " class=\""+element.class+"\"" : ""}>${element.inner}</${tag}>`;
 }
 
-function renderInfobox(infobox, metadata) {
+export function renderInfobox(infobox: any, metadata: any) {
     return `
 <div class="box infobox">
     ${infobox.image ? `<img src="../media/${infobox.image}"/>` : ""}
@@ -295,7 +290,7 @@ function renderInfobox(infobox, metadata) {
 </div>`;
 }
 
-function renderInfoboxEntries(entries, metadata) {
+export function renderInfoboxEntries(entries: any, metadata: any) {
     let output = "";
     let keys = Object.keys(entries);
     if (metadata["born"]) {
@@ -314,7 +309,7 @@ function renderInfoboxEntries(entries, metadata) {
             entries["Died"] = [metadata["died"]];
         }
     }
-    keys.forEach(key => {
+    keys.forEach((key: string) => {
         const value = entries[key];
         if (value.length > 0) {
             output = output + `<h5>${key}</h5>${renderBoxValue(key, value, metadata)}\n`
@@ -323,7 +318,7 @@ function renderInfoboxEntries(entries, metadata) {
     return output;
 }
 
-function renderBoxValue(key, value, metadata) {
+export function renderBoxValue(key: string, value: string, metadata: any): string {
     if (value.constructor.name === "Array") {
         let output = "<div>"
         for (let v of value) {
@@ -340,11 +335,6 @@ function renderBoxValue(key, value, metadata) {
     }
 }
 
-function isSplitFormat(articleType) {
+export function isSplitFormat(articleType: string): boolean {
     return ["person", "place", "lineage"].includes(articleType);
 }
-
-module.exports = {
-    renderArticle,
-    renderBody
-};

@@ -65,11 +65,11 @@ else
     fi
 
     echo "usage:"
-    echo "  somerledpages build                 build the encyclopedia"
-    echo "  somerledpages new-article <name>    create a new article"
-    echo "  somerledpages new-sheet <name>      create a new sheet"
-    echo "  somerledpages add-media <files>     add a file to the media repository"
-    echo "  somerledpages --help                display this help page"
+    echo "  somerled-pages build                 build the encyclopedia"
+    echo "  somerled-pages new-article <name>    create a new article"
+    echo "  somerled-pages new-sheet <name>      create a new sheet"
+    echo "  somerled-pages add-media <files>     add a file to the media repository"
+    echo "  somerled-pages --help                display this help page"
 
 fi
 
