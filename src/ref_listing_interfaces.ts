@@ -6,12 +6,6 @@
 
 export type RefListing = TestimonialRefListing | CensusRefListing | DeathCertificateRefListing | BirthCertificateRefListing | MarriageCertificateRefListing | ValuationRollRefListing | LazyRefListing | BookRefListing | JournalRefListing | NewspaperRefListing | WebsiteRefListing;
 
-export interface _RefListing {
-    "type": string,
-    "id": string,
-    "source-type": string,
-};
-
 export interface BookRefListing {
     "type": string,
     "id": string,

@@ -83,6 +83,11 @@ function renderWebsiteRefListing(element: WebsiteRefListing): string {
     return `<div class="reference">${element.id}. Website <a href="${element["source-link"]}">${element["name-of-website"]}</a>. Retrieved ${element["date-retrieved"]}.</div>`;
 }
 
+function renderCitation(id: string) {
+    return `<sup><a href="">[${id}]</a></sup>`;
+}
+
+
 export = {
     renderTestimonialRefListing,
     renderCensusRefListing,
@@ -94,5 +99,6 @@ export = {
     renderBookRefListing,
     renderJournalRefListing,
     renderNewspaperRefListing,
-    renderWebsiteRefListing
+    renderWebsiteRefListing,
+    renderCitation
 };

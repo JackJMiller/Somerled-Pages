@@ -4,7 +4,8 @@
 **  Licensed under version 3 of the GNU General Public License
 */
 
-import { InfoBox, Metadata } from "./interfaces";
+import { BuildData, InfoBox, Metadata } from "./interfaces";
+import { RefListing } from "./ref_listing_interfaces";
 
 export function createEmptyInfobox(): InfoBox {
     return {
@@ -28,5 +29,29 @@ export function createInitialMetadata(name: string, type: string): Metadata {
         "born": "",
         "died": "",
         "images": []
+    };
+}
+
+export function colourString(string: string, colourCode: number, bold: boolean = false) {
+    const isBold = bold ? 1 : 0;
+    return `\x1b[${isBold};${colourCode}m${string}\x1b[0m`;
+}
+
+export function throwError(loc: string, message: string) {
+    console.log(`${loc}: ${colourString("ERROR:", 31, true)} ${message}`);
+    process.exit(1);
+}
+
+export function recordRefListing(element: RefListing, buildData: BuildData) {
+    buildData.inDocumentRefListings[element["id"]] = element;
+}
+
+export function createBuildData(filetype: string, filename: string): BuildData {
+    return {
+        filetype,
+        filename,
+        location: `data/${filetype}/${filename}`,
+        citations: [],
+        inDocumentRefListings: {}
     };
 }

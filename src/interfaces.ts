@@ -9,7 +9,7 @@ export interface InfoBox {
     "image": string,
     "image-caption": string,
     "entries": any
-};
+}
 
 export interface Metadata {
     "infobox": InfoBox,
@@ -22,13 +22,13 @@ export interface Metadata {
     "born": string,
     "died": string,
     "images": any[]
-};
+}
 
 export interface InlineElement {
     "type": string,
     "tag": string,
     "inner": string
-};
+}
 
 export interface HeaderElement {
     "type": string,
@@ -36,4 +36,12 @@ export interface HeaderElement {
     "inner": string,
     "id": string,
     "class": string
-};
+}
+
+export interface BuildData {
+    filename: string,
+    filetype: string,
+    location: string,
+    citations: string[],
+    inDocumentRefListings: any
+}

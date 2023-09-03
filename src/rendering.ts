@@ -4,15 +4,19 @@
 **  Licensed under version 3 of the GNU General Public License
 */
 
-import { InfoBox, InlineElement, Metadata } from "./interfaces";
+import { BuildData, InfoBox, InlineElement, Metadata } from "./interfaces";
+import { recordRefListing, throwError } from "./functions";
 import { BirthCertificateRefListing, BookRefListing, CensusRefListing, DeathCertificateRefListing, JournalRefListing, LazyRefListing, MarriageCertificateRefListing, NewspaperRefListing, QuickRefListing, RefListing, TestimonialRefListing, ValuationRollRefListing, WebsiteRefListing } from "./ref_listing_interfaces";
 import HTMLRendering from "./html_rendering";
 
 const QUICK_REFERENCES = require("../copied/quick_references.json");
 
-export function renderArticle(source: InlineElement[], metadata: Metadata): string {
+export function renderArticle(source: InlineElement[], metadata: Metadata, buildData: BuildData): string {
     const headerHTML = renderHeader(source, metadata);
-    const renderedBody = renderBody(source, metadata);
+    const renderedBody = renderBody(source, metadata, buildData);
+    const navbar = renderNavbar(metadata);
+    const images = renderImages(metadata);
+    const referenceListings = renderReferenceListings(buildData);
     return `
 <!DOCTYPE html>
 <html>
@@ -25,23 +29,48 @@ export function renderArticle(source: InlineElement[], metadata: Metadata): stri
     </head>
     <body>
         ${headerHTML}
-        ${renderNavbar(metadata)}
+        ${navbar}
         <div class="main-body">
             <div class="container">
-            ${(isSplitFormat(metadata["article-type"])) ? "<div class=\"main-body-split\">" : ""}
-                <div>
-                    ${renderedBody}
-                </div>
-                <div class="images-column">
-                    ${renderImages(metadata)}
-                </div>
+                ${(isSplitFormat(metadata["article-type"])) ? "<div class=\"main-body-split\">" : ""}
+                    <div>
+                        ${renderedBody}
+                        ${referenceListings}
+                    </div>
+                    <div class="images-column">
+                        ${images}
+                    </div>
+                ${(isSplitFormat(metadata["article-type"])) ? "</div>" : ""}
             </div>
-            ${(isSplitFormat(metadata["article-type"])) ? "</div>" : ""}
         </div>
         <script src="../res/script.js" type="text/javascript"></script>
     </body>
 </html>
     `;
+}
+
+export function renderReferenceListings(buildData: BuildData) {
+    let output = buildData.citations.toString();
+    const inDocumentKeys = Object.keys(buildData.inDocumentRefListings);
+    const quickRefKeys = Object.keys(QUICK_REFERENCES);
+    let index = 1;
+    for (let citation of buildData.citations) {
+        if (inDocumentKeys.includes(citation)) {
+            const refListing = buildData.inDocumentRefListings[citation];
+            refListing.id = index.toString();
+            const renderedRefListing = renderRefListing(refListing, buildData);
+            output = output + "\n" + renderedRefListing;
+        }
+        else if (quickRefKeys.includes(citation)) {
+            const renderedRefListing = renderQuickRefListing(citation, index, buildData);
+            output = output + "\n" + renderedRefListing;
+        }
+        else {
+            console.log("Shooot");
+        }
+        index++;
+    }
+    return output;
 }
 
 export function renderImages(metadata: Metadata) {
@@ -103,34 +132,47 @@ export function renderNavbar(metadata: Metadata): string {
     return navbar;
 }
 
-export function renderBody(source: InlineElement[], metadata: Metadata) {
+export function renderBody(source: InlineElement[], metadata: Metadata, buildData: BuildData) {
     let rendered = "";
     source.forEach((element: InlineElement) => {
-        rendered = rendered + renderElement(element, metadata) + "\n";
+        rendered = rendered + renderElement(element, metadata, buildData) + "\n";
     });
-    rendered = substituteReferences(rendered);
+    // const references = rendered.
+    rendered = substituteReferences(rendered, buildData);
     return rendered;
 }
 
-export function substituteReferences(text: string) {
-    let q: any[] = ["text"];
+
+
+export function substituteReferences(text: string, buildData: BuildData): string {
+    // let regex = /\[.*\]/gi;
+    // let result;
+    // const citations: string[] = [];
+
+    // while ( (result = regex.exec(text)) ) {
+    //     let citation = result[0].slice(1, result.length - 2);
+
+    //     if (!citations.includes(citation)) {
+    //         citations.push(citation)
+    //     }
+    // }
+
+    let q = "text";
     let v = "";
-    let output = "";
+    const citations: string[] = [];
     for (let i = 0; i < text.length; i++) {
         let c = text[i];
-        if (q[0] === "text") {
+        if (q === "text") {
             if (c === "[") {
-                q = ["ref"];
+                q = "ref";
                 v = "";
             }
-            else {
-                output = output + c;
-            }
         }
-        else if (q[0] === "ref") {
+        else if (q === "ref") {
             if (c === "]") {
-                q = ["text"];
-                output = output + renderCitation(v);
+                q = "text";
+                // output = output + renderCitation(v);
+                citations.push(v);
             }
             else {
                 v = v + c;
@@ -138,10 +180,23 @@ export function substituteReferences(text: string) {
         }
 
     }
-    return output;
+
+    buildData.citations = citations;
+
+    let index = 1;
+    for (let citation of citations) {
+        text = text.replaceAll(`[${citation}]`, renderCitation(index.toString()));
+        index++;
+    }
+
+    return text;
 }
 
-export function renderElement(element: any, metadata: Metadata): string {
+export function renderCitation(id: string) {
+    return HTMLRendering.renderCitation(id);
+}
+
+export function renderElement(element: any, metadata: Metadata, buildData: BuildData): string {
     if (element.type === "element") {
         return renderStandardElement(element);
     }
@@ -153,10 +208,14 @@ export function renderElement(element: any, metadata: Metadata): string {
         return "";
     }
     else if (element.type == "ref-listing") {
-        return renderRefListing(element as RefListing);
+        recordRefListing(element as RefListing, buildData);
+        return "";
+        // return renderRefListing(element as RefListing, buildData);
     }
     else if (element.type == "quick-ref") {
-        return renderQuickRefListing(element as QuickRefListing);
+        // TODO remove need for quick references to be listed -- totally unnecessary and defeats the goal of quickness
+        return "";
+        // return renderQuickRefListing(element as QuickRefListing, buildData);
     }
     else if (element.type == "gallery") {
         return renderGallery(element);
@@ -186,13 +245,13 @@ export function renderGallery(element: any){
 </div>`;
 }
 
-function renderQuickRefListing(element: any): string {
-    const refElement = JSON.parse(JSON.stringify(QUICK_REFERENCES[element["quick-id"]]))
-    refElement.id = element.id;
-    return renderRefListing(refElement as RefListing);
+function renderQuickRefListing(key: string, index: number, buildData: BuildData): string {
+    const refElement = JSON.parse(JSON.stringify(QUICK_REFERENCES[key]));
+    refElement.id = index.toString();
+    return renderRefListing(refElement as RefListing, buildData);
 }
 
-export function renderRefListing(element: RefListing): string {
+export function renderRefListing(element: RefListing, buildData: BuildData): string {
     if (element["source-type"] == "newspaper") {
         return HTMLRendering.renderNewspaperRefListing(element as NewspaperRefListing);
     }
@@ -227,13 +286,9 @@ export function renderRefListing(element: RefListing): string {
         return HTMLRendering.renderValuationRollRefListing(element as ValuationRollRefListing);
     }
     else {
-        // TODO: throw error
+        throwError(buildData.location, `Found reference listing with invalid source-type attribute of '${element["source-type"]}'.`);
         return "";
     }
-}
-
-export function renderCitation(id: string) {
-    return `<sup><a href="">[${id}]</a></sup>`;
 }
 
 export function renderImage(element: any) {
