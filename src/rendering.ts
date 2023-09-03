@@ -66,7 +66,7 @@ export function renderReferenceListings(buildData: BuildData) {
             output = output + "\n" + renderedRefListing;
         }
         else {
-            console.log("Shooot");
+            // TODO: throw error
         }
         index++;
     }
@@ -172,7 +172,9 @@ export function substituteReferences(text: string, buildData: BuildData): string
             if (c === "]") {
                 q = "text";
                 // output = output + renderCitation(v);
-                citations.push(v);
+                if (!citations.includes(v)) {
+                    citations.push(v);
+                }
             }
             else {
                 v = v + c;
