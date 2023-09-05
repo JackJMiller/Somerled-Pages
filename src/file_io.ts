@@ -27,7 +27,7 @@ export function createInlineElement(q: any[], v: string, metadata: Metadata, bui
         return obj;
     }
     else {
-        throwError(buildData.location, "Somerled Pages contains a bug.")
+        throwError("Somerled Pages contains a bug.", buildData);
         return { "type": "element", "tag": "p", "inner": "" };
     }
 }
@@ -134,5 +134,5 @@ export function parseRawArticle(raw: string, metadata: Metadata, buildData: Buil
 }
 
 export function saveArticle(type: string, name: string, content: string) {
-    fs.writeFileSync(`./${type}/${name}.html`, content);
+    fs.writeFileSync(`./build/${type}/${name}.html`, content);
 }

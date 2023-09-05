@@ -43,5 +43,9 @@ export interface BuildData {
     filetype: string,
     location: string,
     citations: string[],
-    inDocumentRefListings: any
+    inDocumentRefListings: any,
+    errors: number,
+    uniqueErrorFiles: string[],
+    warnings: number,
+    uniqueWarningFiles: string[]
 }

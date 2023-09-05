@@ -6,16 +6,30 @@
 
 PROGRAM_PATH=/home/jack/Development/Somerled-Pages
 
+let "EXITCODE = 0"
+
 if [[ "$1" == "init" && "$1" == "init" ]]; then
 
     mkdir $1
 
 elif [ "$1" == "build" ]; then
 
-    rm -r wiki/*.html
+    [ ! -d build/ ] && mkdir build/
+    [ ! -d build/wiki ] && mkdir build/wiki
+    [ ! -d build/sheet ] && mkdir build/sheet
+
     cp data/quick_references.json $PROGRAM_PATH/copied/
-    node $PROGRAM_PATH/main.js
+
+    node $PROGRAM_PATH/main.js || let "EXITCODE = 1"
+
     rm $PROGRAM_PATH/copied/*
+
+    if [ "$EXITCODE" == "0" ]; then
+        [ -d wiki/ ] && rm -r wiki/
+        [ -d sheet/ ] && rm -r sheet/
+        mv build/wiki/ wiki/
+        mv build/sheet/ sheet/
+    fi
 
 elif [[ $# -eq 2 && "$1" == "new-article" ]]; then
 
@@ -77,3 +91,4 @@ else
 
 fi
 
+exit $EXITCODE

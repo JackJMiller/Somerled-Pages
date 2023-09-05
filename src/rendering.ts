@@ -49,12 +49,19 @@ export function renderArticle(source: InlineElement[], metadata: Metadata, build
     `;
 }
 
-export function renderReferenceListings(buildData: BuildData) {
-    let output = buildData.citations.toString();
+export function renderReferenceListings(buildData: BuildData): string {
+    if (buildData.citations.length === 0) {
+        // TODO make HTML-specific function
+        return "<p>There are no references yet.</p>";
+    }
+    let output = "";
     const inDocumentKeys = Object.keys(buildData.inDocumentRefListings);
     const quickRefKeys = Object.keys(QUICK_REFERENCES);
     let index = 1;
     for (let citation of buildData.citations) {
+        if (inDocumentKeys.includes(citation) && quickRefKeys.includes(citation)) {
+            throwError(`References with identifier '${citation}' found both in document and in data/quick_references.json. Remove one so that the compiler may pick.`, buildData, false);
+        }
         if (inDocumentKeys.includes(citation)) {
             const refListing = buildData.inDocumentRefListings[citation];
             refListing.id = index.toString();
@@ -66,7 +73,7 @@ export function renderReferenceListings(buildData: BuildData) {
             output = output + "\n" + renderedRefListing;
         }
         else {
-            // TODO: throw error
+            throwError(`Cannot find reference listing with '${citation}' identifier.`, buildData, false);
         }
         index++;
     }
@@ -214,11 +221,6 @@ export function renderElement(element: any, metadata: Metadata, buildData: Build
         return "";
         // return renderRefListing(element as RefListing, buildData);
     }
-    else if (element.type == "quick-ref") {
-        // TODO remove need for quick references to be listed -- totally unnecessary and defeats the goal of quickness
-        return "";
-        // return renderQuickRefListing(element as QuickRefListing, buildData);
-    }
     else if (element.type == "gallery") {
         return renderGallery(element);
     }
@@ -288,7 +290,7 @@ export function renderRefListing(element: RefListing, buildData: BuildData): str
         return HTMLRendering.renderValuationRollRefListing(element as ValuationRollRefListing);
     }
     else {
-        throwError(buildData.location, `Found reference listing with invalid source-type attribute of '${element["source-type"]}'.`);
+        throwError(`Found reference listing with invalid source-type attribute of '${element["source-type"]}'.`, buildData);
         return "";
     }
 }

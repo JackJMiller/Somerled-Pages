@@ -37,21 +37,37 @@ export function colourString(string: string, colourCode: number, bold: boolean =
     return `\x1b[${isBold};${colourCode}m${string}\x1b[0m`;
 }
 
-export function throwError(loc: string, message: string) {
-    console.log(`${loc}: ${colourString("ERROR:", 31, true)} ${message}`);
-    process.exit(1);
+export function throwError(message: string, buildData: BuildData, exitProgram: boolean = true) {
+    console.log(`${buildData.location}: ${colourString("ERROR:", 31, true)} ${message}`);
+    buildData.errors++;
+    if (!buildData.uniqueErrorFiles.includes(buildData.location)) {
+        buildData.uniqueErrorFiles.push(buildData.location);
+    }
+    if (exitProgram) process.exit(1);
 }
 
 export function recordRefListing(element: RefListing, buildData: BuildData) {
     buildData.inDocumentRefListings[element["id"]] = element;
 }
 
-export function createBuildData(filetype: string, filename: string): BuildData {
+export function createBuildData(): BuildData {
     return {
-        filetype,
-        filename,
-        location: `data/${filetype}/${filename}`,
+        filetype: "",
+        filename: "",
+        location: "",
         citations: [],
-        inDocumentRefListings: {}
+        inDocumentRefListings: {},
+        errors: 0,
+        uniqueErrorFiles: [],
+        warnings: 0,
+        uniqueWarningFiles: []
     };
+}
+
+export function updateBuildData(buildData: BuildData, filetype: string, filename: string) {
+    buildData.filetype = filetype;
+    buildData.filename = filename;
+    buildData.location = `data/${buildData.filetype}/${buildData.filename}`;
+    buildData.citations = [];
+    buildData.inDocumentRefListings = {};
 }
