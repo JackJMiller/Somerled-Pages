@@ -87,6 +87,10 @@ function renderCitation(id: string) {
     return `<sup><a href="">[${id}]</a></sup>`;
 }
 
+function renderLink(content: string) {
+    const contentValues = content.split("|");
+    return `<a href="${contentValues[1]}.html">${contentValues[0]}</a>`;
+}
 
 export = {
     renderTestimonialRefListing,
@@ -100,5 +104,6 @@ export = {
     renderJournalRefListing,
     renderNewspaperRefListing,
     renderWebsiteRefListing,
-    renderCitation
+    renderCitation,
+    renderLink
 };

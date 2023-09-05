@@ -16,7 +16,7 @@ All code is freely licensed under the GNU General Public License version 3, as d
 |---------------------------|-------------|-------------|
 | TypeScript port           | Done        | 03 Sep 2023 |
 | Numeric references        | Done        | 03 Sep 2023 |
-| Generic links             |             |             |
+| Generic links             | Done        | 05 Sep 2023 |
 | Privacy guard             |             |             |
 | Family tree generator     |             |             |
 | Relationship assignment   |             |             |

@@ -145,27 +145,14 @@ export function renderBody(source: InlineElement[], metadata: Metadata, buildDat
         rendered = rendered + renderElement(element, metadata, buildData) + "\n";
     });
     // const references = rendered.
-    rendered = substituteReferences(rendered, buildData);
+    rendered = substituteLinksAndReferences(rendered, buildData);
     return rendered;
 }
 
-
-
-export function substituteReferences(text: string, buildData: BuildData): string {
-    // let regex = /\[.*\]/gi;
-    // let result;
-    // const citations: string[] = [];
-
-    // while ( (result = regex.exec(text)) ) {
-    //     let citation = result[0].slice(1, result.length - 2);
-
-    //     if (!citations.includes(citation)) {
-    //         citations.push(citation)
-    //     }
-    // }
-
+export function substituteLinksAndReferences(text: string, buildData: BuildData): string {
     let q = "text";
     let v = "";
+    const links: string[] = [];
     const citations: string[] = [];
     for (let i = 0; i < text.length; i++) {
         let c = text[i];
@@ -176,7 +163,10 @@ export function substituteReferences(text: string, buildData: BuildData): string
             }
         }
         else if (q === "ref") {
-            if (c === "]") {
+            if (c === "[") {
+                q = "link";
+            }
+            else if (c === "]") {
                 q = "text";
                 // output = output + renderCitation(v);
                 if (!citations.includes(v)) {
@@ -187,10 +177,29 @@ export function substituteReferences(text: string, buildData: BuildData): string
                 v = v + c;
             }
         }
+        else if (q === "link") {
+            if (c === "]") {
+                q = "end-of-link";
+            }
+            else {
+                v = v + c;
+            }
+        }
+        else if (q === "end-of-link") {
+            if (c === "]") {
+                links.push(v);
+                q = "text";
+                v = "";
+            }
+        }
 
     }
 
     buildData.citations = citations;
+
+    for (let link of links) {
+        text = text.replaceAll(`[[${link}]]`, renderLink(link));
+    }
 
     let index = 1;
     for (let citation of citations) {
@@ -205,6 +214,10 @@ export function renderCitation(id: string) {
     return HTMLRendering.renderCitation(id);
 }
 
+export function renderLink(id: string) {
+    return HTMLRendering.renderLink(id);
+}
+
 export function renderElement(element: any, metadata: Metadata, buildData: BuildData): string {
     if (element.type === "element") {
         return renderStandardElement(element);
@@ -213,7 +226,7 @@ export function renderElement(element: any, metadata: Metadata, buildData: Build
         return renderImage(element);
     }
     else if (element.type == "infobox") {
-        metadata["infobox-rendered"] = renderInfobox(element, metadata);
+        metadata["infobox-rendered"] = renderInfobox(element, metadata, buildData);
         return "";
     }
     else if (element.type == "ref-listing") {
@@ -315,18 +328,18 @@ export function renderStandardElement(element: any) {
     return `<${tag}${(element.id !== undefined) ? " id=\""+element.id+"\"" : ""}${(element.class !== undefined) ? " class=\""+element.class+"\"" : ""}>${element.inner}</${tag}>`;
 }
 
-export function renderInfobox(infobox: InfoBox, metadata: Metadata) {
+export function renderInfobox(infobox: InfoBox, metadata: Metadata, buildData: BuildData) {
     return `
 <div class="box infobox">
     ${infobox.image ? `<img src="../media/${infobox.image}"/>` : ""}
     ${infobox["image-caption"] ? `<p class="caption">${infobox["image-caption"]}</p>` : ""}
     <div class="grid">
-        ${renderInfoboxEntries(infobox.entries, metadata)}
+        ${renderInfoboxEntries(infobox.entries, metadata, buildData)}
     </div>
 </div>`;
 }
 
-export function renderInfoboxEntries(entries: any, metadata: Metadata) {
+export function renderInfoboxEntries(entries: any, metadata: Metadata, buildData: BuildData) {
     let output = "";
     let keys = Object.keys(entries);
     if (metadata["born"]) {
@@ -348,16 +361,17 @@ export function renderInfoboxEntries(entries: any, metadata: Metadata) {
     keys.forEach((key: string) => {
         const value = entries[key];
         if (value.length > 0) {
-            output = output + `<h5>${key}</h5>${renderBoxValue(key, value, metadata)}\n`
+            output = output + `<h5>${key}</h5>${renderBoxValue(key, value, metadata, buildData)}\n`
         }
     });
     return output;
 }
 
-export function renderBoxValue(key: string, value: string, metadata: Metadata): string {
+export function renderBoxValue(key: string, value: string, metadata: Metadata, buildData: BuildData): string {
     if (value.constructor.name === "Array") {
         let output = "<div>"
         for (let v of value) {
+            v = substituteLinksAndReferences(v, buildData)
             output = output + `<p>${v}</p>`;
         }
         output = output + "</div>";
@@ -365,6 +379,7 @@ export function renderBoxValue(key: string, value: string, metadata: Metadata): 
     }
     else {
         let output = "<div>";
+        value = substituteLinksAndReferences(value, buildData)
         output = output + `<p>${value}</p>`;
         output = output + "</div>";
         return output;
