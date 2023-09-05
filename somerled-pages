@@ -19,9 +19,6 @@ elif [ "$1" == "build" ]; then
     [ ! -d build/sheet ] && mkdir build/sheet
 
     cp data/build_configurations.json data/quick_references.json $PROGRAM_PATH/copied/
-    echo Sooo
-    ls $PROGRAM_PATH/copied
-    echo "Soo"
 
     node $PROGRAM_PATH/main.js $@ || let "EXITCODE = 1"
 

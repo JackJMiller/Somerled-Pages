@@ -4,8 +4,32 @@
 **  Licensed under version 3 of the GNU General Public License
 */
 
+import fs from "fs";
 import { BuildData, InfoBox, Metadata } from "./interfaces";
+import { parseRawArticle, readArticle, saveArticle } from "./file_io";
+import { renderArticle } from "./rendering";
 import { RefListing } from "./ref_listing_interfaces";
+import { BUILD_CONFIGURATIONS, BUILD_NAMES, FULL_BUILD } from "./constants";
+
+export function build(buildData: BuildData) {
+    for (let filetype of ["wiki", "sheet"]) {
+        let files = fs.readdirSync(`./data/${filetype}_source/`);
+        for (let filename of files) {
+            if (shouldBeBuilt(filetype, filename, buildData)) {
+                updateBuildData(buildData, filetype, filename);
+                renderAndSaveArticle(filetype, filename, buildData)
+            }
+        }
+    }
+}
+
+function renderAndSaveArticle(filetype: string, filename: string, buildData: BuildData) {
+    const c = readArticle(buildData);
+    const metadata = createInitialMetadata(filetype, filename);
+    const source = parseRawArticle(c, metadata, buildData);
+    const rendered = renderArticle(source, metadata, buildData);
+    saveArticle(filetype, filename, rendered);
+}
 
 export function createEmptyInfobox(): InfoBox {
     return {
@@ -50,6 +74,15 @@ export function throwError(message: string, location: string, buildData: BuildDa
 
 export function recordRefListing(element: RefListing, buildData: BuildData) {
     buildData.inDocumentRefListings[element["id"]] = element;
+}
+
+export function initialiseBuildData(buildName: string) {
+    if (buildName !== "full" && !BUILD_NAMES.includes(buildName)) {
+        throwError(`No build called '${buildName}' found inside build_configurations.json.`, "build_configurations.json");
+    }
+    const buildConfiguration = (buildName === "full" ? FULL_BUILD : BUILD_CONFIGURATIONS[buildName]);
+    const buildData = createBuildData(buildName, buildConfiguration);
+    return buildData;
 }
 
 export function createBuildData(name: string, configuration: any): BuildData {
