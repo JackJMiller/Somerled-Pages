@@ -60,7 +60,7 @@ export function renderReferenceListings(buildData: BuildData): string {
     let index = 1;
     for (let citation of buildData.citations) {
         if (inDocumentKeys.includes(citation) && quickRefKeys.includes(citation)) {
-            throwError(`References with identifier '${citation}' found both in document and in data/quick_references.json. Remove one so that the compiler may pick.`, buildData, false);
+            throwError(`References with identifier '${citation}' found both in document and in data/quick_references.json. Remove one so that the compiler may pick.`, buildData.location, buildData, false);
         }
         if (inDocumentKeys.includes(citation)) {
             const refListing = buildData.inDocumentRefListings[citation];
@@ -73,7 +73,7 @@ export function renderReferenceListings(buildData: BuildData): string {
             output = output + "\n" + renderedRefListing;
         }
         else {
-            throwError(`Cannot find reference listing with '${citation}' identifier.`, buildData, false);
+            throwError(`Cannot find reference listing with '${citation}' identifier.`, buildData.location, buildData, false);
         }
         index++;
     }
@@ -145,11 +145,11 @@ export function renderBody(source: InlineElement[], metadata: Metadata, buildDat
         rendered = rendered + renderElement(element, metadata, buildData) + "\n";
     });
     // const references = rendered.
-    rendered = substituteLinksAndReferences(rendered, buildData);
+    rendered = substituteLinksAndCitations(rendered, buildData);
     return rendered;
 }
 
-export function substituteLinksAndReferences(text: string, buildData: BuildData): string {
+export function substituteLinksAndCitations(text: string, buildData: BuildData): string {
     let q = "text";
     let v = "";
     const links: string[] = [];
@@ -303,7 +303,7 @@ export function renderRefListing(element: RefListing, buildData: BuildData): str
         return HTMLRendering.renderValuationRollRefListing(element as ValuationRollRefListing);
     }
     else {
-        throwError(`Found reference listing with invalid source-type attribute of '${element["source-type"]}'.`, buildData);
+        throwError(`Found reference listing with invalid source-type attribute of '${element["source-type"]}'.`, buildData.location, buildData);
         return "";
     }
 }
@@ -371,7 +371,7 @@ export function renderBoxValue(key: string, value: string, metadata: Metadata, b
     if (value.constructor.name === "Array") {
         let output = "<div>"
         for (let v of value) {
-            v = substituteLinksAndReferences(v, buildData)
+            v = substituteLinksAndCitations(v, buildData)
             output = output + `<p>${v}</p>`;
         }
         output = output + "</div>";
@@ -379,7 +379,7 @@ export function renderBoxValue(key: string, value: string, metadata: Metadata, b
     }
     else {
         let output = "<div>";
-        value = substituteLinksAndReferences(value, buildData)
+        value = substituteLinksAndCitations(value, buildData)
         output = output + `<p>${value}</p>`;
         output = output + "</div>";
         return output;

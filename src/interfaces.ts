@@ -39,6 +39,8 @@ export interface HeaderElement {
 }
 
 export interface BuildData {
+    name: string,
+    configuration: any,
     filename: string,
     filetype: string,
     location: string,

@@ -27,7 +27,7 @@ export function createInlineElement(q: any[], v: string, metadata: Metadata, bui
         return obj;
     }
     else {
-        throwError("Somerled Pages contains a bug.", buildData);
+        throwError("Somerled Pages contains a bug.", buildData.location, buildData);
         return { "type": "element", "tag": "p", "inner": "" };
     }
 }
