@@ -7,14 +7,16 @@
 import { build, initialiseBuildData } from "./src/functions";
 import { colourString, createBuildData, createEmptyInfobox, createInitialMetadata, shouldBeBuilt, throwError, updateBuildData } from "./src/functions";
 
-const args = process.argv.slice(2);
+const PROJECT_DIRECTORY = process.argv[2];
+
+const args = process.argv.slice(3);
 
 const start = Date.now();
 
 if (args[0] === "build") {
 
     const buildName = (args.length === 1 ? "full" : args[1]);
-    const buildData = initialiseBuildData(buildName);
+    const buildData = initialiseBuildData(PROJECT_DIRECTORY, buildName);
 
     build(buildData);
 

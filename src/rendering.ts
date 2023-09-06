@@ -9,8 +9,6 @@ import { recordRefListing, throwError } from "./functions";
 import { BirthCertificateRefListing, BookRefListing, CensusRefListing, DeathCertificateRefListing, JournalRefListing, LazyRefListing, MarriageCertificateRefListing, NewspaperRefListing, QuickRefListing, RefListing, TestimonialRefListing, ValuationRollRefListing, WebsiteRefListing } from "./ref_listing_interfaces";
 import HTMLRendering from "./html_rendering";
 
-const QUICK_REFERENCES = require("../copied/quick_references.json");
-
 export function renderArticle(source: InlineElement[], metadata: Metadata, buildData: BuildData): string {
     const headerHTML = renderHeader(source, metadata);
     const renderedBody = renderBody(source, metadata, buildData);
@@ -56,7 +54,7 @@ export function renderReferenceListings(buildData: BuildData): string {
     }
     let output = "";
     const inDocumentKeys = Object.keys(buildData.inDocumentRefListings);
-    const quickRefKeys = Object.keys(QUICK_REFERENCES);
+    const quickRefKeys = Object.keys(buildData.quickReferences);
     let index = 1;
     for (let citation of buildData.citations) {
         if (inDocumentKeys.includes(citation) && quickRefKeys.includes(citation)) {
@@ -198,7 +196,7 @@ export function substituteLinksAndCitations(text: string, buildData: BuildData):
     buildData.citations = citations;
 
     for (let link of links) {
-        text = text.replaceAll(`[[${link}]]`, renderLink(link));
+        text = text.replaceAll(`[[${link}]]`, renderLink(link, buildData));
     }
 
     let index = 1;
@@ -214,8 +212,16 @@ export function renderCitation(id: string) {
     return HTMLRendering.renderCitation(id);
 }
 
-export function renderLink(id: string) {
-    return HTMLRendering.renderLink(id);
+export function renderLink(content: string, buildData: BuildData) {
+    const contentValues = content.split("|");
+    const placeholder = contentValues[0];
+    const target = contentValues[1];
+    if (buildData.configuration.members.includes(target)) {
+        return HTMLRendering.renderLink(placeholder, target);
+    }
+    else {
+        return placeholder;
+    }
 }
 
 export function renderElement(element: any, metadata: Metadata, buildData: BuildData): string {
@@ -263,7 +269,7 @@ export function renderGallery(element: any){
 }
 
 function renderQuickRefListing(key: string, index: number, buildData: BuildData): string {
-    const refElement = JSON.parse(JSON.stringify(QUICK_REFERENCES[key]));
+    const refElement = JSON.parse(JSON.stringify(buildData.quickReferences[key]));
     refElement.id = index.toString();
     return renderRefListing(refElement as RefListing, buildData);
 }

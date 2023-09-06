@@ -18,11 +18,7 @@ elif [ "$1" == "build" ]; then
     [ ! -d build/wiki ] && mkdir build/wiki
     [ ! -d build/sheet ] && mkdir build/sheet
 
-    cp data/build_configurations.json data/quick_references.json $PROGRAM_PATH/copied/
-
-    node $PROGRAM_PATH/main.js $@ || let "EXITCODE = 1"
-
-    rm $PROGRAM_PATH/copied/*
+    node $PROGRAM_PATH/main.js $( pwd ) $@ || let "EXITCODE = 1"
 
     if [ "$EXITCODE" == "0" ]; then
         [ -d wiki/ ] && rm -r wiki/

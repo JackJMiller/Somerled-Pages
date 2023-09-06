@@ -9,7 +9,7 @@ import { BuildData, InfoBox, Metadata } from "./interfaces";
 import { parseRawArticle, readArticle, saveArticle } from "./file_io";
 import { renderArticle } from "./rendering";
 import { RefListing } from "./ref_listing_interfaces";
-import { BUILD_CONFIGURATIONS, BUILD_NAMES, FULL_BUILD } from "./constants";
+import { FULL_BUILD } from "./constants";
 
 export function build(buildData: BuildData) {
     for (let filetype of ["wiki", "sheet"]) {
@@ -76,23 +76,28 @@ export function recordRefListing(element: RefListing, buildData: BuildData) {
     buildData.inDocumentRefListings[element["id"]] = element;
 }
 
-export function initialiseBuildData(buildName: string) {
-    if (buildName !== "full" && !BUILD_NAMES.includes(buildName)) {
-        throwError(`No build called '${buildName}' found inside build_configurations.json.`, "build_configurations.json");
+export function initialiseBuildData(projectDirectory: string, buildName: string) {
+    const quickReferences = require(`${projectDirectory}/data/quick_references.json`);
+    if (!fs.existsSync(`data/builds/${buildName}.json`)) {
+        throwError(`There is no build called '${buildName}'.`, "build_configurations.json");
     }
-    const buildConfiguration = (buildName === "full" ? FULL_BUILD : BUILD_CONFIGURATIONS[buildName]);
-    const buildData = createBuildData(buildName, buildConfiguration);
+    const buildConfiguration = (buildName === "full" ? FULL_BUILD : require(`${projectDirectory}/data/builds/${buildName}.json`));
+    const projectPackage = require(`${projectDirectory}/somerled-package.json`);
+    const buildData = createBuildData(projectDirectory, projectPackage, quickReferences, buildName, buildConfiguration);
     return buildData;
 }
 
-export function createBuildData(name: string, configuration: any): BuildData {
+export function createBuildData(projectDirectory: string, projectPackage: string, quickReferences: any, name: string, configuration: any): BuildData {
     return {
-        name: name,
-        configuration: configuration,
+        name,
+        configuration,
         filetype: "",
         filename: "",
         location: "",
         citations: [],
+        projectDirectory,
+        projectPackage,
+        quickReferences,
         inDocumentRefListings: {},
         errors: 0,
         uniqueErrorFiles: [],
