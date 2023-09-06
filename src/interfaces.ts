@@ -49,8 +49,13 @@ export interface BuildData {
     projectPackage: any,
     quickReferences: any,
     inDocumentRefListings: any,
+    treeNodes: any,
     errors: number,
     uniqueErrorFiles: string[],
     warnings: number,
     uniqueWarningFiles: string[]
+}
+
+export interface TreeNode {
+    connections: any
 }

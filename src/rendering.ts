@@ -232,6 +232,7 @@ export function renderElement(element: any, metadata: Metadata, buildData: Build
         return renderImage(element);
     }
     else if (element.type == "infobox") {
+        metadata["infobox"] = element;
         metadata["infobox-rendered"] = renderInfobox(element, metadata, buildData);
         return "";
     }

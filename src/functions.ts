@@ -5,11 +5,11 @@
 */
 
 import fs from "fs";
-import { BuildData, InfoBox, Metadata } from "./interfaces";
+import { BuildData, InfoBox, Metadata, TreeNode } from "./interfaces";
 import { parseRawArticle, readArticle, saveArticle } from "./file_io";
 import { renderArticle } from "./rendering";
 import { RefListing } from "./ref_listing_interfaces";
-import { FULL_BUILD } from "./constants";
+import { FULL_BUILD, TREE_CONNECTORS } from "./constants";
 
 export function build(buildData: BuildData) {
     for (let filetype of ["wiki", "sheet"]) {
@@ -21,6 +21,7 @@ export function build(buildData: BuildData) {
             }
         }
     }
+    fs.writeFileSync("tree_nodes.json", JSON.stringify(buildData.treeNodes, null, 4) + "\n");
 }
 
 function renderAndSaveArticle(filetype: string, filename: string, buildData: BuildData) {
@@ -28,6 +29,7 @@ function renderAndSaveArticle(filetype: string, filename: string, buildData: Bui
     const metadata = createInitialMetadata(filetype, filename);
     const source = parseRawArticle(c, metadata, buildData);
     const rendered = renderArticle(source, metadata, buildData);
+    buildData.treeNodes[filename] = createTreeNode(metadata.infobox.entries);
     saveArticle(filetype, filename, rendered);
 }
 
@@ -99,6 +101,7 @@ export function createBuildData(projectDirectory: string, projectPackage: string
         projectPackage,
         quickReferences,
         inDocumentRefListings: {},
+        treeNodes: {},
         errors: 0,
         uniqueErrorFiles: [],
         warnings: 0,
@@ -118,4 +121,27 @@ export function shouldBeBuilt(filetype: string, filename: string, buildData: Bui
     if (buildData.name === "full") return true;
     else if (buildData.configuration.members.includes(filename)) return true;
     else return false;
+}
+
+export function createTreeNode(nodeConnections: any): TreeNode {
+    // TODO: make this nicer
+    const connections: any = {};
+    const keys = Object.keys(nodeConnections);
+    for (let key of keys) {
+        if (TREE_CONNECTORS.includes(key) && isLink(nodeConnections[key])) {
+            connections[key] = getLinkTarget(nodeConnections[key]);
+        }
+    }
+    return { connections };
+}
+
+export function isLink(string: string): boolean {
+    return (string.length >= 4 && string.slice(0,2) === "[[" && string.slice(-2) === "]]");
+}
+
+export function getLinkTarget(string: string) {
+    // TODO: generalise all this link rubbish
+    if (isLink(string)) string = string.slice(2, -2);
+    const contentValues = string.split("|");
+    return contentValues[1];
 }
