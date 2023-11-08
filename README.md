@@ -2,7 +2,7 @@
 
 ## About
 
-Somerled Pages is a family encyclopedia framework that allows genealogists to collect and present their research. The encyclopedia produced is constituted of HTML articles, making it easy to navigate your family tree. Articles relating to entities other than people (e.g. places and lineages) can also be created. The encyclopedia created is in the style of Wikipedia with PDF output to be made available in the future to allow users to print their research as a book.
+Somerled Pages is a family encyclopedia framework that allows genealogists to easily collect and present their research. The encyclopedia is created through the use of markup files which transpile to HTML articles, making it easy to navigate your family tree and share with others. Articles relating to entities other than people (e.g. places and lineages) can also be created. The encyclopedia created is in the style of Wikipedia with PDF output to be made available in the future to allow users to compile their research as a book.
 
 A tutorial will be made available after the first stable release followed by documentation.
 
