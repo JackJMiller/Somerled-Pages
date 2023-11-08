@@ -5,11 +5,12 @@
 */
 
 import fs from "fs";
-import { BuildData, InfoBox, Metadata, TreeNode } from "./interfaces";
-import { parseRawArticle, readArticle, saveArticle } from "./file_io";
-import { renderArticle } from "./rendering";
-import { RefListing } from "./ref_listing_interfaces";
 import { FULL_BUILD, TREE_CONNECTORS } from "./constants";
+import { parseRawArticle, readArticle, saveArticle } from "./file_io";
+import { BuildData, InfoBox, Metadata, TreeNode } from "./interfaces";
+import { RefListing } from "./ref_listing_interfaces";
+import { renderArticle } from "./rendering";
+import { renderTreeHTML } from "./tree_rendering";
 
 export function build(buildData: BuildData) {
     for (let filetype of ["wiki", "sheet"]) {
@@ -21,7 +22,8 @@ export function build(buildData: BuildData) {
             }
         }
     }
-    fs.writeFileSync("tree_nodes.json", JSON.stringify(buildData.treeNodes, null, 4) + "\n");
+    fs.writeFileSync("tree_nodes.json", JSON.stringify(buildData.tree, null, 4) + "\n");
+    renderTreeHTML(buildData.tree);
 }
 
 function renderAndSaveArticle(filetype: string, filename: string, buildData: BuildData) {
@@ -29,7 +31,7 @@ function renderAndSaveArticle(filetype: string, filename: string, buildData: Bui
     const metadata = createInitialMetadata(filetype, filename);
     const source = parseRawArticle(c, metadata, buildData);
     const rendered = renderArticle(source, metadata, buildData);
-    buildData.treeNodes[filename] = createTreeNode(metadata.infobox.entries);
+    buildData.tree.nodes[filename] = createTreeNode(metadata.infobox.entries);
     saveArticle(filetype, filename, rendered);
 }
 
@@ -80,10 +82,13 @@ export function recordRefListing(element: RefListing, buildData: BuildData) {
 
 export function initialiseBuildData(projectDirectory: string, buildName: string) {
     const quickReferences = require(`${projectDirectory}/data/quick_references.json`);
-    if (!fs.existsSync(`data/builds/${buildName}.json`)) {
+    if (buildName !== "full" && !fs.existsSync(`data/builds/${buildName}.json`)) {
         throwError(`There is no build called '${buildName}'.`, "build_configurations.json");
     }
     const buildConfiguration = (buildName === "full" ? FULL_BUILD : require(`${projectDirectory}/data/builds/${buildName}.json`));
+    if (buildName === "full") {
+        buildConfiguration.members = fs.readdirSync("data/wiki_source/");
+    }
     const projectPackage = require(`${projectDirectory}/somerled-package.json`);
     const buildData = createBuildData(projectDirectory, projectPackage, quickReferences, buildName, buildConfiguration);
     return buildData;
@@ -101,7 +106,7 @@ export function createBuildData(projectDirectory: string, projectPackage: string
         projectPackage,
         quickReferences,
         inDocumentRefListings: {},
-        treeNodes: {},
+        tree: { ROOT_NODE: configuration.root, nodes: {} }, // TEMP: remove
         errors: 0,
         uniqueErrorFiles: [],
         warnings: 0,

@@ -8,7 +8,7 @@ PROGRAM_PATH=/home/jack/Development/Somerled-Pages
 
 let "EXITCODE = 0"
 
-if [[ "$1" == "init" && "$1" == "init" ]]; then
+if [ "$1" == "init" ]; then
 
     mkdir $1
 

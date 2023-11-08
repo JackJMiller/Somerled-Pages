@@ -12,16 +12,16 @@ All code is freely licensed under the GNU General Public License version 3, as d
 
 ## Development
 
-| Stage                     | Status      | Date        |
-|---------------------------|-------------|-------------|
-| TypeScript port           | Done        | 03 Sep 2023 |
-| Numeric references        | Done        | 03 Sep 2023 |
-| Generic links             | Done        | 05 Sep 2023 |
-| Relationship assignment   |             |             |
-| Privacy guard             |             |             |
-| Family tree generator     |             |             |
-| Automatic link emboldment |             |             |
-| Article search            |             |             |
-| Complete homepage         |             |             |
-| PDF conversion            |             |             |
+| Stage                     | Status      |
+|---------------------------|-------------|
+| TypeScript port           | Done        |
+| Numeric references        | Done        |
+| Generic links             | Done        |
+| Relationship assignment   |             |
+| Privacy guard             |             |
+| Family tree generator     |             |
+| Automatic link emboldment |             |
+| Article search            |             |
+| Complete homepage         |             |
+| PDF conversion            |             |
 
