@@ -6,6 +6,8 @@ Somerled Pages is a family encyclopedia framework that allows genealogists to co
 
 A tutorial will be made available after the first stable release followed by documentation.
 
+<img src="https://jackjmiller.ams3.digitaloceanspaces.com/res/somerled_pages_articles.png"/>
+
 ## Licence
 
 All code is freely licensed under the GNU General Public License version 3, as defined in licence.txt.
