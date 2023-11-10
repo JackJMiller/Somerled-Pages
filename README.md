@@ -24,3 +24,8 @@ Somerled Pages is intended to be a complete system for collecting and presenting
 ## Licence
 
 All code is freely licensed under the GNU General Public License version 3, as defined in licence.txt.
+
+
+## Development
+
+Somerled Pages is developed by [Jack Miller](https://www.jackjmiller.net).

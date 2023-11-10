@@ -23,7 +23,25 @@ export function build(buildData: BuildData) {
         }
     }
     fs.writeFileSync("tree_nodes.json", JSON.stringify(buildData.tree, null, 4) + "\n");
-    renderTreeHTML(buildData.tree);
+    renderAndSaveHomepage(buildData);
+}
+
+function renderAndSaveHomepage(buildData: BuildData) {
+    const treeRendered = renderTreeHTML(buildData.tree);
+    let rendered = `
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width" />
+        <title>Somerled Pages</title>
+    </head>
+    <body>
+        ${treeRendered}
+    </body>
+</html>
+`
+    fs.writeFileSync("index.html", rendered);
 }
 
 function renderAndSaveArticle(filetype: string, filename: string, buildData: BuildData) {

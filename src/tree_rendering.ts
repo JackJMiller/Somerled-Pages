@@ -23,7 +23,19 @@ export function renderTreeHTML(tree: Tree): string {
     const nodes = getNodeRelativePositions(tree, tree.ROOT_NODE, "");
     console.log("DONE");
     console.log(nodes);
-    return "";
+    // TODO: modularise this
+    let layers = 0;
+    for (let node of nodes) {
+        if (node.y > layers) layers = node.y;
+    }
+    const treeWidth = 1200;
+    const treeHeight = 800;
+    let output = `<div style="display: block; width: ${treeWidth}px; height: ${treeHeight}px;">`;
+    for (let node of nodes) {
+        output = output + renderFamilyTreeNode(node, layers, treeWidth, treeHeight);
+    }
+    output = output + "</div>"
+    return output;
 }
 
 export function getNodeRelativePositions(tree: Tree, root: string, parentalDirection: string): NodePlacement[] {
@@ -52,4 +64,14 @@ export function getNodeRelativePositions(tree: Tree, root: string, parentalDirec
     console.log("returning");
     console.log(nodes);
     return nodes;
-};
+}
+
+function renderFamilyTreeNode(node: NodePlacement, layers: number, treeWidth: number, treeHeight: number): string {
+    const layer = layers - node.y;
+    return `
+        <div style="font-size: ${2 * Math.pow(0.5, node.y)}rem; position: absolute; top: ${(Math.pow(0.5, node.y)) * treeHeight}px; left: ${treeWidth * (node.x / 2 + 1)}px; display: block; background: yellow; transform: translateX(-50%);">
+            <h1>${node.id}</h1>
+            <h2>D.O.B - D.O.D</h2>
+        </div>
+`;
+}
