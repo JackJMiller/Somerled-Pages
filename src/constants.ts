@@ -5,6 +5,7 @@
 */
 
 export const FULL_BUILD = {
+    "root": "Jack_Miller", // TEMP: correct
     "members": []
 }
 

@@ -9,8 +9,7 @@ import { Tree, TreeNode } from "./interfaces";
 interface NodePlacement {
     id: string,
     x: number,
-    y: number,
-    relativeX: number
+    y: number
 }
 
 interface NodePlacements {
@@ -21,24 +20,34 @@ export function renderTreeHTML(tree: Tree): string {
     // console.log(tree);
     let currentNode = tree.nodes[tree.ROOT_NODE];
     console.log(currentNode);
-    const nodes = getNodeRelativePositions(tree, tree.ROOT_NODE, 0, 0);
+    const nodes = getNodeRelativePositions(tree, tree.ROOT_NODE, "");
     console.log("DONE");
     console.log(nodes);
     return "";
 }
 
-export function getNodeRelativePositions(tree: Tree, root: string, relativeX: number, y: number): NodePlacement[] {
+export function getNodeRelativePositions(tree: Tree, root: string, parentalDirection: string): NodePlacement[] {
     console.log("Soooo");
     console.log(root);
     let nodes = [];
-    nodes.push({ id: root, x: 0, y: 0, relativeX: relativeX });
+    let x = 0;
+    let d = 1
+    for (let char of parentalDirection) {
+        console.log(char);
+        d *= 0.5;
+        x = (char === "M" ? x - d : x + d);
+    }
+    nodes.push({ id: root, x, y: parentalDirection.length });
     if (!Object.keys(tree.nodes).includes(root)) {
         return nodes;
     }
     const currentNode = tree.nodes[root];
     console.log(currentNode);
     if (currentNode.connections["Mother"]) {
-        nodes = nodes.concat(getNodeRelativePositions(tree, currentNode.connections["Mother"], -1, y + 1))
+        nodes = nodes.concat(getNodeRelativePositions(tree, currentNode.connections["Mother"], parentalDirection + "M"))
+    }
+    if (currentNode.connections["Father"]) {
+        nodes = nodes.concat(getNodeRelativePositions(tree, currentNode.connections["Father"], parentalDirection + "F"))
     }
     console.log("returning");
     console.log(nodes);

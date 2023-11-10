@@ -24,20 +24,3 @@ Somerled Pages is intended to be a complete system for collecting and presenting
 ## Licence
 
 All code is freely licensed under the GNU General Public License version 3, as defined in licence.txt.
-
-
-## Development
-
-| Stage                     | Status      |
-|---------------------------|-------------|
-| TypeScript port           | Done        |
-| Numeric references        | Done        |
-| Generic links             | Done        |
-| Relationship assignment   |             |
-| Privacy guard             |             |
-| Family tree generator     |             |
-| Automatic link emboldment |             |
-| Article search            |             |
-| Complete homepage         |             |
-| PDF conversion            |             |
-
