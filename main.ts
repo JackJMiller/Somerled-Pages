@@ -5,7 +5,7 @@
 */
 
 import { build, initialiseBuildData } from "./src/functions";
-import { colourString, createBuildData, createEmptyInfobox, createInitialMetadata, shouldBeBuilt, throwError, updateBuildData } from "./src/functions";
+import { colourString, createBuildData, createInitialMetadata, shouldBeBuilt, throwError, updateBuildData } from "./src/functions";
 
 const PROJECT_DIRECTORY = process.argv[2];
 
@@ -22,6 +22,7 @@ if (args[0] === "build") {
 
     const end = Date.now();
     const elapsed = (end - start) / 1000;
+    console.log(buildData.pageData);
     if (buildData.errors === 0) {
         console.log(`${colourString("BUILD SUCCESSFUL:", 32, true)} Completed in ${elapsed} seconds${buildData.warnings === 0 ? "" : ` (${buildData.warnings} warnings)`}`);
         process.exit(0);

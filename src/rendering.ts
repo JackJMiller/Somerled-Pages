@@ -23,6 +23,7 @@ export function renderArticle(source: InlineElement[], metadata: Metadata, build
         <meta name="viewport" content="width=device-width"/>
         <title>${metadata["name"]} - A Somerled Pages family encyclopedia</title>
         <link rel="stylesheet" href="../res/main.css" type="text/css" charset="utf-8"/>
+        <link rel="stylesheet" href="../res/article.css" type="text/css" charset="utf-8"/>
         <link rel="icon" href="../res/favicon.png" type="image/png"/>
     </head>
     <body>
@@ -118,7 +119,7 @@ export function renderHeader(source: InlineElement[], metadata: Metadata): strin
     <div class="container">
         <h1 class="page-title">${metadata["info"].name}</h1>
         ${subtitle}
-        <div class="somerled-pages-logo">A <span class="logo-somerled">Somerled</span> <span class="logo-pages">Pages</span> family encyclopedia</div>
+        <div class="somerled-pages-logo">A <span class="logo-somerled small-text">Somerled</span> <span class="logo-pages small-text">Pages</span> family encyclopedia</div>
     </div>
 </div>`;
 }

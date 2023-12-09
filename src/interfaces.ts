@@ -53,7 +53,8 @@ export interface BuildData {
     errors: number,
     uniqueErrorFiles: string[],
     warnings: number,
-    uniqueWarningFiles: string[]
+    uniqueWarningFiles: string[],
+    pageData: any
 }
 
 export interface TreeNode {

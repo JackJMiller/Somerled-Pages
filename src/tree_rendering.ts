@@ -17,12 +17,8 @@ interface NodePlacements {
 }
 
 export function renderTreeHTML(tree: Tree): string {
-    // console.log(tree);
     let currentNode = tree.nodes[tree.ROOT_NODE];
-    console.log(currentNode);
     const nodes = getNodeRelativePositions(tree, tree.ROOT_NODE, "");
-    console.log("DONE");
-    console.log(nodes);
     // TODO: modularise this
     let layers = 0;
     for (let node of nodes) {
@@ -39,13 +35,10 @@ export function renderTreeHTML(tree: Tree): string {
 }
 
 export function getNodeRelativePositions(tree: Tree, root: string, parentalDirection: string): NodePlacement[] {
-    console.log("Soooo");
-    console.log(root);
     let nodes = [];
     let x = 0;
     let d = 1
     for (let char of parentalDirection) {
-        console.log(char);
         d *= 0.5;
         x = (char === "M" ? x - d : x + d);
     }
@@ -54,15 +47,12 @@ export function getNodeRelativePositions(tree: Tree, root: string, parentalDirec
         return nodes;
     }
     const currentNode = tree.nodes[root];
-    console.log(currentNode);
     if (currentNode.connections["Mother"]) {
         nodes = nodes.concat(getNodeRelativePositions(tree, currentNode.connections["Mother"], parentalDirection + "M"))
     }
     if (currentNode.connections["Father"]) {
         nodes = nodes.concat(getNodeRelativePositions(tree, currentNode.connections["Father"], parentalDirection + "F"))
     }
-    console.log("returning");
-    console.log(nodes);
     return nodes;
 }
 

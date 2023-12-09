@@ -41,7 +41,7 @@ function renderAndSaveHomepage(buildData: BuildData) {
     </body>
 </html>
 `
-    fs.writeFileSync("index.html", rendered);
+    fs.writeFileSync("tree.html", rendered);
 }
 
 function renderAndSaveArticle(filetype: string, filename: string, buildData: BuildData) {
@@ -49,11 +49,20 @@ function renderAndSaveArticle(filetype: string, filename: string, buildData: Bui
     const metadata = createInitialMetadata(filetype, filename);
     const source = parseRawArticle(c, metadata, buildData);
     const rendered = renderArticle(source, metadata, buildData);
+    buildData.pageData[`${filetype}/${filename}`] = createPageData(filetype, filename, metadata);
     buildData.tree.nodes[filename] = createTreeNode(metadata.infobox.entries);
     saveArticle(filetype, filename, rendered);
 }
 
-export function createEmptyInfobox(): InfoBox {
+function createPageData(filetype: string, filename: string, metadata: Metadata): any {
+    return {
+        name: metadata.name,
+        born: metadata.born,
+        died: metadata.died
+    };
+}
+
+function createEmptyInfobox(): InfoBox {
     return {
         "type": "infobox",
         "image": "silhouette.png",
@@ -128,7 +137,8 @@ export function createBuildData(projectDirectory: string, projectPackage: string
         errors: 0,
         uniqueErrorFiles: [],
         warnings: 0,
-        uniqueWarningFiles: []
+        uniqueWarningFiles: [],
+        pageData: {}
     };
 }
 
