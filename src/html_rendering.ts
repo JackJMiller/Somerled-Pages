@@ -15,7 +15,7 @@ function renderCensusRefListing(element: CensusRefListing): string {
     if (element["link"]) {
         text = `<a target="_blank" href="../certificates/${element["link"]}">${text}</a>`;
     }
-    text = "The " + text + " of Scotland";
+    text = "The " + text;
     return `<div class="reference">${element.id}. ${text}.</div>`;
 }
 

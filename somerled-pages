@@ -8,9 +8,14 @@ PROGRAM_PATH=/home/jack/Development/Somerled-Pages
 
 let "EXITCODE = 0"
 
-if [ "$1" == "init" ]; then
+if [[ $# -eq 2 && "$1" == "init" ]]; then
 
-    mkdir $1
+    if [ ! -z $2 ]; then
+        mkdir $2
+        cp -r $PROGRAM_PATH/res/initial-project/* $2
+    else
+        echo A project titled $2 already exists
+    fi
 
 elif [ "$1" == "build" ]; then
 
