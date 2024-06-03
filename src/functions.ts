@@ -6,8 +6,8 @@
 
 import fs from "fs";
 import { FULL_BUILD, TREE_CONNECTORS } from "./constants";
-import { parseRawArticle, readArticle, saveArticle } from "./file_io";
-import { BuildData, InfoBox, Metadata, TreeNode } from "./interfaces";
+import { packageBuild, parseRawArticle, readArticle, saveArticle } from "./file_io";
+import { BuildData, InfoBox, InfoElement, Metadata, PageData, ProjectPackage, TreeNode } from "./interfaces";
 import { RefListing } from "./ref_listing_interfaces";
 import { renderArticle } from "./rendering";
 import { renderTreeHTML } from "./tree_rendering";
@@ -24,6 +24,7 @@ export function build(buildData: BuildData) {
     }
     fs.writeFileSync("tree_nodes.json", JSON.stringify(buildData.tree, null, 4) + "\n");
     renderAndSaveHomepage(buildData);
+    packageBuild(buildData);
 }
 
 function renderAndSaveHomepage(buildData: BuildData) {
@@ -54,7 +55,7 @@ function renderAndSaveArticle(filetype: string, filename: string, buildData: Bui
     saveArticle(filetype, filename, rendered);
 }
 
-function createPageData(filetype: string, filename: string, metadata: Metadata): any {
+function createPageData(filetype: string, filename: string, metadata: Metadata): PageData {
     return {
         name: metadata.name,
         born: metadata.born,
@@ -72,11 +73,22 @@ function createEmptyInfobox(): InfoBox {
     }
 }
 
+export function createInfoObject(): InfoElement {
+    return {
+        "name": "",
+        "born": "",
+        "died": "",
+        "subtitle": "",
+        "article-type": "",
+        "images": []
+    };
+}
+
 export function createInitialMetadata(name: string, type: string): Metadata {
     return {
         "infobox": createEmptyInfobox(),
         "infobox-rendered": "",
-        "info": {},
+        "info": createInfoObject(),
         "type": type,
         "name": name,
         "article-type": "",
@@ -121,7 +133,7 @@ export function initialiseBuildData(projectDirectory: string, buildName: string)
     return buildData;
 }
 
-export function createBuildData(projectDirectory: string, projectPackage: string, quickReferences: any, name: string, configuration: any): BuildData {
+export function createBuildData(projectDirectory: string, projectPackage: ProjectPackage, quickReferences: any, name: string, configuration: any): BuildData {
     return {
         name,
         configuration,
@@ -138,7 +150,9 @@ export function createBuildData(projectDirectory: string, projectPackage: string
         uniqueErrorFiles: [],
         warnings: 0,
         uniqueWarningFiles: [],
-        pageData: {}
+        pageData: {},
+        imagesRendered: [],
+        sourcesCited: []
     };
 }
 

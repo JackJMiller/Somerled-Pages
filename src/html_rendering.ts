@@ -5,53 +5,60 @@
 */
 
 import { RefListing, TestimonialRefListing, CensusRefListing, DeathCertificateRefListing, BirthCertificateRefListing, MarriageCertificateRefListing, ValuationRollRefListing, LazyRefListing, BookRefListing, JournalRefListing, NewspaperRefListing, WebsiteRefListing } from "./ref_listing_interfaces";
+import { BuildData } from "./interfaces";
 
 function renderTestimonialRefListing(element: TestimonialRefListing): string {
     return `<div class="reference">${element.id}. Told by ${element["name"]} to ${element["witness"]}. Testified ${element["date"]}.</div>`;
 }
 
-function renderCensusRefListing(element: CensusRefListing): string {
+function renderCensusRefListing(element: CensusRefListing, buildData: BuildData): string {
     let text = `${element["year"]} census`;
     if (element["link"]) {
-        text = `<a target="_blank" href="../certificates/${element["link"]}">${text}</a>`;
+        buildData.sourcesCited.push(element.link);
+        text = `<a target="_blank" href="../sources/${element["link"]}">${text}</a>`;
     }
     text = "The " + text;
     return `<div class="reference">${element.id}. ${text}.</div>`;
 }
 
-function renderDeathCertificateRefListing(element: DeathCertificateRefListing): string {
+function renderDeathCertificateRefListing(element: DeathCertificateRefListing, buildData: BuildData): string {
     let opening = element["is-copy"] ? "Copy of the death certificate" : "Death certificate";
     const ending = element["is-copy"] ? "Issued" : "Registered";
     const date = element["date"] || "on an unknown date";
     if (element["link"]) {
-        opening = `<a target="_blank" href="../certificates/${element["link"]}">${opening}</a>`;
+        buildData.sourcesCited.push(element.link);
+        opening = `<a target="_blank" href="../sources/${element["link"]}">${opening}</a>`;
     }
     return `<div class="reference">${element.id}. ${opening} of ${element["name"]}. ${ending} ${date}, ${element["place"]}.</div>`;
 }
 
-function renderBirthCertificateRefListing(element: BirthCertificateRefListing): string {
+function renderBirthCertificateRefListing(element: BirthCertificateRefListing, buildData: BuildData): string {
     let opening = element["is-copy"] ? "Copy of the birth certificate" : "Birth certificate";
     const ending = element["is-copy"] ? "Issued" : "Registered";
     const date = element["date"] || "on an unknown date";
     if (element["link"]) {
-        opening = `<a target="_blank" href="../certificates/${element["link"]}">${opening}</a>`;
+        buildData.sourcesCited.push(element.link);
+        opening = `<a target="_blank" href="../sources/${element["link"]}">${opening}</a>`;
     }
     return `<div class="reference">${element.id}. ${opening} of ${element["name"]}. ${ending} ${date}, ${element["place"]}.</div>`;
 }
 
-function renderMarriageCertificateRefListing(element: MarriageCertificateRefListing): string {
+function renderMarriageCertificateRefListing(element: MarriageCertificateRefListing, buildData: BuildData): string {
     let opening = element["is-copy"] ? "Copy of the marriage certificate" : "Marriage certificate";
     const ending = element["is-copy"] ? "Issued" : "Registered";
     const date = element["date"] || "on an unknown date";
     if (element["link"]) {
-        opening = `<a target="_blank" href="../certificates/${element["link"]}">${opening}</a>`;
+        buildData.sourcesCited.push(element.link);
+        opening = `<a target="_blank" href="../sources/${element["link"]}">${opening}</a>`;
     }
     return `<div class="reference">${element.id}. ${opening} of ${element["party-one"]} and ${element["party-two"]}. ${ending} ${date}, ${element["place"]}.</div>`;
 }
 
-function renderValuationRollRefListing(element: ValuationRollRefListing): string {
+function renderValuationRollRefListing(element: ValuationRollRefListing, buildData: BuildData): string {
+    // TODO: change `source-link` to `link`
     if (element["source-link"]) {
-        return `<div class="reference">${element.id}. <a href="../certificates/${element["source-link"]}">Valuation roll</a> at ${element["source-location"]}. Dated ${element["source-date"]}.</div>`;
+        buildData.sourcesCited.push(element["source-link"]);
+        return `<div class="reference">${element.id}. <a href="../sources/${element["source-link"]}">Valuation roll</a> at ${element["source-location"]}. Dated ${element["source-date"]}.</div>`;
     }
     else {
         return `<div class="reference">${element.id}. Valuation roll at ${element["source-location"]}. Dated ${element["source-date"]}.</div>`;

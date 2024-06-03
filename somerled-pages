@@ -19,17 +19,15 @@ if [[ $# -eq 2 && "$1" == "init" ]]; then
 
 elif [ "$1" == "build" ]; then
 
-    [ ! -d build/ ] && mkdir build/
-    [ ! -d build/wiki ] && mkdir build/wiki
-    [ ! -d build/sheet ] && mkdir build/sheet
-
+    rm build/media/* build/sources/* build/sheet/* build/wiki/*
+    rm -r wiki/*
     node $PROGRAM_PATH/main.js $( pwd ) $@ || let "EXITCODE = 1"
 
     if [ "$EXITCODE" == "0" ]; then
         [ -d wiki/ ] && rm -r wiki/
         [ -d sheet/ ] && rm -r sheet/
-        mv build/wiki/ wiki/
-        mv build/sheet/ sheet/
+        cp -r build/wiki/ wiki/
+        cp -r build/sheet/ sheet/
     fi
 
 elif [[ $# -eq 2 && "$1" == "new-article" ]]; then

@@ -113,13 +113,24 @@ sup {
     grid-template-columns: 1fr var(--infobox-width);
 }
 
-.somerled-pages-logo {
+.small-text {
     font-size: 15px;
     line-height: 20px;
 }
 
-.header .somerled-pages-logo {
-    margin-top: 12px;
+.massive-text {
+    font-size: 45px;
+    line-height: 60px;
+}
+
+.medium-text {
+    font-size: 21px;
+    line-height: 28px;
+}
+
+.large-text {
+    font-size: 30px;
+    line-height: 40px;
 }
 
 .logo-somerled {
@@ -136,9 +147,28 @@ sup {
     margin: auto;
 }
 
-.header {
-    background: white;
-    padding: 40px 0 10px 0;
+.inner-container {
+    width: 80%;
+    margin: auto;
+}
+
+.fit-width {
+    width: 100%;
+}
+
+.half-width {
+    width: 100%;
+}
+
+.clean-button {
+    display: block;
+    border: 2px solid black;
+    background: none;
+    border-radius: 1rem;
+    padding: 1.5rem 3rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+    width: fit-content;
 }
 
 .page-subtitle {
@@ -242,6 +272,14 @@ img {
     width: 100%;
 }
 
+.family-tree-node {
+    display: block;
+    background: yellow;
+    position: absolute;
+    top: 50px;
+    left: 50px;
+}
+
 .title {
     margin-top: 20px;
     margin-bottom: 10px;
@@ -283,4 +321,32 @@ img {
 
 .bold {
     font-weight: 700;
+}
+
+.two-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.two-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 1rem;
+}
+
+.five-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+}
+
+.text-box {
+    display: block;
+    width: 100%;
+    line-height: 2.5rem;
+    border: 1px solid var(--colour-border);
+    text-indent: 1rem;
+}
+
+.vertical-margin {
+    margin: 1rem 0;
 }

@@ -4,10 +4,24 @@
 **  Licensed under version 3 of the GNU General Public License
 */
 
-import { BuildData, InlineElement, Metadata } from "./interfaces";
-import { throwError } from "./functions";
+import fs from "fs";
 
-const fs = require("fs");
+import { throwError } from "./functions";
+import { BuildData, InfoElement, InlineElement, Metadata } from "./interfaces";
+
+export function packageBuild(buildData: BuildData) {
+    for (let imageName of buildData.imagesRendered) {
+        fs.copyFileSync(`media/${imageName}`, `build/media/${imageName}`);
+    }
+    for (let source of buildData.sourcesCited) {
+        if (fs.existsSync(`sources/${source}`)) {
+            fs.copyFileSync(`sources/${source}`, `build/sources/${source}`);
+        }
+    }
+    for (let filename of fs.readdirSync("wiki")) {
+        fs.copyFileSync(`wiki/${filename}`, `build/wiki/${filename}`);
+    }
+}
 
 export function readArticle(buildData: BuildData): string {
     const contents = fs.readFileSync(`./data/${buildData.filetype}_source/${buildData.filename}`);
@@ -91,9 +105,9 @@ export function parseRawArticle(raw: string, metadata: Metadata, buildData: Buil
                 q[1] = q[1] - 1;
                 v = v + c;
                 if (q[1] === 0) {
-                    const obj = JSON.parse(v) as InlineElement;
+                    const obj = JSON.parse(v);
                     if (obj["type"] === "info") {
-                        metadata["info"] = obj;
+                        metadata["info"] = obj as InfoElement;
                     }
                     else {
                         parsed.push(obj as InlineElement);

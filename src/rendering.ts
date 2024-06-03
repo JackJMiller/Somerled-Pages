@@ -4,7 +4,7 @@
 **  Licensed under version 3 of the GNU General Public License
 */
 
-import { BuildData, InfoBox, InlineElement, Metadata } from "./interfaces";
+import { BuildData, ImageDefinition, InfoBox, InlineElement, Metadata } from "./interfaces";
 import { recordRefListing, throwError } from "./functions";
 import { BirthCertificateRefListing, BookRefListing, CensusRefListing, DeathCertificateRefListing, JournalRefListing, LazyRefListing, MarriageCertificateRefListing, NewspaperRefListing, QuickRefListing, RefListing, TestimonialRefListing, ValuationRollRefListing, WebsiteRefListing } from "./ref_listing_interfaces";
 import HTMLRendering from "./html_rendering";
@@ -13,7 +13,7 @@ export function renderArticle(source: InlineElement[], metadata: Metadata, build
     const headerHTML = renderHeader(source, metadata);
     const renderedBody = renderBody(source, metadata, buildData);
     const navbar = renderNavbar(metadata);
-    const images = renderImages(metadata);
+    const images = renderImages(metadata, buildData);
     const referenceListings = renderReferenceListings(buildData);
     return `
 <!DOCTYPE html>
@@ -79,7 +79,7 @@ export function renderReferenceListings(buildData: BuildData): string {
     return output;
 }
 
-export function renderImages(metadata: Metadata) {
+export function renderImages(metadata: Metadata, buildData: BuildData) {
 
     let images = "";
     if (metadata["infobox-rendered"]) {
@@ -89,6 +89,7 @@ export function renderImages(metadata: Metadata) {
     if (!metadata["images"]) return images;
 
     metadata["images"].forEach((image: any) => {
+        buildData.imagesRendered.push(image.src);
         images = images + `
 <div class="box">
     <img src="../media/${image.src}"/>
@@ -100,11 +101,12 @@ export function renderImages(metadata: Metadata) {
 }
 
 export function renderHeader(source: InlineElement[], metadata: Metadata): string {
+
     metadata["name"] = metadata["info"]["name"];
     metadata["article-type"] = metadata["info"]["article-type"];
     metadata["born"] = metadata["info"]["born"];
     metadata["died"] = metadata["info"]["died"];
-    metadata["images"] = metadata["info"]["images"];
+    metadata["images"] = metadata["info"]["images"] as ImageDefinition[];
 
     let subtitle = "";
     if (metadata["info"]["article-type"] === "person") {
@@ -225,37 +227,36 @@ export function renderLink(content: string, buildData: BuildData) {
     }
 }
 
-export function renderElement(element: any, metadata: Metadata, buildData: BuildData): string {
+export function renderElement(element: InlineElement | RefListing | InfoBox, metadata: Metadata, buildData: BuildData): string {
     if (element.type === "element") {
-        return renderStandardElement(element);
+        return renderStandardElement(element as InlineElement);
     }
     else if (element.type == "img") {
-        return renderImage(element);
+        return renderImage(element as InlineElement, buildData);
     }
     else if (element.type == "infobox") {
-        metadata["infobox"] = element;
-        metadata["infobox-rendered"] = renderInfobox(element, metadata, buildData);
+        metadata["infobox"] = element as InfoBox;
+        metadata["infobox-rendered"] = renderInfobox(element as InfoBox, metadata, buildData);
         return "";
     }
     else if (element.type == "ref-listing") {
         recordRefListing(element as RefListing, buildData);
         return "";
-        // return renderRefListing(element as RefListing, buildData);
     }
     else if (element.type == "gallery") {
-        return renderGallery(element);
+        return renderGallery(element as InlineElement, buildData);
     }
     else {
         return "";
     }
 }
 
-export function renderGallery(element: any){ 
+export function renderGallery(element: any, buildData: BuildData){ 
     let output = "";
-    let id = 0;
     for (let image of element.images) {
-        output = output + `<img class="gallery-image" src="../media/${image.src}"/>`;
-        id++;
+        buildData.imagesRendered.push(image.src);
+        let caption = image.caption || "<i>No caption provided</i>";
+        output = output + `<div class="gallery-image-container"><img class="gallery-image" src="../media/${image.src}"/><div class="gallery-image-text-container"><span class="gallery-image-text">${caption}</span></div></div>`;
     }
     return `<div class="gallery">
     <button onclick="shiftGallery(-1);" class="gallery-arrow-container">
@@ -293,22 +294,22 @@ export function renderRefListing(element: RefListing, buildData: BuildData): str
         return HTMLRendering.renderWebsiteRefListing(element as WebsiteRefListing);
     }
     else if (element["source-type"] == "marriage-certificate") {
-        return HTMLRendering.renderMarriageCertificateRefListing(element as MarriageCertificateRefListing);
+        return HTMLRendering.renderMarriageCertificateRefListing(element as MarriageCertificateRefListing, buildData);
     }
     else if (element["source-type"] == "birth-certificate") {
-        return HTMLRendering.renderBirthCertificateRefListing(element as BirthCertificateRefListing);
+        return HTMLRendering.renderBirthCertificateRefListing(element as BirthCertificateRefListing, buildData);
     }
     else if (element["source-type"] == "death-certificate") {
-        return HTMLRendering.renderDeathCertificateRefListing(element as DeathCertificateRefListing);
+        return HTMLRendering.renderDeathCertificateRefListing(element as DeathCertificateRefListing, buildData);
     }
     else if (element["source-type"] == "census") {
-        return HTMLRendering.renderCensusRefListing(element as CensusRefListing);
+        return HTMLRendering.renderCensusRefListing(element as CensusRefListing, buildData);
     }
     else if (element["source-type"] == "testimonial") {
         return HTMLRendering.renderTestimonialRefListing(element as TestimonialRefListing);
     }
     else if (element["source-type"] == "valuation-roll") {
-        return HTMLRendering.renderValuationRollRefListing(element as ValuationRollRefListing);
+        return HTMLRendering.renderValuationRollRefListing(element as ValuationRollRefListing, buildData);
     }
     else {
         throwError(`Found reference listing with invalid source-type attribute of '${element["source-type"]}'.`, buildData.location, buildData);
@@ -316,7 +317,8 @@ export function renderRefListing(element: RefListing, buildData: BuildData): str
     }
 }
 
-export function renderImage(element: any) {
+export function renderImage(element: any, buildData: BuildData) {
+    buildData.imagesRendered.push(element.src);
     let floatValue = "";
     if (element["float"] === "left") {
         floatValue = "left";
@@ -337,6 +339,9 @@ export function renderStandardElement(element: any) {
 }
 
 export function renderInfobox(infobox: InfoBox, metadata: Metadata, buildData: BuildData) {
+    if (infobox.image) {
+        buildData.imagesRendered.push(infobox.image);
+    }
     return `
 <div class="box infobox">
     ${infobox.image ? `<img src="../media/${infobox.image}"/>` : ""}
