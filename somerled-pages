@@ -1,10 +1,15 @@
 #!/bin/bash
 
 # Somerled Pages - A program for creating family encyclopedias
-# Copyright (C) 2023 Jack J. Miller
+# Copyright (C) 2023-2024 Jack J. Miller
 # Licensed under version 3 of the GNU General Public License
 
 PROGRAM_PATH=/home/jack/Development/Somerled-Pages
+
+ListBuilds() {
+    echo "Available Builds:"
+    ls data/builds | sed 's/\.json$//g'
+}
 
 let "EXITCODE = 0"
 
@@ -73,6 +78,10 @@ elif [[ $# -ge 2 && "$1" == "add-media" ]]; then
         fi
 
     done
+
+elif [[ $# -eq 1 && "$1" == "list-builds" ]]; then
+
+    ListBuilds
 
 else
 
