@@ -37,7 +37,7 @@ export interface Metadata {
     "headings": string[],
     "born": string,
     "died": string,
-    "images": any[]
+    "images": ImageDefinition[]
 }
 
 export interface InlineElement {
@@ -74,7 +74,7 @@ export interface BuildData {
     citations: string[],
     projectDirectory: string,
     projectPackage: ProjectPackage,
-    quickReferences: any,
+    quickReferences: { [index: string]: Reference },
     inDocumentRefListings: { [index: string]: RefListing },
     tree: Tree,
     errors: number,
@@ -90,6 +90,68 @@ export interface ProjectPackage {
     name: string,
     authors: string[],
     contributors: string[]
+}
+
+export type Reference = BirthCertificateReference | MarriageCertificateReference | DeathCertificateReference | CensusReference | NewspaperReference | ValuationRollReference | WebsiteReference | LazyReference;
+
+export interface BirthCertificateReference {
+    "source-type": string,
+    "name": string,
+    "date": string,
+    "place": string,
+    "link": string
+}
+
+export interface MarriageCertificateReference {
+    "source-type": string,
+    "party-one": string,
+    "party-two": string,
+    "date": string,
+    "place": string,
+    "link": string
+}
+
+export interface DeathCertificateReference {
+    "source-type": string,
+    "name": string,
+    "date": string,
+    "place": string,
+    "link": string
+}
+
+export interface CensusReference {
+    "source-type": string,
+    "year": string,
+    "link": string
+}
+
+export interface NewspaperReference {
+    "source-type": string,
+    "name-of-publication": string,
+    "source-link": string,
+    "source-title": string,
+    "source-date": string,
+    "pages": string
+}
+
+export interface ValuationRollReference {
+    "source-type": string,
+    "source-location": string,
+    "source-date": string,
+    "source-link": string
+}
+
+export interface WebsiteReference {
+    "source-type": string,
+    "name-of-website": string,
+    "source-link": string,
+    "date-retrieved": string
+}
+
+export interface LazyReference {
+    "source-type": string,
+    "source-value": string,
+    "source-link": string
 }
 
 export interface Tree {

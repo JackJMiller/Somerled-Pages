@@ -88,7 +88,7 @@ export function renderImages(metadata: Metadata, buildData: BuildData) {
 
     if (!metadata["images"]) return images;
 
-    metadata["images"].forEach((image: any) => {
+    metadata["images"].forEach((image: ImageDefinition) => {
         buildData.imagesRendered.push(image.src);
         images = images + `
 <div class="box">
@@ -319,15 +319,8 @@ export function renderRefListing(element: RefListing, buildData: BuildData): str
 
 export function renderImage(element: any, buildData: BuildData) {
     buildData.imagesRendered.push(element.src);
-    let floatValue = "";
-    if (element["float"] === "left") {
-        floatValue = "left";
-    }
-    else if (element["float"] === "right") {
-        floatValue = "right";
-    }
     return `
-<div class="small-box box ${floatValue}-box">
+<div class="small-box box">
     <img src="../media/${element.src}"/>
     ${element.caption ? `<p class="caption">${element.caption}</p>` : ""}
 </div>`;
@@ -352,7 +345,7 @@ export function renderInfobox(infobox: InfoBox, metadata: Metadata, buildData: B
 </div>`;
 }
 
-export function renderInfoboxEntries(entries: any, metadata: Metadata, buildData: BuildData) {
+export function renderInfoboxEntries(entries: { [index: string]: any }, metadata: Metadata, buildData: BuildData) {
     let output = "";
     let keys = Object.keys(entries);
     if (metadata["born"]) {

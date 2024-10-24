@@ -7,7 +7,7 @@
 import fs from "fs";
 import { FULL_BUILD, TREE_CONNECTORS } from "./constants";
 import { packageBuild, parseRawArticle, readArticle, saveArticle } from "./file_io";
-import { BuildData, InfoBox, InfoElement, Metadata, PageData, ProjectPackage, TreeNode } from "./interfaces";
+import { BuildData, InfoBox, InfoElement, Metadata, PageData, ProjectPackage, Reference, TreeNode } from "./interfaces";
 import { RefListing } from "./ref_listing_interfaces";
 import { renderArticle } from "./rendering";
 import { renderTreeHTML } from "./tree_rendering";
@@ -133,7 +133,7 @@ export function initialiseBuildData(projectDirectory: string, buildName: string)
     return buildData;
 }
 
-export function createBuildData(projectDirectory: string, projectPackage: ProjectPackage, quickReferences: any, name: string, configuration: any): BuildData {
+export function createBuildData(projectDirectory: string, projectPackage: ProjectPackage, quickReferences: { [index: string]: Reference }, name: string, configuration: any): BuildData {
     return {
         name,
         configuration,
