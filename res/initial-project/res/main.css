@@ -4,6 +4,8 @@
 :root {
     font-size: 1vw;
     --colour-light-grey: #f9f9f9;
+    --colour-dark-grey: #222222;
+    --colour-footer: #cccccc;
     --infobox-width: 350px;
     --box-padding: 6px;
     --size-default: 300px;
@@ -86,6 +88,19 @@ p {
 sup {
     line-height: 0;
 }
+
+footer {
+    margin-top: 2rem;
+    border-top: 2px solid var(--colour-border);
+    background: var(--colour-footer);
+    color: black;
+}
+
+.sub-footer {
+    background: black;
+    color: white;
+}
+
 
 .reference {
     font-size: 14px;
@@ -286,6 +301,11 @@ img {
     grid-gap: 10px;
 }
 
+.four-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+
 .default {
     width: var(--size-default);
 }
@@ -343,4 +363,15 @@ img {
 
 .vertical-margin {
     margin: 1rem 0;
+}
+
+.footer-inner {
+    grid-gap: 2rem;
+    font-size: 1.2rem;
+    line-height: 2rem;
+    padding: 1rem 0;
+}
+
+.align-centre {
+    text-align: center;
 }

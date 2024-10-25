@@ -41,6 +41,24 @@ export function renderArticle(source: InlineElement[], metadata: Metadata, build
                     </div>
                 ${(isSplitFormat(metadata["article-type"])) ? "</div>" : ""}
             </div>
+            <footer>
+                <div class="container">
+                    <div class="footer-inner grid">
+                        <h1><span class="logo-somerled">Somerled</span> <span class="logo-pages">Pages</span></h1>
+                        <div class="four-grid align-centre">
+                            <span>Home</span>
+                            <span>Explore</span>
+                            <span>Family Tree</span>
+                            <span>About</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="sub-footer">
+                    <div class="container">
+                        <span>© Copyright notice goes here</span>
+                    </div>
+                </div>
+            </footer>
         </div>
         <script src="../res/script.js" type="text/javascript"></script>
     </body>
@@ -121,7 +139,7 @@ export function renderHeader(source: InlineElement[], metadata: Metadata): strin
     <div class="container">
         <h1 class="page-title">${metadata["info"].name}</h1>
         ${subtitle}
-        <div class="somerled-pages-logo">A <span class="logo-somerled small-text">Somerled</span> <span class="logo-pages small-text">Pages</span> family encyclopedia</div>
+        <div class="somerled-pages-logo">A family encyclopedia created with <span class="logo-somerled small-text">Somerled</span> <span class="logo-pages small-text">Pages</span></div>
     </div>
 </div>`;
 }
@@ -345,12 +363,12 @@ export function renderInfobox(infobox: InfoBox, metadata: Metadata, buildData: B
 </div>`;
 }
 
-export function renderInfoboxEntries(entries: { [index: string]: any }, metadata: Metadata, buildData: BuildData) {
+export function renderInfoboxEntries(entries: { [index: string]: string | string[] }, metadata: Metadata, buildData: BuildData) {
     let output = "";
     let keys = Object.keys(entries);
     if (metadata["born"]) {
         if (keys.includes("Born")) {
-            entries["Born"] = [metadata["born"], entries["Born"]];
+            entries["Born"] = [metadata["born"], entries["Born"] as string];
         }
         else {
             entries["Born"] = [metadata["born"]];
@@ -358,7 +376,7 @@ export function renderInfoboxEntries(entries: { [index: string]: any }, metadata
     }
     if (metadata["died"] && metadata["died"] !== "present") {
         if (keys.includes("Died")) {
-            entries["Died"] = [metadata["died"], entries["Died"]];
+            entries["Died"] = [metadata["died"], entries["Died"] as string];
         }
         else {
             entries["Died"] = [metadata["died"]];
@@ -373,7 +391,7 @@ export function renderInfoboxEntries(entries: { [index: string]: any }, metadata
     return output;
 }
 
-export function renderBoxValue(key: string, value: string, metadata: Metadata, buildData: BuildData): string {
+export function renderBoxValue(key: string, value: string | string[], metadata: Metadata, buildData: BuildData): string {
     if (value.constructor.name === "Array") {
         let output = "<div>"
         for (let v of value) {
@@ -385,7 +403,7 @@ export function renderBoxValue(key: string, value: string, metadata: Metadata, b
     }
     else {
         let output = "<div>";
-        value = substituteLinksAndCitations(value, buildData)
+        value = substituteLinksAndCitations(value as string, buildData)
         output = output + `<p>${value}</p>`;
         output = output + "</div>";
         return output;
