@@ -9,6 +9,10 @@ import { markImage, recordRefListing, throwError, throwWarning } from "./functio
 import { BirthCertificateRefListing, BookRefListing, CensusRefListing, DeathCertificateRefListing, JournalRefListing, LazyRefListing, MarriageCertificateRefListing, NewspaperRefListing, QuickRefListing, RefListing, TestimonialRefListing, ValuationRollRefListing, WebsiteRefListing } from "./ref_listing_interfaces";
 import HTMLRendering from "./html_rendering";
 
+export function renderHomepage(buildData: BuildData): string {
+    return HTMLRendering.renderHomepage(buildData);
+}
+
 export function renderArticle(source: InlineElement[], metadata: Metadata, buildData: BuildData): string {
     let headerHTML = HTMLRendering.renderHeader(source, metadata);
     let articleHeaderHTML = HTMLRendering.renderArticleHeader(source, metadata);

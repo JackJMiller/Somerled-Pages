@@ -6,10 +6,10 @@
 
 import fs from "fs";
 import { FULL_BUILD, TREE_CONNECTORS } from "./constants";
-import { packageBuild, parseRawArticle, readArticle, saveArticle } from "./file_io";
+import { packageBuild, parseRawArticle, readArticle, savePage } from "./file_io";
 import { BuildData, InfoBox, InfoElement, Metadata, PageData, ProjectPackage, Reference, TreeNode } from "./interfaces";
 import { RefListing } from "./ref_listing_interfaces";
-import { renderArticle } from "./rendering";
+import { htmlString, renderArticle, renderHomepage } from "./rendering";
 import { renderTreeHTML } from "./tree_rendering";
 
 export function build(buildData: BuildData) {
@@ -23,26 +23,28 @@ export function build(buildData: BuildData) {
         }
     }
     fs.writeFileSync("tree_nodes.json", JSON.stringify(buildData.tree, null, 4) + "\n");
-    renderAndSaveHomepage(buildData);
+    savePage("index.html", renderHomepage(buildData));
+    renderAndSaveTreePage(buildData);
     packageBuild(buildData);
 }
 
-function renderAndSaveHomepage(buildData: BuildData) {
-    const treeRendered = renderTreeHTML(buildData.tree);
-    let rendered = `
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width" />
-        <title>Somerled Pages</title>
-    </head>
-    <body>
-        ${treeRendered}
-    </body>
-</html>
-`
-    fs.writeFileSync("tree.html", rendered);
+// TODO
+function renderAndSaveTreePage(buildData: BuildData) {
+    let treeRendered = renderTreeHTML(buildData.tree);
+    let rendered = htmlString(`
+        <!DOCTYPE html>
+        <html>
+            <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width" />
+                <title>Somerled Pages</title>
+            </head>
+            <body>
+                ${treeRendered}
+            </body>
+        </html>
+    `);
+    savePage("tree.html", rendered);
 }
 
 function renderAndSaveArticle(filetype: string, filename: string, buildData: BuildData) {
@@ -52,7 +54,7 @@ function renderAndSaveArticle(filetype: string, filename: string, buildData: Bui
     const rendered = renderArticle(source, metadata, buildData);
     buildData.pageData[`${filetype}/${filename}`] = createPageData(filetype, filename, metadata);
     buildData.tree.nodes[filename] = createTreeNode(metadata.infobox.entries);
-    saveArticle(filetype, filename, rendered);
+    savePage(`${filetype}/${filename}.html`, rendered);
 }
 
 function createPageData(filetype: string, filename: string, metadata: Metadata): PageData {

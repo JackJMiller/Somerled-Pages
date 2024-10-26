@@ -147,6 +147,6 @@ export function parseRawArticle(raw: string, metadata: Metadata, buildData: Buil
     return parsed;
 }
 
-export function saveArticle(type: string, name: string, content: string) {
-    fs.writeFileSync(`./build/${type}/${name}.html`, content);
+export function savePage(path: string, content: string) {
+    fs.writeFileSync(`./build/${path}`, content);
 }
