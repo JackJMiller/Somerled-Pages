@@ -4,9 +4,128 @@
 **  Licensed under version 3 of the GNU General Public License
 */
 
+import { markImage, throwError } from "./functions";
 import { RefListing, TestimonialRefListing, CensusRefListing, DeathCertificateRefListing, BirthCertificateRefListing, MarriageCertificateRefListing, ValuationRollRefListing, LazyRefListing, BookRefListing, JournalRefListing, NewspaperRefListing, WebsiteRefListing } from "./ref_listing_interfaces";
-import { htmlString } from "./rendering";
+import { htmlString, isSplitFormat, renderElement, renderRefListing, renderQuickRefListing, substituteLinksAndCitations } from "./rendering";
 import { BuildData, ImageDefinition, InlineElement, Metadata } from "./interfaces";
+
+function renderArticle(source: InlineElement[], metadata: Metadata, buildData: BuildData): string {
+    let headerHTML = renderHeader();
+    let articleHeaderHTML = renderArticleHeader(source, metadata);
+    let renderedBody = renderBody(source, metadata, buildData);
+    let navbar = renderNavbar(metadata);
+    let images = renderImages(metadata, buildData);
+    let referenceListings = renderReferenceListings(buildData);
+    return htmlString(`
+        <!DOCTYPE html>
+        <html>
+            <head>
+                <meta charset="UTF-8"/>
+                <meta name="viewport" content="width=device-width"/>
+                <title>${metadata["name"]} - A Somerled Pages family encyclopedia</title>
+                <link rel="stylesheet" href="../res/main.css" type="text/css" charset="utf-8"/>
+                <link rel="stylesheet" href="../res/article.css" type="text/css" charset="utf-8"/>
+                <link rel="icon" href="../res/favicon.png" type="image/png"/>
+            </head>
+            <body>
+                ${headerHTML}
+                ${articleHeaderHTML}
+                ${navbar}
+                <div class="main-body">
+                    <div class="container">
+                        ${(isSplitFormat(metadata["article-type"])) ? "<div class=\"main-body-split\">" : ""}
+                            <div>
+                                ${renderedBody}
+                                ${referenceListings}
+                            </div>
+                            <div class="images-column">
+                                ${images}
+                            </div>
+                        ${(isSplitFormat(metadata["article-type"])) ? "</div>" : ""}
+                    </div>
+                    ${renderFooter()}
+                </div>
+                <script src="../res/script.js" type="text/javascript"></script>
+            </body>
+        </html>
+    `);
+}
+
+function renderReferenceListings(buildData: BuildData): string {
+    if (buildData.citations.length === 0) {
+        // TODO make HTML-specific function
+        return "<p>There are no references yet.</p>";
+    }
+    let output = "";
+    let inDocumentKeys = Object.keys(buildData.inDocumentRefListings);
+    let quickRefKeys = Object.keys(buildData.quickReferences);
+    let index = 1;
+    for (let citation of buildData.citations) {
+        if (inDocumentKeys.includes(citation) && quickRefKeys.includes(citation)) {
+            throwError(`References with identifier '${citation}' found both in document and in data/quick_references.json. Remove one so that the compiler may pick.`, buildData.location, buildData, false);
+        }
+        if (inDocumentKeys.includes(citation)) {
+            let refListing = buildData.inDocumentRefListings[citation];
+            refListing.id = index.toString();
+            let renderedRefListing = renderRefListing(refListing, buildData);
+            output = output + "\n" + renderedRefListing;
+        }
+        else if (quickRefKeys.includes(citation)) {
+            let renderedRefListing = renderQuickRefListing(citation, index, buildData);
+            output = output + "\n" + renderedRefListing;
+        }
+        else {
+            throwError(`Cannot find reference listing with '${citation}' identifier.`, buildData.location, buildData, false);
+        }
+        index++;
+    }
+    return output;
+}
+
+function renderImages(metadata: Metadata, buildData: BuildData) {
+
+    let images = "";
+    if (metadata["infobox-rendered"]) {
+        images = images + metadata["infobox-rendered"];
+    }
+
+    if (!metadata["images"]) return images;
+
+    images = images + metadata["images"].map((image: ImageDefinition) => {
+        markImage(image.src, buildData);
+        return htmlString(`
+            <div class="box">
+                <img src="../media/${image.src}"/>
+                ${image.caption ? `<p class="caption">${image.caption}</p>` : ""}
+            </div>`
+        );
+    }).join("");
+
+    return images;
+}
+
+function renderNavbar(metadata: Metadata): string {
+    let navbar: string = metadata.headings.map((heading: string) => {
+        if (heading === "References") return "";
+        return `<a href="" class="navbar-item"><h3>${heading}</h3></a>\n`;
+    }).join("");
+
+    return htmlString(`
+<div class="navbar">
+    <div class="navbar-items" style="grid-template-columns:${" 1fr".repeat(metadata.headings.length - 1)}">
+        ${navbar}
+    </div>
+</div>`);
+}
+
+function renderBody(source: InlineElement[], metadata: Metadata, buildData: BuildData) {
+    let rendered = "";
+    source.forEach((element: InlineElement) => {
+        rendered = rendered + renderElement(element, metadata, buildData) + "\n";
+    });
+    rendered = substituteLinksAndCitations(rendered, buildData);
+    return rendered;
+}
 
 function renderHomepage(buildData: BuildData): string {
     return htmlString(`
@@ -240,6 +359,7 @@ function renderLink(placeholder: string, target: string) {
 }
 
 export = {
+    renderArticle,
     renderHomepage,
     renderFooter,
     renderArticleHeader,
