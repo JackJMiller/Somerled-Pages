@@ -15,55 +15,55 @@ export function renderArticle(source: InlineElement[], metadata: Metadata, build
     const navbar = renderNavbar(metadata);
     const images = renderImages(metadata, buildData);
     const referenceListings = renderReferenceListings(buildData);
-    return `
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8"/>
-        <meta name="viewport" content="width=device-width"/>
-        <title>${metadata["name"]} - A Somerled Pages family encyclopedia</title>
-        <link rel="stylesheet" href="../res/main.css" type="text/css" charset="utf-8"/>
-        <link rel="stylesheet" href="../res/article.css" type="text/css" charset="utf-8"/>
-        <link rel="icon" href="../res/favicon.png" type="image/png"/>
-    </head>
-    <body>
-        ${headerHTML}
-        ${navbar}
-        <div class="main-body">
-            <div class="container">
-                ${(isSplitFormat(metadata["article-type"])) ? "<div class=\"main-body-split\">" : ""}
-                    <div>
-                        ${renderedBody}
-                        ${referenceListings}
-                    </div>
-                    <div class="images-column">
-                        ${images}
-                    </div>
-                ${(isSplitFormat(metadata["article-type"])) ? "</div>" : ""}
-            </div>
-            <footer>
-                <div class="container">
-                    <div class="footer-inner grid">
-                        <h1><span class="logo-somerled">Somerled</span> <span class="logo-pages">Pages</span></h1>
-                        <div class="four-grid align-centre">
-                            <span>Home</span>
-                            <span>Explore</span>
-                            <span>Family Tree</span>
-                            <span>About</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="sub-footer">
+    return htmlString(`
+        <!DOCTYPE html>
+        <html>
+            <head>
+                <meta charset="UTF-8"/>
+                <meta name="viewport" content="width=device-width"/>
+                <title>${metadata["name"]} - A Somerled Pages family encyclopedia</title>
+                <link rel="stylesheet" href="../res/main.css" type="text/css" charset="utf-8"/>
+                <link rel="stylesheet" href="../res/article.css" type="text/css" charset="utf-8"/>
+                <link rel="icon" href="../res/favicon.png" type="image/png"/>
+            </head>
+            <body>
+                ${headerHTML}
+                ${navbar}
+                <div class="main-body">
                     <div class="container">
-                        <span>© Copyright notice goes here</span>
+                        ${(isSplitFormat(metadata["article-type"])) ? "<div class=\"main-body-split\">" : ""}
+                            <div>
+                                ${renderedBody}
+                                ${referenceListings}
+                            </div>
+                            <div class="images-column">
+                                ${images}
+                            </div>
+                        ${(isSplitFormat(metadata["article-type"])) ? "</div>" : ""}
                     </div>
+                    <footer>
+                        <div class="container">
+                            <div class="footer-inner grid">
+                                <h1><span class="logo-somerled">Somerled</span> <span class="logo-pages">Pages</span></h1>
+                                <div class="four-grid align-centre">
+                                    <span>Home</span>
+                                    <span>Explore</span>
+                                    <span>Family Tree</span>
+                                    <span>About</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="sub-footer">
+                            <div class="container">
+                                <span>© Copyright notice goes here</span>
+                            </div>
+                        </div>
+                    </footer>
                 </div>
-            </footer>
-        </div>
-        <script src="../res/script.js" type="text/javascript"></script>
-    </body>
-</html>
-    `;
+                <script src="../res/script.js" type="text/javascript"></script>
+            </body>
+        </html>
+    `);
 }
 
 export function renderReferenceListings(buildData: BuildData): string {
@@ -106,17 +106,17 @@ export function renderImages(metadata: Metadata, buildData: BuildData) {
 
     if (!metadata["images"]) return images;
 
-    metadata["images"].forEach((image: ImageDefinition) => {
+    images = images + metadata["images"].map((image: ImageDefinition) => {
         markImage(image.src, buildData);
-        // TODO: tidy the HTML
-        images = images + `
-<div class="box">
-    <img src="../media/${image.src}"/>
-    ${image.caption ? `<p class="caption">${image.caption}</p>` : ""}
-</div>`;
-    });
+        return htmlString(`
+            <div class="box">
+                <img src="../media/${image.src}"/>
+                ${image.caption ? `<p class="caption">${image.caption}</p>` : ""}
+            </div>`
+        );
+    }).join("");
 
-    return images
+    return images;
 }
 
 export function renderHeader(source: InlineElement[], metadata: Metadata): string {
@@ -151,12 +151,12 @@ export function renderNavbar(metadata: Metadata): string {
         return `<a href="" class="navbar-item"><h3>${heading}</h3></a>\n`;
     }).join("");
 
-    return `
+    return htmlString(`
 <div class="navbar">
     <div class="navbar-items" style="grid-template-columns:${" 1fr".repeat(metadata.headings.length - 1)}">
         ${navbar}
     </div>
-</div>`;
+</div>`);
 }
 
 export function renderBody(source: InlineElement[], metadata: Metadata, buildData: BuildData) {
@@ -275,23 +275,36 @@ export function renderElement(element: InlineElement | RefListing | InfoBox, met
 }
 
 export function renderGallery(element: any, buildData: BuildData){ 
-    let output = "";
-    for (let image of element.images) {
+
+    let galleryItems: string[] = element.images.map((image: ImageDefinition) => {
         markImage(image.src, buildData);
-        let caption = image.caption || "<i>No caption provided</i>";
-        output = output + `<div class="gallery-image-container"><img class="gallery-image" src="../media/${image.src}"/><div class="gallery-image-text-container"><span class="gallery-image-text">${caption}</span></div></div>`;
-    }
-    return `<div class="gallery">
-    <button onclick="shiftGallery(-1);" class="gallery-arrow-container">
-        <img style="width: 40px;" src="../res/arrow_left.svg"/>
-    </button>
-    <div>
-        ${output}
-    </div>
-    <button onclick="shiftGallery(1);" class="gallery-arrow-container">
-        <img style="width: 40px;" src="../res/arrow_right.svg"/>
-    </button>
-</div>`;
+        return renderGalleryImage(image.src, image.caption || "<i>No caption provided</i>");
+    });
+
+    return htmlString(`
+        <div class="gallery">
+            <button onclick="shiftGallery(-1);" class="gallery-arrow-container">
+                <img style="width: 40px;" src="../res/arrow_left.svg"/>
+            </button>
+        <div>
+        ${galleryItems.join("")}
+        </div>
+            <button onclick="shiftGallery(1);" class="gallery-arrow-container">
+                <img style="width: 40px;" src="../res/arrow_right.svg"/>
+            </button>
+        </div>`
+    );
+}
+
+function renderGalleryImage(src: string, caption: string): string {
+    return htmlString(
+        `<div class="gallery-image-container">
+            <img class="gallery-image" src="../media/${src}"/>
+            <div class="gallery-image-text-container">
+                <span class="gallery-image-text">${caption}</span>
+            </div>
+        </div>`
+    );
 }
 
 function renderQuickRefListing(key: string, index: number, buildData: BuildData): string {
@@ -342,11 +355,12 @@ export function renderRefListing(element: RefListing, buildData: BuildData): str
 
 export function renderImage(element: any, buildData: BuildData) {
     markImage(element.src, buildData);
-    return `
-<div class="small-box box">
-    <img src="../media/${element.src}"/>
-    ${element.caption ? `<p class="caption">${element.caption}</p>` : ""}
-</div>`;
+    return htmlString(`
+        <div class="small-box box">
+            <img src="../media/${element.src}"/>
+            ${element.caption ? `<p class="caption">${element.caption}</p>` : ""}
+        </div>`
+    );
 }
 
 export function renderStandardElement(element: any) {
@@ -358,14 +372,15 @@ export function renderInfobox(infobox: InfoBox, metadata: Metadata, buildData: B
     if (infobox.image) {
         markImage(infobox.image, buildData);
     }
-    return `
-<div class="box infobox">
-    ${infobox.image ? `<img src="../media/${infobox.image}"/>` : ""}
-    ${infobox["image-caption"] ? `<p class="caption">${infobox["image-caption"]}</p>` : ""}
-    <div class="grid">
-        ${renderInfoboxEntries(infobox.entries, metadata, buildData)}
-    </div>
-</div>`;
+    return htmlString(`
+        <div class="box infobox">
+            ${infobox.image ? `<img src="../media/${infobox.image}"/>` : ""}
+            ${infobox["image-caption"] ? `<p class="caption">${infobox["image-caption"]}</p>` : ""}
+            <div class="grid">
+                ${renderInfoboxEntries(infobox.entries, metadata, buildData)}
+            </div>
+        </div>`
+    );
 }
 
 export function renderInfoboxEntries(entries: { [index: string]: string | string[] }, metadata: Metadata, buildData: BuildData) {
@@ -417,4 +432,8 @@ export function renderBoxValue(key: string, value: string | string[], metadata: 
 
 export function isSplitFormat(articleType: string): boolean {
     return ["person", "place", "lineage"].includes(articleType);
+}
+
+export function htmlString(html: string): string {
+    return html.trim().replace(/\s+/g, " ");
 }
