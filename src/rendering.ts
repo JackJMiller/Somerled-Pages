@@ -5,7 +5,7 @@
 */
 
 import { BuildData, ImageDefinition, InfoBox, InlineElement, Metadata } from "./interfaces";
-import { recordRefListing, throwError } from "./functions";
+import { markImage, recordRefListing, throwError } from "./functions";
 import { BirthCertificateRefListing, BookRefListing, CensusRefListing, DeathCertificateRefListing, JournalRefListing, LazyRefListing, MarriageCertificateRefListing, NewspaperRefListing, QuickRefListing, RefListing, TestimonialRefListing, ValuationRollRefListing, WebsiteRefListing } from "./ref_listing_interfaces";
 import HTMLRendering from "./html_rendering";
 
@@ -107,7 +107,8 @@ export function renderImages(metadata: Metadata, buildData: BuildData) {
     if (!metadata["images"]) return images;
 
     metadata["images"].forEach((image: ImageDefinition) => {
-        buildData.imagesRendered.push(image.src);
+        markImage(image.src, buildData);
+        // TODO: tidy the HTML
         images = images + `
 <div class="box">
     <img src="../media/${image.src}"/>
@@ -272,7 +273,7 @@ export function renderElement(element: InlineElement | RefListing | InfoBox, met
 export function renderGallery(element: any, buildData: BuildData){ 
     let output = "";
     for (let image of element.images) {
-        buildData.imagesRendered.push(image.src);
+        markImage(image.src, buildData);
         let caption = image.caption || "<i>No caption provided</i>";
         output = output + `<div class="gallery-image-container"><img class="gallery-image" src="../media/${image.src}"/><div class="gallery-image-text-container"><span class="gallery-image-text">${caption}</span></div></div>`;
     }
@@ -336,7 +337,7 @@ export function renderRefListing(element: RefListing, buildData: BuildData): str
 }
 
 export function renderImage(element: any, buildData: BuildData) {
-    buildData.imagesRendered.push(element.src);
+    markImage(element.src, buildData);
     return `
 <div class="small-box box">
     <img src="../media/${element.src}"/>
@@ -351,7 +352,7 @@ export function renderStandardElement(element: any) {
 
 export function renderInfobox(infobox: InfoBox, metadata: Metadata, buildData: BuildData) {
     if (infobox.image) {
-        buildData.imagesRendered.push(infobox.image);
+        markImage(infobox.image, buildData);
     }
     return `
 <div class="box infobox">

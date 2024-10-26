@@ -192,3 +192,10 @@ export function getLinkTarget(string: string) {
     const contentValues = string.split("|");
     return contentValues[1];
 }
+
+export function markImage(imageName: string, buildData: BuildData) {
+    buildData.imagesRendered.push(imageName);
+    if (!fs.existsSync(`media/${imageName}`)) {
+        throwError(`Cannot find image '${imageName}'.`, buildData.location);
+    }
+}
