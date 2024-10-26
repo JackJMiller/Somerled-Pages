@@ -146,17 +146,17 @@ export function renderHeader(source: InlineElement[], metadata: Metadata): strin
 }
 
 export function renderNavbar(metadata: Metadata): string {
-    let navbar = `
-<div class="navbar">
-    <div class="navbar-items" style="grid-template-columns:${" 1fr".repeat(metadata.headings.length - 1)}">\n`;
+    let navbar: string = metadata.headings.map((heading: string) => {
+        if (heading === "References") return "";
+        return `<a href="" class="navbar-item"><h3>${heading}</h3></a>\n`;
+    }).join("");
 
-    metadata.headings.forEach((heading: string) => {
-        if (heading !== "References") {
-            navbar = navbar + `<a href="" class="navbar-item"><h3>${heading}</h3></a>\n`;
-        }
-    });
-    navbar = navbar + "    </div>\n</div>";
-    return navbar;
+    return `
+<div class="navbar">
+    <div class="navbar-items" style="grid-template-columns:${" 1fr".repeat(metadata.headings.length - 1)}">
+        ${navbar}
+    </div>
+</div>`;
 }
 
 export function renderBody(source: InlineElement[], metadata: Metadata, buildData: BuildData) {
