@@ -1,15 +1,11 @@
-@import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@300;400;500;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Signika+Negative:wght@300;400;500&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=EB+Garamond&wght@400;500;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Text&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Satisfy&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@300;400;500;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap");
 
 :root {
     font-size: 1vw;
     --colour-light-grey: #f9f9f9;
+    --colour-dark-grey: #222222;
+    --colour-footer: #cccccc;
     --infobox-width: 350px;
     --box-padding: 6px;
     --size-default: 300px;
@@ -18,6 +14,18 @@
     --colour-border: #999999;
 }
 
+.header {
+    display: block;
+    width: 100%;
+    line-height: 5rem;
+    background: white;
+    padding: 10px 0 10px 0;
+}
+
+.header-inner {
+    display: grid;
+    grid-template-columns: 1fr auto;
+}
 
 .caption {
     text-align: center;
@@ -92,6 +100,19 @@ p {
 sup {
     line-height: 0;
 }
+
+footer {
+    margin-top: 2rem;
+    border-top: 2px solid var(--colour-border);
+    background: var(--colour-footer);
+    color: black;
+}
+
+.sub-footer {
+    background: black;
+    color: white;
+}
+
 
 .reference {
     font-size: 14px;
@@ -292,6 +313,11 @@ img {
     grid-gap: 10px;
 }
 
+.four-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+
 .default {
     width: var(--size-default);
 }
@@ -339,14 +365,27 @@ img {
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
 }
 
-.text-box {
+.search-box {
     display: block;
     width: 100%;
-    line-height: 2.5rem;
+    line-height: 5rem;
+    height: 2.5rem;
     border: 1px solid var(--colour-border);
+    border-radius: 0.25rem;
     text-indent: 1rem;
 }
 
 .vertical-margin {
     margin: 1rem 0;
+}
+
+.footer-inner {
+    grid-gap: 2rem;
+    font-size: 1.2rem;
+    line-height: 2rem;
+    padding: 1rem 0;
+}
+
+.align-centre {
+    text-align: center;
 }

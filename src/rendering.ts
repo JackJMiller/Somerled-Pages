@@ -10,11 +10,12 @@ import { BirthCertificateRefListing, BookRefListing, CensusRefListing, DeathCert
 import HTMLRendering from "./html_rendering";
 
 export function renderArticle(source: InlineElement[], metadata: Metadata, buildData: BuildData): string {
-    const headerHTML = renderHeader(source, metadata);
-    const renderedBody = renderBody(source, metadata, buildData);
-    const navbar = renderNavbar(metadata);
-    const images = renderImages(metadata, buildData);
-    const referenceListings = renderReferenceListings(buildData);
+    let headerHTML = HTMLRendering.renderHeader(source, metadata);
+    let articleHeaderHTML = HTMLRendering.renderArticleHeader(source, metadata);
+    let renderedBody = renderBody(source, metadata, buildData);
+    let navbar = renderNavbar(metadata);
+    let images = renderImages(metadata, buildData);
+    let referenceListings = renderReferenceListings(buildData);
     return htmlString(`
         <!DOCTYPE html>
         <html>
@@ -28,6 +29,7 @@ export function renderArticle(source: InlineElement[], metadata: Metadata, build
             </head>
             <body>
                 ${headerHTML}
+                ${articleHeaderHTML}
                 ${navbar}
                 <div class="main-body">
                     <div class="container">
@@ -41,24 +43,7 @@ export function renderArticle(source: InlineElement[], metadata: Metadata, build
                             </div>
                         ${(isSplitFormat(metadata["article-type"])) ? "</div>" : ""}
                     </div>
-                    <footer>
-                        <div class="container">
-                            <div class="footer-inner grid">
-                                <h1><span class="logo-somerled">Somerled</span> <span class="logo-pages">Pages</span></h1>
-                                <div class="four-grid align-centre">
-                                    <span>Home</span>
-                                    <span>Explore</span>
-                                    <span>Family Tree</span>
-                                    <span>About</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="sub-footer">
-                            <div class="container">
-                                <span>© Copyright notice goes here</span>
-                            </div>
-                        </div>
-                    </footer>
+                    ${HTMLRendering.renderFooter()}
                 </div>
                 <script src="../res/script.js" type="text/javascript"></script>
             </body>
@@ -72,21 +57,21 @@ export function renderReferenceListings(buildData: BuildData): string {
         return "<p>There are no references yet.</p>";
     }
     let output = "";
-    const inDocumentKeys = Object.keys(buildData.inDocumentRefListings);
-    const quickRefKeys = Object.keys(buildData.quickReferences);
+    let inDocumentKeys = Object.keys(buildData.inDocumentRefListings);
+    let quickRefKeys = Object.keys(buildData.quickReferences);
     let index = 1;
     for (let citation of buildData.citations) {
         if (inDocumentKeys.includes(citation) && quickRefKeys.includes(citation)) {
             throwError(`References with identifier '${citation}' found both in document and in data/quick_references.json. Remove one so that the compiler may pick.`, buildData.location, buildData, false);
         }
         if (inDocumentKeys.includes(citation)) {
-            const refListing = buildData.inDocumentRefListings[citation];
+            let refListing = buildData.inDocumentRefListings[citation];
             refListing.id = index.toString();
-            const renderedRefListing = renderRefListing(refListing, buildData);
+            let renderedRefListing = renderRefListing(refListing, buildData);
             output = output + "\n" + renderedRefListing;
         }
         else if (quickRefKeys.includes(citation)) {
-            const renderedRefListing = renderQuickRefListing(citation, index, buildData);
+            let renderedRefListing = renderQuickRefListing(citation, index, buildData);
             output = output + "\n" + renderedRefListing;
         }
         else {
@@ -119,32 +104,6 @@ export function renderImages(metadata: Metadata, buildData: BuildData) {
     return images;
 }
 
-export function renderHeader(source: InlineElement[], metadata: Metadata): string {
-
-    metadata["name"] = metadata["info"]["name"];
-    metadata["article-type"] = metadata["info"]["article-type"];
-    metadata["born"] = metadata["info"]["born"];
-    metadata["died"] = metadata["info"]["died"];
-    metadata["images"] = metadata["info"]["images"] as ImageDefinition[];
-
-    let subtitle = "";
-    if (metadata["info"]["article-type"] === "person") {
-        subtitle = `<h4 class="page-subtitle">${metadata["info"].born || "Unknown"} — ${metadata["info"].died || "Unknown"}</h4>`;
-    }
-    if (metadata["info"]["subtitle"]) {
-        subtitle = subtitle + `<h4 class="page-subtitle">${metadata["info"]["subtitle"]}</h4>`;
-    }
-
-    return `
-<div class="header">
-    <div class="container">
-        <h1 class="page-title">${metadata["info"].name}</h1>
-        ${subtitle}
-        <div class="somerled-pages-logo">A family encyclopedia created with <span class="logo-somerled small-text">Somerled</span> <span class="logo-pages small-text">Pages</span></div>
-    </div>
-</div>`;
-}
-
 export function renderNavbar(metadata: Metadata): string {
     let navbar: string = metadata.headings.map((heading: string) => {
         if (heading === "References") return "";
@@ -164,7 +123,6 @@ export function renderBody(source: InlineElement[], metadata: Metadata, buildDat
     source.forEach((element: InlineElement) => {
         rendered = rendered + renderElement(element, metadata, buildData) + "\n";
     });
-    // const references = rendered.
     rendered = substituteLinksAndCitations(rendered, buildData);
     return rendered;
 }
@@ -172,8 +130,8 @@ export function renderBody(source: InlineElement[], metadata: Metadata, buildDat
 export function substituteLinksAndCitations(text: string, buildData: BuildData): string {
     let q = "text";
     let v = "";
-    const links: string[] = [];
-    const citations: string[] = [];
+    let links: string[] = [];
+    let citations: string[] = [];
     for (let i = 0; i < text.length; i++) {
         let c = text[i];
         if (q === "text") {
@@ -235,9 +193,9 @@ export function renderCitation(id: string) {
 }
 
 export function renderLink(content: string, buildData: BuildData): string {
-    const contentValues = content.split("|");
-    const placeholder = contentValues[0];
-    const target = contentValues[1];
+    let contentValues = content.split("|");
+    let placeholder = contentValues[0];
+    let target = contentValues[1];
     if (buildData.configuration.members.includes(target)) {
         return HTMLRendering.renderLink(placeholder, target);
     }
@@ -308,7 +266,7 @@ function renderGalleryImage(src: string, caption: string): string {
 }
 
 function renderQuickRefListing(key: string, index: number, buildData: BuildData): string {
-    const refElement = JSON.parse(JSON.stringify(buildData.quickReferences[key]));
+    let refElement = JSON.parse(JSON.stringify(buildData.quickReferences[key]));
     refElement.id = index.toString();
     return renderRefListing(refElement as RefListing, buildData);
 }
@@ -364,7 +322,7 @@ export function renderImage(element: any, buildData: BuildData) {
 }
 
 export function renderStandardElement(element: any) {
-    const tag = element.tag;
+    let tag = element.tag;
     return `<${tag}${(element.id !== undefined) ? " id=\""+element.id+"\"" : ""}${(element.class !== undefined) ? " class=\""+element.class+"\"" : ""}>${element.inner}</${tag}>`;
 }
 
@@ -403,7 +361,7 @@ export function renderInfoboxEntries(entries: { [index: string]: string | string
         }
     }
     keys.forEach((key: string) => {
-        const value = entries[key];
+        let value = entries[key];
         if (value.length > 0) {
             output = output + `<h5>${key}</h5>${renderBoxValue(key, value, metadata, buildData)}\n`
         }

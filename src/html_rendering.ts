@@ -5,7 +5,71 @@
 */
 
 import { RefListing, TestimonialRefListing, CensusRefListing, DeathCertificateRefListing, BirthCertificateRefListing, MarriageCertificateRefListing, ValuationRollRefListing, LazyRefListing, BookRefListing, JournalRefListing, NewspaperRefListing, WebsiteRefListing } from "./ref_listing_interfaces";
-import { BuildData } from "./interfaces";
+import { htmlString } from "./rendering";
+import { BuildData, ImageDefinition, InlineElement, Metadata } from "./interfaces";
+
+function renderFooter(): string {
+    return htmlString(`
+        <footer>
+            <div class="container">
+                <div class="footer-inner grid">
+                    <h1><span class="logo-somerled">Somerled</span> <span class="logo-pages">Pages</span></h1>
+                    <div class="four-grid align-centre">
+                        <span>Home</span>
+                        <span>Explore</span>
+                        <span>Family Tree</span>
+                        <span>About</span>
+                    </div>
+                </div>
+            </div>
+            <div class="sub-footer">
+                <div class="container">
+                    <span>© Copyright notice goes here</span>
+                </div>
+            </div>
+        </footer>
+    `);
+}
+
+function renderHeader(source: InlineElement[], metadata: Metadata): string {
+    return htmlString(`
+        <div class="header">
+            <div class="container">
+                <div class="header-inner">
+                    <h1></h1>
+                    <input class="search-box" type="text" placeholder="Search" id="search"/>
+                </div>
+            </div>
+        </div>
+    `);
+}
+
+function renderArticleHeader(source: InlineElement[], metadata: Metadata): string {
+
+    metadata["name"] = metadata["info"]["name"];
+    metadata["article-type"] = metadata["info"]["article-type"];
+    metadata["born"] = metadata["info"]["born"];
+    metadata["died"] = metadata["info"]["died"];
+    metadata["images"] = metadata["info"]["images"] as ImageDefinition[];
+
+    let subtitle = "";
+    if (metadata["info"]["article-type"] === "person") {
+        subtitle = `<h4 class="page-subtitle">${metadata["info"].born || "Unknown"} — ${metadata["info"].died || "Unknown"}</h4>`;
+    }
+    if (metadata["info"]["subtitle"]) {
+        subtitle = subtitle + `<h4 class="page-subtitle">${metadata["info"]["subtitle"]}</h4>`;
+    }
+
+    return htmlString(`
+        <div class="article-header">
+            <div class="container">
+                <h1 class="page-title">${metadata["info"].name}</h1>
+                ${subtitle}
+                <div class="somerled-pages-logo">A family encyclopedia created with <span class="logo-somerled small-text">Somerled</span> <span class="logo-pages small-text">Pages</span></div>
+            </div>
+        </div>
+    `);
+}
 
 function renderTestimonialRefListing(element: TestimonialRefListing): string {
     return `<div class="reference">${element.id}. Told by ${element["name"]} to ${element["witness"]}. Testified ${element["date"]}.</div>`;
@@ -99,6 +163,9 @@ function renderLink(placeholder: string, target: string) {
 }
 
 export = {
+    renderFooter,
+    renderArticleHeader,
+    renderHeader,
     renderTestimonialRefListing,
     renderCensusRefListing,
     renderDeathCertificateRefListing,

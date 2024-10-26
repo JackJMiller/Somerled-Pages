@@ -26,7 +26,7 @@ elif [ "$1" == "build" ]; then
 
     rm build/media/* build/sources/* build/sheet/* build/wiki/* build/res/*.css
     rm -r wiki/*
-    cp $PROGRAM_PATH/res/initial-project/res/*.css build/res/
+    cp $PROGRAM_PATH/res/*.css build/res/
     node $PROGRAM_PATH/main.js $( pwd ) $@ || let "EXITCODE = 1"
 
     if [ "$EXITCODE" == "0" ]; then
