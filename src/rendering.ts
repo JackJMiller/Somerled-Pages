@@ -14,7 +14,7 @@ export function renderHomepage(buildData: BuildData): string {
 }
 
 export function renderArticle(source: InlineElement[], metadata: Metadata, buildData: BuildData): string {
-    let headerHTML = HTMLRendering.renderHeader(source, metadata);
+    let headerHTML = HTMLRendering.renderHeader();
     let articleHeaderHTML = HTMLRendering.renderArticleHeader(source, metadata);
     let renderedBody = renderBody(source, metadata, buildData);
     let navbar = renderNavbar(metadata);

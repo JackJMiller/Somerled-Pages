@@ -5,7 +5,7 @@
     font-size: 1vw;
     --colour-light-grey: #f9f9f9;
     --colour-dark-grey: #222222;
-    --colour-footer: #cccccc;
+    --colour-footer: white;
     --infobox-width: 350px;
     --box-padding: 6px;
     --size-default: 300px;
@@ -102,15 +102,23 @@ sup {
 }
 
 footer {
-    margin-top: 2rem;
+    margin-top: 6rem;
     border-top: 2px solid var(--colour-border);
+    padding-top: 3rem;
     background: var(--colour-footer);
     color: black;
 }
 
+footer a {
+    color: black;
+    font-weight: 600;
+}
+
 .sub-footer {
+    margin-top: 3rem;
     background: black;
     color: white;
+    line-height: 3rem;
 }
 
 

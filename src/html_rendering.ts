@@ -22,66 +22,66 @@ function renderHomepage(buildData: BuildData): string {
             </head>
             <body>
 
-                <div class="header">
-                    <div class="inner-container">
-                        <div class="header-inner">
-                            <div><span class="logo-somerled medium-text">Somerled</span> <span class="logo-pages medium-text">Pages</span></div>
-                            <span id="header-title" class="medium-text">Family Encyclopedia</span>
-                            <input class="text-box" type="text" placeholder="Search" id="search"/>
-                        </div>
-                    </div>
-                </div>
+                ${renderHeader()}
 
-                <div class="body">
-                    
-                    <div class="inner-container">
-                        <div class="homepage-top">
-                            <div>
-                                <span class="logo-somerled massive-text">Somerled</span> <span class="logo-pages massive-text">Pages</span>
-                                <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</p>
-                                <p>At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
-                            </div>
-                            <div>
-                                <h2>Search the encyclopedia...</h2>
-                                <div class="vertical-margin five-grid small-text">
-                                    <span>Article Type</span>
-                                    <div>
-                                        <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike"/>
-                                        <label for="vehicle1">Any</label>
-                                    </div>
-                                    <div>
-                                        <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike"/>
-                                        <label for="vehicle1">Person</label>
-                                    </div>
-                                    <div>
-                                        <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike"/>
-                                        <label for="vehicle1">Place</label>
-                                    </div>
-                                    <div>
-                                        <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike"/>
-                                        <label for="vehicle1">Lineage</label>
-                                    </div>
-                                </div>
-                                <input type="text" class="vertical-margin text-box" placeholder="Article name"/>
-                                <input type="text" class="vertical-margin text-box" placeholder="Text in article"/>
-                                <h3>Birth</h3>
-                                <div class="two-columns">
-                                    <input type="text" class="vertical-margin text-box" placeholder="From"/>
-                                    <input type="text" class="vertical-margin text-box" placeholder="To"/>
-                                </div>
-                                <h3>Death</h3>
-                                <div class="two-columns">
-                                    <input type="text" class="vertical-margin text-box" placeholder="From"/>
-                                    <input type="text" class="vertical-margin text-box" placeholder="To"/>
-                                </div>
-                                <button onclick="console.log('Submit');" class="clean-button vertical-margin">Search</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                ${renderHomepageLead()}
+
+                ${renderFooter()}
 
             </body>
         </html>
+    `);
+}
+
+function renderHomepageLead(): string {
+    return htmlString(`
+        <div class="body">
+            
+            <div class="inner-container">
+                <div class="homepage-top">
+                    <div>
+                        <span class="logo-somerled massive-text">Somerled</span> <span class="logo-pages massive-text">Pages</span>
+                        <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</p>
+                        <p>At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
+                    </div>
+                    <div>
+                        <h2>Search the encyclopedia...</h2>
+                        <div class="vertical-margin five-grid small-text">
+                            <span>Article Type</span>
+                            <div>
+                                <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike"/>
+                                <label for="vehicle1">Any</label>
+                            </div>
+                            <div>
+                                <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike"/>
+                                <label for="vehicle1">Person</label>
+                            </div>
+                            <div>
+                                <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike"/>
+                                <label for="vehicle1">Place</label>
+                            </div>
+                            <div>
+                                <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike"/>
+                                <label for="vehicle1">Lineage</label>
+                            </div>
+                        </div>
+                        <input type="text" class="vertical-margin text-box" placeholder="Article name"/>
+                        <input type="text" class="vertical-margin text-box" placeholder="Text in article"/>
+                        <h3>Birth</h3>
+                        <div class="two-columns">
+                            <input type="text" class="vertical-margin text-box" placeholder="From"/>
+                            <input type="text" class="vertical-margin text-box" placeholder="To"/>
+                        </div>
+                        <h3>Death</h3>
+                        <div class="two-columns">
+                            <input type="text" class="vertical-margin text-box" placeholder="From"/>
+                            <input type="text" class="vertical-margin text-box" placeholder="To"/>
+                        </div>
+                        <button onclick="console.log('Submit');" class="clean-button vertical-margin">Search</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     `);
 }
 
@@ -92,10 +92,10 @@ function renderFooter(): string {
                 <div class="footer-inner grid">
                     <h1><span class="logo-somerled">Somerled</span> <span class="logo-pages">Pages</span></h1>
                     <div class="four-grid align-centre">
-                        <span>Home</span>
-                        <span>Explore</span>
-                        <span>Family Tree</span>
-                        <span>About</span>
+                        <span><a href="/">Home</a></span>
+                        <span><a href="/explore.html">Explore</a></span>
+                        <span><a href="/tree.html">Family Tree</a></span>
+                        <span><a href="/about.html">About</a></span>
                     </div>
                 </div>
             </div>
@@ -108,7 +108,7 @@ function renderFooter(): string {
     `);
 }
 
-function renderHeader(source: InlineElement[], metadata: Metadata): string {
+function renderHeader(): string {
     return htmlString(`
         <div class="header">
             <div class="container">
