@@ -413,20 +413,18 @@ export function renderInfoboxEntries(entries: { [index: string]: string | string
 
 export function renderBoxValue(key: string, value: string | string[], metadata: Metadata, buildData: BuildData): string {
     if (value.constructor.name === "Array") {
-        let output = "<div>"
-        for (let v of value) {
-            v = substituteLinksAndCitations(v, buildData)
-            output = output + `<p>${v}</p>`;
-        }
-        output = output + "</div>";
-        return output;
+        return htmlString(`
+            <div>
+                ${(value as string[]).map((v: string) => "<p>" + substituteLinksAndCitations(v, buildData) + "</p>").join("")}
+            </div>
+        `);
     }
     else {
-        let output = "<div>";
-        value = substituteLinksAndCitations(value as string, buildData)
-        output = output + `<p>${value}</p>`;
-        output = output + "</div>";
-        return output;
+        return htmlString(`
+            <div>
+                <p>${substituteLinksAndCitations(value as string, buildData)}</p>
+            </div>
+        `);
     }
 }
 
