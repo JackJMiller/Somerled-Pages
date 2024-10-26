@@ -115,6 +115,16 @@ export function throwError(message: string, location: string, buildData: BuildDa
     if (exitProgram) process.exit(1);
 }
 
+export function throwWarning(message: string, location: string, buildData: BuildData | null = null) {
+    console.log(`${location}: ${colourString("WARNING:", 35, true)} ${message}`);
+    if (buildData) {
+        buildData.warnings++;
+        if (!buildData.uniqueWarningFiles.includes(buildData.location)) {
+            buildData.uniqueWarningFiles.push(buildData.location);
+        }
+    }
+}
+
 export function recordRefListing(element: RefListing, buildData: BuildData) {
     buildData.inDocumentRefListings[element["id"]] = element;
 }
@@ -125,6 +135,7 @@ export function initialiseBuildData(projectDirectory: string, buildName: string)
         throwError(`There is no build called '${buildName}'.`, "build_configurations.json");
     }
     const buildConfiguration = (buildName === "full" ? FULL_BUILD : require(`${projectDirectory}/data/builds/${buildName}.json`));
+    buildConfiguration.allArticles = fs.readdirSync("data/wiki_source/");
     if (buildName === "full") {
         buildConfiguration.members = fs.readdirSync("data/wiki_source/");
     }

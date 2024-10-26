@@ -56,7 +56,8 @@ export interface HeaderElement {
 
 export interface BuildConfiguration {
     root: string,
-    members: string[]
+    members: string[],
+    allArticles: string[]
 }
 
 export interface PageData {

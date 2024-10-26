@@ -5,7 +5,7 @@
 */
 
 import { BuildData, ImageDefinition, InfoBox, InlineElement, Metadata } from "./interfaces";
-import { markImage, recordRefListing, throwError } from "./functions";
+import { markImage, recordRefListing, throwError, throwWarning } from "./functions";
 import { BirthCertificateRefListing, BookRefListing, CensusRefListing, DeathCertificateRefListing, JournalRefListing, LazyRefListing, MarriageCertificateRefListing, NewspaperRefListing, QuickRefListing, RefListing, TestimonialRefListing, ValuationRollRefListing, WebsiteRefListing } from "./ref_listing_interfaces";
 import HTMLRendering from "./html_rendering";
 
@@ -234,15 +234,19 @@ export function renderCitation(id: string) {
     return HTMLRendering.renderCitation(id);
 }
 
-export function renderLink(content: string, buildData: BuildData) {
+export function renderLink(content: string, buildData: BuildData): string {
     const contentValues = content.split("|");
     const placeholder = contentValues[0];
     const target = contentValues[1];
     if (buildData.configuration.members.includes(target)) {
         return HTMLRendering.renderLink(placeholder, target);
     }
-    else {
+    else if (buildData.configuration.allArticles.includes(target)) {
         return placeholder;
+    }
+    else {
+        throwWarning(`Cannot link to non-existing article '${target}'.`, buildData.location)
+        return "";
     }
 }
 
