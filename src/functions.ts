@@ -61,7 +61,8 @@ function createPageData(filetype: string, filename: string, metadata: Metadata):
     return {
         name: metadata.name,
         born: metadata.born,
-        died: metadata.died
+        died: metadata.died,
+        imageSrc: metadata.infobox.image
     };
 }
 

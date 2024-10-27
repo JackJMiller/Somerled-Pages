@@ -4,7 +4,7 @@
 **  Licensed under version 3 of the GNU General Public License
 */
 
-import { markImage, throwError } from "./functions";
+import { markImage, throwError, throwWarning } from "./functions";
 import { RefListing, TestimonialRefListing, CensusRefListing, DeathCertificateRefListing, BirthCertificateRefListing, MarriageCertificateRefListing, ValuationRollRefListing, LazyRefListing, BookRefListing, JournalRefListing, NewspaperRefListing, WebsiteRefListing } from "./ref_listing_interfaces";
 import { htmlString, isSplitFormat, renderElement, renderRefListing, renderQuickRefListing, substituteLinksAndCitations } from "./rendering";
 import { BuildData, ImageDefinition, InlineElement, Metadata } from "./interfaces";
@@ -111,11 +111,11 @@ function renderNavbar(metadata: Metadata): string {
     }).join("");
 
     return htmlString(`
-<div class="navbar">
-    <div class="navbar-items" style="grid-template-columns:${" 1fr".repeat(metadata.headings.length - 1)}">
-        ${navbar}
-    </div>
-</div>`);
+        <div class="navbar">
+            <div class="navbar-items" style="grid-template-columns:${" 1fr".repeat(metadata.headings.length - 1)}">
+                ${navbar}
+            </div>
+        </div>`);
 }
 
 function renderBody(source: InlineElement[], metadata: Metadata, buildData: BuildData) {
@@ -144,6 +144,8 @@ function renderHomepage(buildData: BuildData): string {
                 ${renderHeader()}
 
                 ${renderHomepageLead()}
+
+                ${renderArticleFeatures(buildData.configuration.features, buildData)}
 
                 ${renderFooter()}
 
@@ -202,6 +204,39 @@ function renderHomepageLead(): string {
             </div>
         </div>
     `);
+}
+
+function renderArticleFeatures(articleNames: string[], buildData: BuildData): string {
+    return htmlString(`
+        <div class="container">
+            <h1>Featured Articles</h1>
+            <div class="four-grid">
+                ${articleNames.map((articleName: string) => renderArticleFeature(articleName, buildData)).join("")}
+            </div>
+        </div>
+    `);
+}
+
+function renderArticleFeature(articleName: string, buildData: BuildData): string {
+
+    if (!buildData.configuration.members.includes(articleName)) {
+        throwWarning(`Article '${articleName}' is referenced as a homepage feature but is not included in build.`, "index.html");
+        return "";
+    }
+
+    let pageData = buildData.pageData[`wiki/${articleName}`];
+
+    return htmlString(`
+        <a href="/wiki/${articleName}.html" class="article-feature" style="background-image: url('http://localhost:3000/media/${pageData.imageSrc}');">
+            <div class="article-feature-mask">
+                <div class="article-feature-inner">
+                    <h1>${pageData.name}</h1>
+                    <h2>${pageData.born} — ${pageData.died}</h2>
+                </div>
+            </div>
+        </a>
+    `);
+
 }
 
 function renderFooter(): string {
@@ -360,6 +395,7 @@ function renderLink(placeholder: string, target: string) {
 
 export = {
     renderArticle,
+    renderArticleFeatures,
     renderHomepage,
     renderFooter,
     renderArticleHeader,

@@ -34,6 +34,27 @@
     line-height: 18px;
 }
 
+.article-feature {
+    display: block;
+    background-size: 100%;
+    aspect-ratio: 1 / 1;
+    color: white;
+}
+
+.article-feature-inner {
+    width: calc(100% - 2rem);
+    margin-left: 1rem;
+    margin-bottom: 1rem;
+    align-self: flex-end;
+}
+
+.article-feature-mask {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+}
+
 b {
     font-family: inherit;
 }
@@ -324,6 +345,7 @@ img {
 .four-grid {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-gap: 1rem;
 }
 
 .default {

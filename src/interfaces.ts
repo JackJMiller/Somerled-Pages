@@ -57,13 +57,15 @@ export interface HeaderElement {
 export interface BuildConfiguration {
     root: string,
     members: string[],
-    allArticles: string[]
+    allArticles: string[],
+    features: string[]
 }
 
 export interface PageData {
     name: string,
     born: string,
-    died: string
+    died: string,
+    imageSrc: string
 }
 
 export interface BuildData {

@@ -24,8 +24,7 @@ if [[ $# -eq 2 && "$1" == "init" ]]; then
 
 elif [ "$1" == "build" ]; then
 
-    rm build/media/* build/sources/* build/sheet/* build/wiki/* build/res/*.css
-    rm -r wiki/*
+    rm -f build/media/* build/sources/* build/sheet/* build/wiki/* build/res/*.css wiki/*
     cp $PROGRAM_PATH/res/*.css build/res/
     node $PROGRAM_PATH/main.js $( pwd ) $@ || let "EXITCODE = 1"
 
