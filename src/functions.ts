@@ -22,10 +22,24 @@ export function build(buildData: BuildData) {
             }
         }
     }
+    bugCheckBuild(buildData);
     fs.writeFileSync("tree_nodes.json", JSON.stringify(buildData.tree, null, 4) + "\n");
     savePage("index.html", renderHomepage(buildData));
     renderAndSaveTreePage(buildData);
     packageBuild(buildData);
+}
+
+function bugCheckBuild(buildData: BuildData) {
+    for (let member of buildData.configuration.members) {
+        if (!fs.existsSync(`data/wiki_source/${member}`)) {
+            throwError(`Article '${member}' referenced in 'members' does not exist.`, `data/builds/${buildData.name}.json`);
+        }
+    }
+    for (let member of buildData.configuration.features) {
+        if (!fs.existsSync(`data/wiki_source/${member}`)) {
+            throwError(`Article '${member}' referenced in 'features' does not exist.`, `data/builds/${buildData.name}.json`);
+        }
+    }
 }
 
 // TODO

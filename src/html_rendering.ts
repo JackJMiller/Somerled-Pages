@@ -145,7 +145,9 @@ function renderHomepage(buildData: BuildData): string {
 
                 ${renderHomepageLead()}
 
-                ${renderArticleFeatures(buildData.configuration.features, buildData)}
+                ${renderArticleFeatures("Featured Articles", buildData.configuration.features, buildData)}
+
+                ${renderArticleFeatures("All articles", buildData.configuration.members, buildData)}
 
                 ${renderFooter()}
 
@@ -206,10 +208,10 @@ function renderHomepageLead(): string {
     `);
 }
 
-function renderArticleFeatures(articleNames: string[], buildData: BuildData): string {
+function renderArticleFeatures(heading: string, articleNames: string[], buildData: BuildData): string {
     return htmlString(`
         <div class="inner-container">
-            <h1 class="heading">Featured Articles</h1>
+            <h1 class="heading">${heading}</h1>
             <div class="four-grid">
                 ${articleNames.map((articleName: string) => renderArticleFeature(articleName, buildData)).join("")}
             </div>
