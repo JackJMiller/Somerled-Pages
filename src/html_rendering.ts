@@ -161,14 +161,14 @@ function renderHomepageLead(): string {
             <div class="inner-container">
                 <div class="homepage-top">
                     <div>
-                        <span class="logo-somerled massive-text">Somerled</span> <span class="logo-pages massive-text">Pages</span>
+                        <h1 class="massive-text">${renderLogo()}</h1>
                         <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</p>
                         <p>At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
                     </div>
                     <div>
-                        <h2>Search the encyclopedia...</h2>
-                        <div class="vertical-margin five-grid small-text">
-                            <span>Article Type</span>
+                        <h2 style="margin-bottom: 2rem;">Search the encyclopedia...</h2>
+                        <h3>Article Type</h3>
+                        <div class="vertical-margin four-grid small-text">
                             <div>
                                 <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike"/>
                                 <label for="vehicle1">Any</label>
@@ -208,8 +208,8 @@ function renderHomepageLead(): string {
 
 function renderArticleFeatures(articleNames: string[], buildData: BuildData): string {
     return htmlString(`
-        <div class="container">
-            <h1>Featured Articles</h1>
+        <div class="inner-container">
+            <h1 class="heading">Featured Articles</h1>
             <div class="four-grid">
                 ${articleNames.map((articleName: string) => renderArticleFeature(articleName, buildData)).join("")}
             </div>
@@ -244,7 +244,7 @@ function renderFooter(): string {
         <footer>
             <div class="container">
                 <div class="footer-inner grid">
-                    <h1><span class="logo-somerled">Somerled</span> <span class="logo-pages">Pages</span></h1>
+                    <h1>${renderLogo()}</h1>
                     <div class="four-grid align-centre">
                         <span><a href="/">Home</a></span>
                         <span><a href="/explore.html">Explore</a></span>
@@ -262,13 +262,21 @@ function renderFooter(): string {
     `);
 }
 
+function renderLogo(): string {
+    return htmlString(`
+        <a href="/">
+            <span class="logo-somerled">Somerled</span> <span class="logo-pages">Pages</span>
+        </a>
+    `);
+}
+
 function renderHeader(): string {
     return htmlString(`
         <div class="header">
             <div class="container">
                 <div class="header-inner">
                     <h1></h1>
-                    <input class="search-box" type="text" placeholder="Search" id="search"/>
+                    <input class="text-box" type="text" placeholder="Search" id="search"/>
                 </div>
             </div>
         </div>
@@ -296,7 +304,7 @@ function renderArticleHeader(source: InlineElement[], metadata: Metadata): strin
             <div class="container">
                 <h1 class="page-title">${metadata["info"].name}</h1>
                 ${subtitle}
-                <div class="somerled-pages-logo">A family encyclopedia created with <span class="logo-somerled small-text">Somerled</span> <span class="logo-pages small-text">Pages</span></div>
+                <span class="sub-subtitle">A family encyclopedia created with ${renderLogo()}</span>
             </div>
         </div>
     `);

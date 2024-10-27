@@ -133,17 +133,14 @@ export function recordRefListing(element: RefListing, buildData: BuildData) {
 }
 
 export function initialiseBuildData(projectDirectory: string, buildName: string) {
-    const quickReferences = require(`${projectDirectory}/data/quick_references.json`);
-    if (buildName !== "full" && !fs.existsSync(`data/builds/${buildName}.json`)) {
+    let quickReferences = require(`${projectDirectory}/data/quick_references.json`);
+    if (!fs.existsSync(`data/builds/${buildName}.json`)) {
         throwError(`There is no build called '${buildName}'.`, "build_configurations.json");
     }
-    const buildConfiguration = (buildName === "full" ? FULL_BUILD : require(`${projectDirectory}/data/builds/${buildName}.json`));
+    let buildConfiguration = require(`${projectDirectory}/data/builds/${buildName}.json`);
     buildConfiguration.allArticles = fs.readdirSync("data/wiki_source/");
-    if (buildName === "full") {
-        buildConfiguration.members = fs.readdirSync("data/wiki_source/");
-    }
-    const projectPackage = require(`${projectDirectory}/somerled-package.json`);
-    const buildData = createBuildData(projectDirectory, projectPackage, quickReferences, buildName, buildConfiguration);
+    let projectPackage = require(`${projectDirectory}/somerled-package.json`);
+    let buildData = createBuildData(projectDirectory, projectPackage, quickReferences, buildName, buildConfiguration);
     return buildData;
 }
 
@@ -179,8 +176,7 @@ export function updateBuildData(buildData: BuildData, filetype: string, filename
 }
 
 export function shouldBeBuilt(filetype: string, filename: string, buildData: BuildData): boolean {
-    if (buildData.name === "full") return true;
-    else if (buildData.configuration.members.includes(filename)) return true;
+    if (buildData.configuration.members.includes(filename)) return true;
     else return false;
 }
 

@@ -135,6 +135,10 @@ footer a {
     font-weight: 600;
 }
 
+.heading {
+    margin: 6rem 0 2rem 0;
+}
+
 .sub-footer {
     margin-top: 3rem;
     background: black;
@@ -185,11 +189,18 @@ footer a {
 
 .logo-somerled {
     font-family: "Libre Baskerville", serif;
+    font-weight: 500;
+    color: black;
+}
+
+.sub-subtitle {
+    font-size: 1rem;
 }
 
 .logo-pages {
     font-family: monospace;
     font-weight: 700;
+    color: black;
 }
 
 .container {
@@ -395,11 +406,10 @@ img {
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
 }
 
-.search-box {
+.text-box {
     display: block;
     width: 100%;
-    line-height: 5rem;
-    height: 2.5rem;
+    line-height: 3rem;
     border: 1px solid var(--colour-border);
     border-radius: 0.25rem;
     text-indent: 1rem;

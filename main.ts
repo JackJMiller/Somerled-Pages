@@ -9,19 +9,19 @@ import { colourString, createBuildData, createInitialMetadata, shouldBeBuilt, th
 
 const PROJECT_DIRECTORY = process.argv[2];
 
-const args = process.argv.slice(3);
+const ARGS = process.argv.slice(3);
 
-const start = Date.now();
+const START = Date.now();
 
-if (args[0] === "build") {
+if (ARGS[0] === "build") {
 
-    const buildName = (args.length === 1 ? "full" : args[1]);
-    const buildData = initialiseBuildData(PROJECT_DIRECTORY, buildName);
+    let buildName = ARGS[1];
+    let buildData = initialiseBuildData(PROJECT_DIRECTORY, buildName);
 
     build(buildData);
 
-    const end = Date.now();
-    const elapsed = (end - start) / 1000;
+    const END = Date.now();
+    let elapsed = (END - START) / 1000;
 
     if (buildData.errors === 0) {
         console.log(`${colourString("BUILD SUCCESSFUL:", 32, true)} Completed in ${elapsed} seconds${buildData.warnings === 0 ? "" : ` (${buildData.warnings} warnings)`}`);
