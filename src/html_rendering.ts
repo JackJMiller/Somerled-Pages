@@ -147,7 +147,7 @@ function renderHomepage(buildData: BuildData): string {
 
                 ${renderArticleFeatures("Featured Articles", buildData.configuration.features, buildData)}
 
-                ${renderArticleFeatures("All articles", buildData.configuration.members, buildData)}
+                ${renderArticleFeatures("All Articles", buildData.configuration.members, buildData)}
 
                 ${renderFooter()}
 
@@ -264,6 +264,43 @@ function renderFooter(): string {
     `);
 }
 
+
+function renderGallery(element: any, buildData: BuildData): string { 
+
+    let galleryItems: string[] = element.images.map((image: ImageDefinition) => {
+        markImage(image.src, buildData);
+        return renderGalleryImage(image.src, image.caption || "<i>No caption provided</i>");
+    });
+
+    return htmlString(`
+        <div class="gallery">
+            <button onclick="shiftGallery(-1);" class="gallery-arrow-container">
+                <img style="width: 40px;" src="../res/arrow_left.svg"/>
+            </button>
+        <div>
+        ${galleryItems.join("")}
+        </div>
+            <button onclick="shiftGallery(1);" class="gallery-arrow-container">
+                <img style="width: 40px;" src="../res/arrow_right.svg"/>
+            </button>
+        </div>`
+    );
+
+}
+
+function renderGalleryImage(src: string, caption: string): string {
+
+    return htmlString(
+        `<div class="gallery-image-container">
+            <img class="gallery-image" src="../media/${src}"/>
+            <div class="gallery-image-text-container">
+                <span class="gallery-image-text">${caption}</span>
+            </div>
+        </div>`
+    );
+
+}
+
 function renderLogo(): string {
     return htmlString(`
         <a href="/">
@@ -283,6 +320,26 @@ function renderHeader(): string {
             </div>
         </div>
     `);
+}
+
+function renderImage(element: any, buildData: BuildData): string {
+
+    markImage(element.src, buildData);
+
+    return htmlString(`
+        <div class="small-box box">
+            <img src="../media/${element.src}"/>
+            ${element.caption ? `<p class="caption">${element.caption}</p>` : ""}
+        </div>`
+    );
+
+}
+
+function renderStandardElement(element: any): string {
+    let tag = element.tag;
+    let elementID = (element.id !== undefined) ? "id=\""+element.id+"\"" : "";
+    let elementClass = (element.class !== undefined) ? "class=\""+element.class+"\"" : "";
+    return `<${tag} ${elementID} ${elementClass}>${element.inner}</${tag}>`;
 }
 
 function renderArticleHeader(source: InlineElement[], metadata: Metadata): string {
@@ -408,6 +465,10 @@ export = {
     renderArticleFeatures,
     renderHomepage,
     renderFooter,
+    renderGallery,
+    renderGalleryImage,
+    renderImage,
+    renderStandardElement,
     renderArticleHeader,
     renderHeader,
     renderTestimonialRefListing,

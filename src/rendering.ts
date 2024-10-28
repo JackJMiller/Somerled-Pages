@@ -4,10 +4,10 @@
 **  Licensed under version 3 of the GNU General Public License
 */
 
+import HTMLRendering from "./html_rendering";
 import { BuildData, ImageDefinition, InfoBox, InlineElement, Metadata } from "./interfaces";
 import { markImage, recordRefListing, throwError, throwWarning } from "./functions";
 import { BirthCertificateRefListing, BookRefListing, CensusRefListing, DeathCertificateRefListing, JournalRefListing, LazyRefListing, MarriageCertificateRefListing, NewspaperRefListing, QuickRefListing, RefListing, TestimonialRefListing, ValuationRollRefListing, WebsiteRefListing } from "./ref_listing_interfaces";
-import HTMLRendering from "./html_rendering";
 
 export function renderHomepage(buildData: BuildData): string {
     return HTMLRendering.renderHomepage(buildData);
@@ -122,37 +122,12 @@ export function renderElement(element: InlineElement | RefListing | InfoBox, met
     }
 }
 
-export function renderGallery(element: any, buildData: BuildData){ 
-
-    let galleryItems: string[] = element.images.map((image: ImageDefinition) => {
-        markImage(image.src, buildData);
-        return renderGalleryImage(image.src, image.caption || "<i>No caption provided</i>");
-    });
-
-    return htmlString(`
-        <div class="gallery">
-            <button onclick="shiftGallery(-1);" class="gallery-arrow-container">
-                <img style="width: 40px;" src="../res/arrow_left.svg"/>
-            </button>
-        <div>
-        ${galleryItems.join("")}
-        </div>
-            <button onclick="shiftGallery(1);" class="gallery-arrow-container">
-                <img style="width: 40px;" src="../res/arrow_right.svg"/>
-            </button>
-        </div>`
-    );
+export function renderGallery(element: any, buildData: BuildData): string { 
+    return HTMLRendering.renderGallery(element, buildData);
 }
 
 function renderGalleryImage(src: string, caption: string): string {
-    return htmlString(
-        `<div class="gallery-image-container">
-            <img class="gallery-image" src="../media/${src}"/>
-            <div class="gallery-image-text-container">
-                <span class="gallery-image-text">${caption}</span>
-            </div>
-        </div>`
-    );
+    return HTMLRendering.renderGalleryImage(src, caption);
 }
 
 export function renderQuickRefListing(key: string, index: number, buildData: BuildData): string {
@@ -201,14 +176,8 @@ export function renderRefListing(element: RefListing, buildData: BuildData): str
     }
 }
 
-export function renderImage(element: any, buildData: BuildData) {
-    markImage(element.src, buildData);
-    return htmlString(`
-        <div class="small-box box">
-            <img src="../media/${element.src}"/>
-            ${element.caption ? `<p class="caption">${element.caption}</p>` : ""}
-        </div>`
-    );
+export function renderImage(element: any, buildData: BuildData): string {
+    return HTMLRendering.renderImage(element, buildData);
 }
 
 export function renderStandardElement(element: any) {

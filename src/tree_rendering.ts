@@ -16,6 +16,7 @@ interface NodePlacements {
     [index: string]: NodePlacement
 }
 
+// TODO: modularise and move html-rendering to html_rendering
 export function renderTreeHTML(tree: Tree): string {
     let currentNode = tree.nodes[tree.ROOT_NODE];
     const nodes = getNodeRelativePositions(tree, tree.ROOT_NODE, "");
