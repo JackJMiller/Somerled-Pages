@@ -5,9 +5,15 @@
 */
 
 import fs from "fs";
+import { regexMatchArticles, throwError } from "./functions";
+import { BuildConfiguration, BuildData, InfoElement, InlineElement, Metadata } from "./interfaces";
 
-import { throwError } from "./functions";
-import { BuildData, InfoElement, InlineElement, Metadata } from "./interfaces";
+export function loadBuildConfiguration(projectDirectory: string, buildName: string): BuildConfiguration {
+    let config = require(`${projectDirectory}/data/builds/${buildName}.json`);
+    config.members = regexMatchArticles(config.members);
+    console.log(config.members);
+    return config;
+}
 
 export function packageBuild(buildData: BuildData) {
     for (let imageName of buildData.imagesRendered) {

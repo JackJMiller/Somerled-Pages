@@ -5,9 +5,9 @@
 */
 
 import fs from "fs";
-import { FULL_BUILD, TREE_CONNECTORS } from "./constants";
-import { packageBuild, parseRawArticle, readArticle, savePage } from "./file_io";
-import { BuildData, InfoBox, InfoElement, Metadata, PageData, ProjectPackage, Reference, TreeNode } from "./interfaces";
+import { TREE_CONNECTORS } from "./constants";
+import { loadBuildConfiguration, packageBuild, parseRawArticle, readArticle, savePage } from "./file_io";
+import { BuildConfiguration, BuildData, InfoBox, InfoElement, Metadata, PageData, ProjectPackage, Reference, TreeNode } from "./interfaces";
 import { RefListing } from "./ref_listing_interfaces";
 import { htmlString, renderArticle, renderHomepage } from "./rendering";
 import { renderTreeHTML } from "./tree_rendering";
@@ -40,6 +40,30 @@ function bugCheckBuild(buildData: BuildData) {
             throwError(`Article '${member}' referenced in 'features' does not exist.`, `data/builds/${buildData.name}.json`);
         }
     }
+}
+
+function regexMatch(strings: string[], expression: string): string[] {
+    let re = new RegExp(expression);
+    let matches: string[] = new Array();
+    for (let string of strings) {
+        if (re.test(string)) {
+            matches.push(string);
+        }
+    }
+    return matches;
+}
+
+export function regexMatchArticles(expressions: string[]): string[] {
+
+    let articles = fs.readdirSync("data/wiki_source/");
+    let output: string[] = new Array();
+
+    expressions.forEach((expression: string) => {
+        output = output.concat(regexMatch(articles, expression));
+    });
+
+    return [... new Set(output)];
+
 }
 
 // TODO
@@ -151,14 +175,14 @@ export function initialiseBuildData(projectDirectory: string, buildName: string)
     if (!fs.existsSync(`data/builds/${buildName}.json`)) {
         throwError(`There is no build called '${buildName}'.`, "build_configurations.json");
     }
-    let buildConfiguration = require(`${projectDirectory}/data/builds/${buildName}.json`);
+    let buildConfiguration = loadBuildConfiguration(projectDirectory, buildName);
     buildConfiguration.allArticles = fs.readdirSync("data/wiki_source/");
     let projectPackage = require(`${projectDirectory}/somerled-package.json`);
     let buildData = createBuildData(projectDirectory, projectPackage, quickReferences, buildName, buildConfiguration);
     return buildData;
 }
 
-export function createBuildData(projectDirectory: string, projectPackage: ProjectPackage, quickReferences: { [index: string]: Reference }, name: string, configuration: any): BuildData {
+export function createBuildData(projectDirectory: string, projectPackage: ProjectPackage, quickReferences: { [index: string]: Reference }, name: string, configuration: BuildConfiguration): BuildData {
     return {
         name,
         configuration,
