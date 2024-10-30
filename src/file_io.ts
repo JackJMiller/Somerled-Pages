@@ -11,7 +11,6 @@ import { BuildConfiguration, BuildData, InfoElement, InlineElement, Metadata } f
 export function loadBuildConfiguration(projectDirectory: string, buildName: string): BuildConfiguration {
     let config = require(`${projectDirectory}/data/builds/${buildName}.json`);
     config.members = regexMatchArticles(config.members);
-    console.log(config.members);
     return config;
 }
 

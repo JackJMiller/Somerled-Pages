@@ -7,12 +7,47 @@
 import fs from "fs";
 import { TREE_CONNECTORS } from "./constants";
 import { loadBuildConfiguration, packageBuild, parseRawArticle, readArticle, savePage } from "./file_io";
-import { BuildConfiguration, BuildData, InfoBox, InfoElement, Metadata, PageData, ProjectPackage, Reference, TreeNode } from "./interfaces";
+import { BuildConfiguration, BuildData, BuildSheet, InfoBox, InfoElement, Metadata, PageData, ProjectPackage, Reference, TreeNode } from "./interfaces";
 import { RefListing } from "./ref_listing_interfaces";
-import { htmlString, renderArticle, renderHomepage } from "./rendering";
+import { htmlString, renderArticle, renderHomepage, renderSearchPage } from "./rendering";
 import { renderTreeHTML } from "./tree_rendering";
 
 export function build(buildData: BuildData) {
+
+    compileArticles(buildData);
+
+    bugCheckBuild(buildData);
+
+    savePage("res/build_sheet.json", JSON.stringify(createBuildSheet(buildData), null, 4) + "\n");
+
+    // savePage("tree_nodes.json", JSON.stringify(buildData.tree, null, 4) + "\n");
+
+    savePage("index.html", renderHomepage(buildData));
+    savePage("search.html", renderSearchPage(buildData));
+
+    renderAndSaveTreePage(buildData);
+    packageBuild(buildData);
+
+}
+
+function bugCheckBuild(buildData: BuildData) {
+
+    for (let member of buildData.configuration.members) {
+        if (!fs.existsSync(`data/wiki_source/${member}`)) {
+            throwError(`Article '${member}' referenced in 'members' does not exist.`, `data/builds/${buildData.name}.json`);
+        }
+    }
+
+    for (let member of buildData.configuration.features) {
+        if (!fs.existsSync(`data/wiki_source/${member}`)) {
+            throwError(`Article '${member}' referenced in 'features' does not exist.`, `data/builds/${buildData.name}.json`);
+        }
+    }
+
+}
+
+function compileArticles(buildData: BuildData) {
+
     for (let filetype of ["wiki", "sheet"]) {
         let files = fs.readdirSync(`./data/${filetype}_source/`);
         for (let filename of files) {
@@ -22,34 +57,20 @@ export function build(buildData: BuildData) {
             }
         }
     }
-    bugCheckBuild(buildData);
-    fs.writeFileSync("tree_nodes.json", JSON.stringify(buildData.tree, null, 4) + "\n");
-    savePage("index.html", renderHomepage(buildData));
-    renderAndSaveTreePage(buildData);
-    packageBuild(buildData);
+
 }
 
-function bugCheckBuild(buildData: BuildData) {
-    for (let member of buildData.configuration.members) {
-        if (!fs.existsSync(`data/wiki_source/${member}`)) {
-            throwError(`Article '${member}' referenced in 'members' does not exist.`, `data/builds/${buildData.name}.json`);
-        }
-    }
-    for (let member of buildData.configuration.features) {
-        if (!fs.existsSync(`data/wiki_source/${member}`)) {
-            throwError(`Article '${member}' referenced in 'features' does not exist.`, `data/builds/${buildData.name}.json`);
-        }
-    }
+function createBuildSheet(buildData: BuildData): BuildSheet {
+
+    return {
+        pageData: buildData.pageData
+    };
+
 }
 
 function regexMatch(strings: string[], expression: string): string[] {
     let re = new RegExp(expression);
-    let matches: string[] = new Array();
-    for (let string of strings) {
-        if (re.test(string)) {
-            matches.push(string);
-        }
-    }
+    let matches = strings.filter(s => re.test(s));
     return matches;
 }
 

@@ -61,6 +61,10 @@ export interface BuildConfiguration {
     features: string[]
 }
 
+export interface BuildSheet {
+    pageData: { [index: string]: PageData }
+}
+
 export interface PageData {
     name: string,
     born: string,

@@ -17,6 +17,10 @@ export function renderArticle(source: InlineElement[], metadata: Metadata, build
     return HTMLRendering.renderArticle(source, metadata, buildData);
 }
 
+export function renderSearchPage(buildData: BuildData): string {
+    return HTMLRendering.renderSearchPage();
+}
+
 export function substituteLinksAndCitations(text: string, buildData: BuildData): string {
     let q = "text";
     let v = "";

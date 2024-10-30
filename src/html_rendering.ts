@@ -10,12 +10,14 @@ import { htmlString, isSplitFormat, renderElement, renderRefListing, renderQuick
 import { BuildData, ImageDefinition, InlineElement, Metadata } from "./interfaces";
 
 function renderArticle(source: InlineElement[], metadata: Metadata, buildData: BuildData): string {
+
     let headerHTML = renderHeader();
     let articleHeaderHTML = renderArticleHeader(source, metadata);
     let renderedBody = renderBody(source, metadata, buildData);
     let navbar = renderNavbar(metadata);
     let images = renderImages(metadata, buildData);
     let referenceListings = renderReferenceListings(buildData);
+
     return htmlString(`
         <!DOCTYPE html>
         <html>
@@ -45,7 +47,8 @@ function renderArticle(source: InlineElement[], metadata: Metadata, buildData: B
                     </div>
                     ${renderFooter()}
                 </div>
-                <script src="../res/script.js" type="text/javascript"></script>
+
+                <script src="../res/article.js" type="text/javascript"></script>
             </body>
         </html>
     `);
@@ -335,6 +338,37 @@ function renderImage(element: any, buildData: BuildData): string {
 
 }
 
+function renderSearchPage(): string {
+    return htmlString(`
+        <!DOCTYPE html>
+        <html>
+            <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width" />
+                <title>Somerled Pages</title>
+                <link rel="stylesheet" href="../res/main.css" type="text/css" charset="utf-8"/>
+                <link rel="stylesheet" href="../res/homepage.css" type="text/css" charset="utf-8"/>
+                <link rel="icon" href="../res/favicon.png" type="image/png"/>
+            </head>
+            <body>
+
+                ${renderHeader()}
+
+                <div id="search-results">
+                </div>
+
+                ${renderFooter()}
+
+                <script src="../res/search.js" type="text/javascript"></script>
+            </body>
+        </html>
+    `);
+}
+
+function renderSearchResults(results: string[], buildData: BuildData): string {
+    return renderArticleFeatures("Search results for \"jack miller\"", results, buildData);
+}
+
 function renderStandardElement(element: any): string {
     let tag = element.tag;
     let elementID = (element.id !== undefined) ? "id=\""+element.id+"\"" : "";
@@ -468,6 +502,7 @@ export = {
     renderGallery,
     renderGalleryImage,
     renderImage,
+    renderSearchPage,
     renderStandardElement,
     renderArticleHeader,
     renderHeader,
