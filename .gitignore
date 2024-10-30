@@ -3,4 +3,3 @@ package-lock.json
 copied/
 *.js
 src/*.js
-workfile
