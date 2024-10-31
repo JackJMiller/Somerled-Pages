@@ -38,11 +38,17 @@ function bugCheckBuild(buildData: BuildData) {
         }
     }
 
-    for (let member of buildData.configuration.features) {
-        if (!fs.existsSync(`data/wiki_source/${member}`)) {
-            throwError(`Article '${member}' referenced in 'features' does not exist.`, `data/builds/${buildData.name}.json`);
+    for (let feature of buildData.configuration.features) {
+        if (!fs.existsSync(`data/wiki_source/${feature}`)) {
+            throwError(`Article '${feature}' referenced in 'features' does not exist.`, `data/builds/${buildData.name}.json`);
         }
+
+        if (!buildData.configuration.members.includes(feature)) {
+            throwWarning(`Article '${feature}' is referenced in 'features' but is not included in build.`, `data/builds/${buildData.name}.json`);
+        }
+
     }
+
 
 }
 

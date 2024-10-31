@@ -3,3 +3,4 @@ package-lock.json
 copied/
 *.js
 src/*.js
+src/client/*.js

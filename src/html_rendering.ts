@@ -7,7 +7,7 @@
 import { markImage, throwError, throwWarning } from "./functions";
 import { RefListing, TestimonialRefListing, CensusRefListing, DeathCertificateRefListing, BirthCertificateRefListing, MarriageCertificateRefListing, ValuationRollRefListing, LazyRefListing, BookRefListing, JournalRefListing, NewspaperRefListing, WebsiteRefListing } from "./ref_listing_interfaces";
 import { htmlString, isSplitFormat, renderElement, renderRefListing, renderQuickRefListing, substituteLinksAndCitations } from "./rendering";
-import { BuildData, ImageDefinition, InlineElement, Metadata } from "./interfaces";
+import { BuildData, ImageDefinition, InlineElement, Metadata, PageData } from "./interfaces";
 
 function renderArticle(source: InlineElement[], metadata: Metadata, buildData: BuildData): string {
 
@@ -216,20 +216,13 @@ function renderArticleFeatures(heading: string, articleNames: string[], buildDat
         <div class="inner-container">
             <h1 class="heading">${heading}</h1>
             <div class="four-grid">
-                ${articleNames.map((articleName: string) => renderArticleFeature(articleName, buildData)).join("")}
+                ${articleNames.map((articleName: string) => renderArticleFeature(articleName, buildData.pageData["wiki/" + articleName])).join("")}
             </div>
         </div>
     `);
 }
 
-function renderArticleFeature(articleName: string, buildData: BuildData): string {
-
-    if (!buildData.configuration.members.includes(articleName)) {
-        throwWarning(`Article '${articleName}' is referenced as a homepage feature but is not included in build.`, "index.html");
-        return "";
-    }
-
-    let pageData = buildData.pageData[`wiki/${articleName}`];
+function renderArticleFeature(articleName: string, pageData: PageData): string {
 
     return htmlString(`
         <a href="/wiki/${articleName}.html" class="article-feature" style="background-image: url('http://localhost:3000/media/${pageData.imageSrc}');">
@@ -354,19 +347,19 @@ function renderSearchPage(): string {
 
                 ${renderHeader()}
 
-                <div id="search-results">
+                <div class="inner-container">
+                    <h1 id="search-results-heading" class="heading"></h1>
+                    <div id="search-results" class="four-grid">
+                    </div>
                 </div>
 
                 ${renderFooter()}
 
+                <script src="../res/functions.js" type="text/javascript"></script>
                 <script src="../res/search.js" type="text/javascript"></script>
             </body>
         </html>
     `);
-}
-
-function renderSearchResults(results: string[], buildData: BuildData): string {
-    return renderArticleFeatures("Search results for \"jack miller\"", results, buildData);
 }
 
 function renderStandardElement(element: any): string {
