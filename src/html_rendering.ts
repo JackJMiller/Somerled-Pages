@@ -48,6 +48,7 @@ function renderArticle(source: InlineElement[], metadata: Metadata, buildData: B
                     ${renderFooter()}
                 </div>
 
+                <script src="../res/functions.js" type="text/javascript"></script>
                 <script src="../res/article.js" type="text/javascript"></script>
             </body>
         </html>
@@ -154,6 +155,7 @@ function renderHomepage(buildData: BuildData): string {
 
                 ${renderFooter()}
 
+                <script src="../res/functions.js" type="text/javascript"></script>
             </body>
         </html>
     `);
@@ -311,7 +313,9 @@ function renderHeader(): string {
             <div class="container">
                 <div class="header-inner">
                     <h1></h1>
-                    <input class="text-box" type="text" placeholder="Search" id="search"/>
+                    <form id="search-form">
+                        <input id="search" class="text-box" type="text" placeholder="Search"/>
+                    </form>
                 </div>
             </div>
         </div>

@@ -16,3 +16,14 @@ function renderArticleFeature(articleName: string, pageData: PageData): string {
 function htmlString(html: string): string {
     return html.trim().replace(/\s+/g, " ");
 }
+
+function submitSearch() {
+    let value = (document.getElementById("search") as HTMLInputElement).value;
+    let query = value.replace(/\s+/, "%20");
+    window.location.href = `/search.html?q=${query}`;
+}
+
+document.getElementById("search-form")!.addEventListener("submit", event => {
+    event.preventDefault();
+    submitSearch();
+})
