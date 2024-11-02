@@ -6,8 +6,8 @@
 
 import { markImage, throwError, throwWarning } from "./functions";
 import { RefListing, TestimonialRefListing, CensusRefListing, DeathCertificateRefListing, BirthCertificateRefListing, MarriageCertificateRefListing, ValuationRollRefListing, LazyRefListing, BookRefListing, JournalRefListing, NewspaperRefListing, WebsiteRefListing } from "./ref_listing_interfaces";
-import { htmlString, isSplitFormat, renderElement, renderRefListing, renderQuickRefListing, substituteLinksAndCitations } from "./rendering";
-import { BuildData, ImageDefinition, InlineElement, Metadata, PageData } from "./interfaces";
+import { htmlString, isSplitFormat, renderElement, renderRefListing, renderQuickRefListing } from "./rendering";
+import { BuildData, ImageDefinition, InfoBox, InlineElement, Metadata, PageData } from "./interfaces";
 
 function renderArticle(source: InlineElement[], metadata: Metadata, buildData: BuildData): string {
 
@@ -106,6 +106,142 @@ function renderImages(metadata: Metadata, buildData: BuildData) {
     }).join("");
 
     return images;
+}
+
+function renderInfobox(infobox: InfoBox, metadata: Metadata, buildData: BuildData): string {
+
+    return htmlString(`
+        <div class="box infobox">
+            ${infobox.image ? `<img src="../media/${infobox.image}"/>` : ""}
+            ${infobox["image-caption"] ? `<p class="caption">${infobox["image-caption"]}</p>` : ""}
+            <div class="grid">
+                ${renderInfoboxEntries(infobox.entries, metadata, buildData)}
+            </div>
+        </div>`
+    );
+
+}
+
+function renderInfoboxEntries(entries: { [index: string]: string | string[] }, metadata: Metadata, buildData: BuildData): string {
+    let output = "";
+    let keys = Object.keys(entries);
+    if (metadata["born"]) {
+        if (keys.includes("Born")) {
+            entries["Born"] = [metadata["born"], entries["Born"] as string];
+        }
+        else {
+            entries["Born"] = [metadata["born"]];
+        }
+    }
+    if (metadata["died"] && metadata["died"] !== "present") {
+        if (keys.includes("Died")) {
+            entries["Died"] = [metadata["died"], entries["Died"] as string];
+        }
+        else {
+            entries["Died"] = [metadata["died"]];
+        }
+    }
+    keys.forEach((key: string) => {
+        let value = entries[key];
+        if (value.length > 0) {
+            output = output + `<h5>${key}</h5>${renderBoxValue(key, value, metadata, buildData)}\n`
+        }
+    });
+    return output;
+}
+
+function renderBoxValue(key: string, value: string | string[], metadata: Metadata, buildData: BuildData): string {
+    if (value.constructor.name === "Array") {
+        return htmlString(`
+            <div>
+                ${(value as string[]).map((v: string) => "<p>" + substituteLinksAndCitations(v, buildData) + "</p>").join("")}
+            </div>
+        `);
+    }
+    else {
+        return htmlString(`
+            <div>
+                <p>${substituteLinksAndCitations(value as string, buildData)}</p>
+            </div>
+        `);
+    }
+}
+
+function substituteLinksAndCitations(text: string, buildData: BuildData): string {
+    let q = "text";
+    let v = "";
+    let links: string[] = [];
+    let citations: string[] = [];
+    for (let i = 0; i < text.length; i++) {
+        let c = text[i];
+        if (q === "text") {
+            if (c === "[") {
+                q = "ref";
+                v = "";
+            }
+        }
+        else if (q === "ref") {
+            if (c === "[") {
+                q = "link";
+            }
+            else if (c === "]") {
+                q = "text";
+                // output = output + renderCitation(v);
+                if (!citations.includes(v)) {
+                    citations.push(v);
+                }
+            }
+            else {
+                v = v + c;
+            }
+        }
+        else if (q === "link") {
+            if (c === "]") {
+                q = "end-of-link";
+            }
+            else {
+                v = v + c;
+            }
+        }
+        else if (q === "end-of-link") {
+            if (c === "]") {
+                links.push(v);
+                q = "text";
+                v = "";
+            }
+        }
+
+    }
+
+    buildData.citations = citations;
+
+    for (let link of links) {
+        text = text.replaceAll(`[[${link}]]`, renderUnparsedLink(link, buildData));
+    }
+
+    let index = 1;
+    for (let citation of citations) {
+        text = text.replaceAll(`[${citation}]`, renderCitation(index.toString()));
+        index++;
+    }
+
+    return text;
+}
+
+function renderUnparsedLink(content: string, buildData: BuildData): string {
+    let contentValues = content.split("|");
+    let placeholder = contentValues[0];
+    let target = contentValues[1];
+    if (buildData.configuration.members.includes(target)) {
+        return renderLink(placeholder, target);
+    }
+    else if (buildData.configuration.allArticles.includes(target)) {
+        return placeholder;
+    }
+    else {
+        throwWarning(`Cannot link to non-existing article '${target}'.`, buildData.location)
+        return "";
+    }
 }
 
 function renderNavbar(metadata: Metadata): string {
@@ -492,6 +628,7 @@ function renderLink(placeholder: string, target: string) {
 }
 
 export = {
+    htmlString,
     renderArticle,
     renderArticleFeatures,
     renderHomepage,
@@ -499,6 +636,7 @@ export = {
     renderGallery,
     renderGalleryImage,
     renderImage,
+    renderInfobox,
     renderSearchPage,
     renderStandardElement,
     renderArticleHeader,
@@ -514,6 +652,5 @@ export = {
     renderJournalRefListing,
     renderNewspaperRefListing,
     renderWebsiteRefListing,
-    renderCitation,
-    renderLink
+    renderCitation
 };
