@@ -32,17 +32,22 @@ export function build(buildData: BuildData) {
 
 function bugCheckBuild(buildData: BuildData) {
 
+    // check that articles listed for inclusion in build exist
     for (let member of buildData.configuration.members) {
         if (!fs.existsSync(`data/wiki_source/${member}`)) {
             throwError(`Article '${member}' referenced in 'members' does not exist.`, `data/builds/${buildData.name}.json`);
         }
     }
 
+    // validate articles listed as features
     for (let feature of buildData.configuration.features) {
+
+        // check that article listed exists
         if (!fs.existsSync(`data/wiki_source/${feature}`)) {
             throwError(`Article '${feature}' referenced in 'features' does not exist.`, `data/builds/${buildData.name}.json`);
         }
 
+        // check that article listed is included in build
         if (!buildData.configuration.members.includes(feature)) {
             throwWarning(`Article '${feature}' is referenced in 'features' but is not included in build.`, `data/builds/${buildData.name}.json`);
         }

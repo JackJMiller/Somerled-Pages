@@ -5,9 +5,11 @@
 */
 
 import HTMLRendering from "./html_rendering";
+import { MONTHS } from "./constants";
 import { BuildData, ImageDefinition, InfoBox, InlineElement, Metadata } from "./interfaces";
 import { markImage, recordRefListing, throwError, throwWarning } from "./functions";
 import { BirthCertificateRefListing, BookRefListing, CensusRefListing, DeathCertificateRefListing, JournalRefListing, LazyRefListing, MarriageCertificateRefListing, NewspaperRefListing, QuickRefListing, RefListing, TestimonialRefListing, ValuationRollRefListing, WebsiteRefListing } from "./ref_listing_interfaces";
+import { validateInfobox } from "./validation";
 
 export function renderHomepage(buildData: BuildData): string {
     return HTMLRendering.renderHomepage(buildData);
@@ -23,6 +25,19 @@ export function renderSearchPage(buildData: BuildData): string {
 
 export function renderCitation(id: string) {
     return HTMLRendering.renderCitation(id);
+}
+
+export function renderDate(rawDate: string): string {
+
+    if (rawDate == "Unknown") return rawDate;
+
+    let date = rawDate.split("-");
+    let day = (date[0] === "?") ? "" : date[0];
+    let month = (date[1] === "?") ? "" : MONTHS[parseInt(date[1])];
+    let year = (date[2] === "?") ? "" : date[2];
+
+    return [day, month, year].join(" ").trim().replace(/\s+/, " ");
+
 }
 
 export function renderElement(element: InlineElement | RefListing | InfoBox, metadata: Metadata, buildData: BuildData): string {
@@ -116,6 +131,7 @@ export function renderInfobox(infobox: InfoBox, metadata: Metadata, buildData: B
     if (infobox.image) {
         markImage(infobox.image, buildData);
     }
+    validateInfobox(infobox, metadata, buildData);
     return HTMLRendering.renderInfobox(infobox, metadata, buildData);
 }
 

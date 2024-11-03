@@ -6,7 +6,7 @@
 
 import { markImage, throwError, throwWarning } from "./functions";
 import { RefListing, TestimonialRefListing, CensusRefListing, DeathCertificateRefListing, BirthCertificateRefListing, MarriageCertificateRefListing, ValuationRollRefListing, LazyRefListing, BookRefListing, JournalRefListing, NewspaperRefListing, WebsiteRefListing } from "./ref_listing_interfaces";
-import { htmlString, isSplitFormat, renderElement, renderRefListing, renderQuickRefListing } from "./rendering";
+import { htmlString, isSplitFormat, renderDate, renderElement, renderRefListing, renderQuickRefListing } from "./rendering";
 import { BuildData, ImageDefinition, InfoBox, InlineElement, Metadata, PageData } from "./interfaces";
 
 function renderArticle(source: InlineElement[], metadata: Metadata, buildData: BuildData): string {
@@ -127,10 +127,10 @@ function renderInfoboxEntries(entries: { [index: string]: string | string[] }, m
     let keys = Object.keys(entries);
     if (metadata["born"]) {
         if (keys.includes("Born")) {
-            entries["Born"] = [metadata["born"], entries["Born"] as string];
+            entries["Born"] = [renderDate(metadata["born"]), entries["Born"] as string];
         }
         else {
-            entries["Born"] = [metadata["born"]];
+            entries["Born"] = [renderDate(metadata["born"])];
         }
     }
     if (metadata["died"] && metadata["died"] !== "present") {
