@@ -302,7 +302,7 @@ function renderHomepageLead(): string {
         <div class="body">
             
             <div class="inner-container">
-                <div class="homepage-top">
+                <form id="advanced-search">
                     <div>
                         <h1 class="massive-text">${renderLogo()}</h1>
                         <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</p>
@@ -310,40 +310,21 @@ function renderHomepageLead(): string {
                     </div>
                     <div>
                         <h2 style="margin-bottom: 2rem;">Search the encyclopedia...</h2>
-                        <h3>Article Type</h3>
-                        <div class="vertical-margin four-grid small-text">
-                            <div>
-                                <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike"/>
-                                <label for="vehicle1">Any</label>
-                            </div>
-                            <div>
-                                <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike"/>
-                                <label for="vehicle1">Person</label>
-                            </div>
-                            <div>
-                                <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike"/>
-                                <label for="vehicle1">Place</label>
-                            </div>
-                            <div>
-                                <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike"/>
-                                <label for="vehicle1">Lineage</label>
-                            </div>
-                        </div>
-                        <input type="text" class="vertical-margin text-box" placeholder="Article name"/>
-                        <input type="text" class="vertical-margin text-box" placeholder="Text in article"/>
+                        <input type="text" class="vertical-margin text-box" id="adv-srch-article-name" placeholder="Article name"/>
+                        <input type="text" class="vertical-margin text-box" id="adv-srch-text-in-article" placeholder="Text in article"/>
                         <h3>Birth</h3>
                         <div class="two-columns">
-                            <input type="text" class="vertical-margin text-box" placeholder="From"/>
-                            <input type="text" class="vertical-margin text-box" placeholder="To"/>
+                            <input type="text" class="vertical-margin text-box" id="adv-srch-birth-from" placeholder="From"/>
+                            <input type="text" class="vertical-margin text-box" id="adv-srch-birth-to" placeholder="To"/>
                         </div>
                         <h3>Death</h3>
                         <div class="two-columns">
-                            <input type="text" class="vertical-margin text-box" placeholder="From"/>
-                            <input type="text" class="vertical-margin text-box" placeholder="To"/>
+                            <input type="text" class="vertical-margin text-box" id="adv-srch-death-from" placeholder="From"/>
+                            <input type="text" class="vertical-margin text-box" id="adv-srch-death-to" placeholder="To"/>
                         </div>
-                        <button onclick="console.log('Submit');" class="clean-button vertical-margin">Search</button>
+                        <button onclick="submitAdvancedSearch();" class="clean-button vertical-margin">Search</button>
                     </div>
-                </div>
+                </form>
             </div>
         </div>
     `);

@@ -25,11 +25,38 @@ function htmlString(html: string): string {
 
 function submitSearch() {
     let value = (document.getElementById("search") as HTMLInputElement).value;
-    let query = value.replace(/\s+/, "%20");
+    let query = value.replace(/\s+/g, "%20");
     window.location.href = `/search.html?q=${query}`;
+}
+
+function submitAdvancedSearch() {
+
+    let params = new Array();
+
+    considerParamInQuery("article-name", params);
+    considerParamInQuery("birth-from", params);
+    considerParamInQuery("birth-to", params);
+    considerParamInQuery("death-from", params);
+    considerParamInQuery("death-to", params);
+
+    let query = params.join("&");
+
+    window.location.href = `/search.html?${query}`;
+
+}
+
+function considerParamInQuery(paramID: string, params: string[]) {
+    let paramValue = (document.getElementById(`adv-srch-${paramID}`) as HTMLInputElement).value.trim();
+    paramValue = paramValue.replace(/\s+/g, "%20");
+    if (paramValue) params.push(`${paramID}=${paramValue}`);
 }
 
 document.getElementById("search-form")!.addEventListener("submit", event => {
     event.preventDefault();
     submitSearch();
-})
+});
+
+document.getElementById("advanced-search")!.addEventListener("submit", event => {
+    event.preventDefault();
+    submitAdvancedSearch();
+});

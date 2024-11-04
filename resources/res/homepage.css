@@ -1,4 +1,4 @@
-.homepage-top {
+#advanced-search {
     display: grid;
     grid-template-columns: 3fr 4fr;
     grid-gap: 4rem;

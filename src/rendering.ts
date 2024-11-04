@@ -39,7 +39,7 @@ export function renderDate(rawDate: string): string {
     let month = (date[1] === "?") ? "" : MONTHS[parseInt(date[1])];
     let year = (date[2] === "?") ? "" : date[2];
 
-    return [circa, day, month, year].join(" ").trim().replace(/\s+/, " ");
+    return [circa, day, month, year].join(" ").trim().replace(/\s+/g, " ");
 
 }
 
