@@ -9,7 +9,7 @@ import { MONTHS } from "./constants";
 import { BuildData, ImageDefinition, InfoBox, InlineElement, Metadata } from "./interfaces";
 import { markImage, recordRefListing, throwError, throwWarning } from "./functions";
 import { BirthCertificateRefListing, BookRefListing, CensusRefListing, DeathCertificateRefListing, JournalRefListing, LazyRefListing, MarriageCertificateRefListing, NewspaperRefListing, QuickRefListing, RefListing, TestimonialRefListing, ValuationRollRefListing, WebsiteRefListing } from "./ref_listing_interfaces";
-import { validateInfobox } from "./validation";
+import { validateInfoBox, validateInfoTag } from "./validation";
 
 export function renderHomepage(buildData: BuildData): string {
     return HTMLRendering.renderHomepage(buildData);
@@ -31,12 +31,15 @@ export function renderDate(rawDate: string): string {
 
     if (rawDate == "Unknown") return rawDate;
 
+    let circa = (rawDate[0] === "c") ? "circa" : "";
+    if (circa) rawDate = rawDate.slice(1);
+
     let date = rawDate.split("-");
     let day = (date[0] === "?") ? "" : date[0];
     let month = (date[1] === "?") ? "" : MONTHS[parseInt(date[1])];
     let year = (date[2] === "?") ? "" : date[2];
 
-    return [day, month, year].join(" ").trim().replace(/\s+/, " ");
+    return [circa, day, month, year].join(" ").trim().replace(/\s+/, " ");
 
 }
 
@@ -49,7 +52,7 @@ export function renderElement(element: InlineElement | RefListing | InfoBox, met
     }
     else if (element.type == "infobox") {
         metadata["infobox"] = element as InfoBox;
-        metadata["infobox-rendered"] = renderInfobox(element as InfoBox, metadata, buildData);
+        metadata["infobox-rendered"] = renderInfoBox(element as InfoBox, metadata, buildData);
         return "";
     }
     else if (element.type == "ref-listing") {
@@ -127,12 +130,12 @@ export function renderStandardElement(element: any) {
     return `<${tag}${(element.id !== undefined) ? " id=\""+element.id+"\"" : ""}${(element.class !== undefined) ? " class=\""+element.class+"\"" : ""}>${element.inner}</${tag}>`;
 }
 
-export function renderInfobox(infobox: InfoBox, metadata: Metadata, buildData: BuildData) {
+export function renderInfoBox(infobox: InfoBox, metadata: Metadata, buildData: BuildData) {
     if (infobox.image) {
         markImage(infobox.image, buildData);
     }
-    validateInfobox(infobox, metadata, buildData);
-    return HTMLRendering.renderInfobox(infobox, metadata, buildData);
+    validateInfoBox(infobox, metadata, buildData);
+    return HTMLRendering.renderInfoBox(infobox, metadata, buildData);
 }
 
 export function isSplitFormat(articleType: string): boolean {

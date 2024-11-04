@@ -18,7 +18,7 @@ export interface ImageDefinition {
     "caption": string
 }
 
-export interface InfoElement {
+export interface InfoTag {
     "name": string,
     "born": string,
     "died": string,
@@ -30,7 +30,7 @@ export interface InfoElement {
 export interface Metadata {
     "infobox": InfoBox,
     "infobox-rendered": string,
-    "info": InfoElement,
+    "info": InfoTag,
     "type": string,
     "name": string,
     "article-type": string,

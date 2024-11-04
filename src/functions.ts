@@ -7,7 +7,7 @@
 import fs from "fs";
 import { TREE_CONNECTORS } from "./constants";
 import { loadBuildConfiguration, packageBuild, parseRawArticle, readArticle, savePage } from "./file_io";
-import { BuildConfiguration, BuildData, BuildSheet, InfoBox, InfoElement, Metadata, PageData, ProjectPackage, Reference, TreeNode } from "./interfaces";
+import { BuildConfiguration, BuildData, BuildSheet, InfoBox, InfoTag, Metadata, PageData, ProjectPackage, Reference, TreeNode } from "./interfaces";
 import { RefListing } from "./ref_listing_interfaces";
 import { htmlString, renderArticle, renderHomepage, renderSearchPage } from "./rendering";
 import { renderTreeHTML } from "./tree_rendering";
@@ -136,7 +136,7 @@ function createPageData(filetype: string, filename: string, metadata: Metadata):
     };
 }
 
-function createEmptyInfobox(): InfoBox {
+function createEmptyInfoBox(): InfoBox {
     return {
         "type": "infobox",
         "image": "silhouette.png",
@@ -146,7 +146,7 @@ function createEmptyInfobox(): InfoBox {
     }
 }
 
-export function createInfoObject(): InfoElement {
+export function createInfoObject(): InfoTag {
     return {
         "name": "",
         "born": "",
@@ -159,7 +159,7 @@ export function createInfoObject(): InfoElement {
 
 export function createInitialMetadata(name: string, type: string): Metadata {
     return {
-        "infobox": createEmptyInfobox(),
+        "infobox": createEmptyInfoBox(),
         "infobox-rendered": "",
         "info": createInfoObject(),
         "type": type,

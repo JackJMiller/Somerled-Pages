@@ -6,7 +6,8 @@
 
 import fs from "fs";
 import { regexMatchArticles, throwError } from "./functions";
-import { BuildConfiguration, BuildData, InfoElement, InlineElement, Metadata } from "./interfaces";
+import { BuildConfiguration, BuildData, InfoTag, InlineElement, Metadata } from "./interfaces";
+import { validateInfoTag } from "./validation";
 
 export function loadBuildConfiguration(projectDirectory: string, buildName: string): BuildConfiguration {
     let config = require(`${projectDirectory}/data/builds/${buildName}.json`);
@@ -112,7 +113,8 @@ export function parseRawArticle(raw: string, metadata: Metadata, buildData: Buil
                 if (q[1] === 0) {
                     const obj = JSON.parse(v);
                     if (obj["type"] === "info") {
-                        metadata["info"] = obj as InfoElement;
+                        metadata["info"] = obj as InfoTag;
+                        validateInfoTag(metadata["info"], metadata, buildData);
                     }
                     else {
                         parsed.push(obj as InlineElement);

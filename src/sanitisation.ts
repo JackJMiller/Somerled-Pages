@@ -4,32 +4,42 @@
 **  Licensed under version 3 of the GNU General Public License
 */
 
-import { MONTHS } from "./constants";
+import { MONTHS, MONTHS_SHORTENED } from "./constants";
+import { throwError } from "./functions";
+import { BuildData } from "./interfaces";
 
 // TODO
-export function extractDate(rawDate: string): string {
+export function extractDate(rawDate: string, buildData: BuildData): string {
 
+    if (rawDate === "present") return rawDate;
     if (!rawDate) return "Unknown";
 
     let date = rawDate.split(" ");
 
-    let containsCirca = (date[0] === "circa" || date[0] == "c.");
+    let circa = (date[0] === "circa" || date[0] == "c.") ? "c" : "";
 
-    if (containsCirca) date.shift();
-
-    // TODO: preserve circa
-
-    console.log({ rawDate, date });
+    if (circa === "c") date.shift();
 
     let year = (date.length >= 1) ? parseInt(date.at(-1) as string) : 0;
-    let month = (date.length >= 2) ? getMonthIndex(date.at(-2) as string) : 0;
+    let month = (date.length >= 2) ? getMonthIndex(date.at(-2) as string, buildData) : 0;
     let day = (date.length === 3) ? parseInt(date.at(-3) as string) : 0;
 
-    return `${day || "?"}-${month || "?"}-${year || "?"}`;
+    if (Number.isNaN(day) || Number.isNaN(year)) throwError(`Invalid date value.`, buildData.location, buildData, false);
+
+    let parsed = `${circa}${day || "?"}-${month || "?"}-${year || "?"}`
+
+    return parsed;
 
 }
 
-// TODO
-export function getMonthIndex(month: string): number {
-    return MONTHS.indexOf(month);
+export function getMonthIndex(month: string, buildData: BuildData): number {
+
+    let index = MONTHS.indexOf(month);
+
+    if (index === -1) index = MONTHS_SHORTENED.indexOf(month);
+
+    if (index === -1) throwError(`Invalid date value.`, buildData.location, buildData, false);
+
+    return index;
+
 }

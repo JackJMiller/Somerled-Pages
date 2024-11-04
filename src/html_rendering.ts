@@ -108,21 +108,21 @@ function renderImages(metadata: Metadata, buildData: BuildData) {
     return images;
 }
 
-function renderInfobox(infobox: InfoBox, metadata: Metadata, buildData: BuildData): string {
+function renderInfoBox(infobox: InfoBox, metadata: Metadata, buildData: BuildData): string {
 
     return htmlString(`
         <div class="box infobox">
             ${infobox.image ? `<img src="../media/${infobox.image}"/>` : ""}
             ${infobox["image-caption"] ? `<p class="caption">${infobox["image-caption"]}</p>` : ""}
             <div class="grid">
-                ${renderInfoboxEntries(infobox.entries, metadata, buildData)}
+                ${renderInfoBoxEntries(infobox.entries, metadata, buildData)}
             </div>
         </div>`
     );
 
 }
 
-function renderInfoboxEntries(entries: { [index: string]: string | string[] }, metadata: Metadata, buildData: BuildData): string {
+function renderInfoBoxEntries(entries: { [index: string]: string | string[] }, metadata: Metadata, buildData: BuildData): string {
     let output = "";
     let keys = Object.keys(entries);
     if (metadata["born"]) {
@@ -135,10 +135,10 @@ function renderInfoboxEntries(entries: { [index: string]: string | string[] }, m
     }
     if (metadata["died"] && metadata["died"] !== "present") {
         if (keys.includes("Died")) {
-            entries["Died"] = [metadata["died"], entries["Died"] as string];
+            entries["Died"] = [renderDate(metadata["died"]), entries["Died"] as string];
         }
         else {
-            entries["Died"] = [metadata["died"]];
+            entries["Died"] = [renderDate(metadata["died"])];
         }
     }
     keys.forEach((key: string) => {
@@ -367,7 +367,7 @@ function renderArticleFeature(articleName: string, pageData: PageData): string {
             <div class="article-feature-mask">
                 <div class="article-feature-inner">
                     <h1>${pageData.name}</h1>
-                    <h2>${pageData.born} — ${pageData.died}</h2>
+                    <h2>${renderDate(pageData.born)} — ${renderDate(pageData.died)}</h2>
                 </div>
             </div>
         </a>
@@ -519,7 +519,7 @@ function renderArticleHeader(source: InlineElement[], metadata: Metadata): strin
 
     let subtitle = "";
     if (metadata["info"]["article-type"] === "person") {
-        subtitle = `<h4 class="page-subtitle">${metadata["info"].born || "Unknown"} — ${metadata["info"].died || "Unknown"}</h4>`;
+        subtitle = `<h4 class="page-subtitle">${renderDate(metadata["born"])} — ${renderDate(renderDate(metadata["died"]))}</h4>`;
     }
     if (metadata["info"]["subtitle"]) {
         subtitle = subtitle + `<h4 class="page-subtitle">${metadata["info"]["subtitle"]}</h4>`;
@@ -528,12 +528,13 @@ function renderArticleHeader(source: InlineElement[], metadata: Metadata): strin
     return htmlString(`
         <div class="article-header">
             <div class="container">
-                <h1 class="page-title">${metadata["info"].name}</h1>
+                <h1 class="page-title">${metadata.info.name}</h1>
                 ${subtitle}
                 <span class="sub-subtitle">A family encyclopedia created with ${renderLogo()}</span>
             </div>
         </div>
     `);
+
 }
 
 function renderTestimonialRefListing(element: TestimonialRefListing): string {
@@ -636,7 +637,7 @@ export = {
     renderGallery,
     renderGalleryImage,
     renderImage,
-    renderInfobox,
+    renderInfoBox,
     renderSearchPage,
     renderStandardElement,
     renderArticleHeader,
