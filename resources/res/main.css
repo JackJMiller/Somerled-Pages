@@ -208,6 +208,11 @@ footer a {
     margin: auto;
 }
 
+.inner-inner-container {
+    width: 60%;
+    margin: auto;
+}
+
 .inner-container {
     width: 80%;
     margin: auto;

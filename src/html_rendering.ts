@@ -302,31 +302,37 @@ function renderHomepageLead(): string {
         <div class="body">
             
             <div class="inner-container">
-                <form id="advanced-search">
+                <div class="homepage-top">
                     <div>
                         <h1 class="massive-text">${renderLogo()}</h1>
                         <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</p>
                         <p>At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
                     </div>
-                    <div>
-                        <h2 style="margin-bottom: 2rem;">Search the encyclopedia...</h2>
-                        <input type="text" class="vertical-margin text-box" id="adv-srch-article-name" placeholder="Article name"/>
-                        <input type="text" class="vertical-margin text-box" id="adv-srch-text-in-article" placeholder="Text in article"/>
-                        <h3>Birth</h3>
-                        <div class="two-columns">
-                            <input type="text" class="vertical-margin text-box" id="adv-srch-birth-from" placeholder="From"/>
-                            <input type="text" class="vertical-margin text-box" id="adv-srch-birth-to" placeholder="To"/>
-                        </div>
-                        <h3>Death</h3>
-                        <div class="two-columns">
-                            <input type="text" class="vertical-margin text-box" id="adv-srch-death-from" placeholder="From"/>
-                            <input type="text" class="vertical-margin text-box" id="adv-srch-death-to" placeholder="To"/>
-                        </div>
-                        <button onclick="submitAdvancedSearch();" class="clean-button vertical-margin">Search</button>
-                    </div>
-                </form>
+                    ${renderAdvancedSearchForm()}
+                </div>
             </div>
         </div>
+    `);
+}
+
+function renderAdvancedSearchForm() {
+    return htmlString(`
+        <form id="advanced-search">
+            <h2 style="margin-bottom: 2rem;">Search the encyclopedia...</h2>
+            <input type="text" class="vertical-margin text-box" id="adv-srch-article-name" placeholder="Article name"/>
+            <input type="text" class="vertical-margin text-box" id="adv-srch-text-in-article" placeholder="Text in article"/>
+            <h3>Birth</h3>
+            <div class="two-columns">
+                <input type="text" class="vertical-margin text-box" id="adv-srch-birth-from" placeholder="From"/>
+                <input type="text" class="vertical-margin text-box" id="adv-srch-birth-to" placeholder="To"/>
+            </div>
+            <h3>Death</h3>
+            <div class="two-columns">
+                <input type="text" class="vertical-margin text-box" id="adv-srch-death-from" placeholder="From"/>
+                <input type="text" class="vertical-margin text-box" id="adv-srch-death-to" placeholder="To"/>
+            </div>
+            <button onclick="submitAdvancedSearch();" class="clean-button vertical-margin">Search</button>
+        </form>
     `);
 }
 
@@ -467,6 +473,10 @@ function renderSearchPage(): string {
             <body>
 
                 ${renderHeader()}
+
+                <div class="inner-inner-container">
+                    ${renderAdvancedSearchForm()}
+                </div>
 
                 <div class="inner-container">
                     <h1 id="search-results-heading" class="heading"></h1>
