@@ -4,26 +4,22 @@
 **  Licensed under version 3 of the GNU General Public License
 */
 
-function search(query: string, buildSheet: any) {
+function search(query: SearchQuery, buildSheet: any) {
 
-    document.getElementById("search-results-heading")!.innerHTML = `Search results for "${query}"`;
+    document.getElementById("search-results-heading")!.innerHTML = `Search results for "${query["article-name"].join(" ")}"`;
 
     let keys = Object.keys(buildSheet.pageData);
 
-    let querySplit = query.toLowerCase().split(/\s+/);
+    let articleName = query["article-name"];
 
     let returns: any = {};
 
     for (let key of keys) {
         let pageData = buildSheet.pageData[key];
-        let matchFactor = getSearchMatchFactor(querySplit, pageData);
+        let matchFactor = getSearchMatchFactor(query, pageData);
         if (matchFactor > 0) {
-            if (!returns[matchFactor]) {
-                returns[matchFactor] = [key];
-            }
-            else {
-                returns[matchFactor].push(key);
-            }
+            if (!returns[matchFactor]) returns[matchFactor] = [key];
+            else returns[matchFactor].push(key);
         }
     }
 
@@ -39,20 +35,58 @@ function search(query: string, buildSheet: any) {
 }
 
 // TODO
-function getSearchMatchFactor(query: string[], pageData: PageData): number {
+function getSearchMatchFactor(query: SearchQuery, pageData: PageData): number {
+
     let nameSplit = pageData.name.toLowerCase().split(" ");
     let matches = 0;
-    for (let queryWord of query) {
+
+    if (!querySatisfiesDateConditions(query, pageData)) return 0;
+
+    for (let queryWord of query["article-name"]) {
         if (nameSplit.includes(queryWord)) {
             matches++;
         }
     }
-    return matches / query.length;
+
+    return matches / query["article-name"].length;
+
 }
 
-function parseQuery(query: string): string {
+function querySatisfiesDateConditions(query: SearchQuery, pageData: PageData): boolean {
+    let birthNumerised = numeriseDate(pageData.born);
+    let deathNumerised = numeriseDate(pageData.died);
+    if (!Number.isNaN(query["birth-from"]) && query["birth-from"] > birthNumerised) return false;
+    if (!Number.isNaN(query["birth-to"]) && query["birth-to"] < birthNumerised) return false;
+    if (!Number.isNaN(query["death-from"]) && query["death-from"] > deathNumerised) return false;
+    if (!Number.isNaN(query["death-to"]) && query["death-to"] < deathNumerised) return false;
+    return true;
+}
+
+// TODO
+function numeriseDate(date: string): number {
+    if (!date) return NaN;
+    let year = date.split("-").at(-1);
+    return (year === "?") ? NaN : parseInt(year as string);
+}
+
+function parseQuery(query: string): SearchQuery {
+
     let searchParams = new URLSearchParams(query);
-    return searchParams.get("q")!.toLowerCase();
+
+    let articleName = searchParams.get("article-name") || "";
+    let birthFrom = searchParams.get("birth-from") || "";
+    let birthTo = searchParams.get("birth-to") || "";
+    let deathFrom = searchParams.get("death-from") || "";
+    let deathTo = searchParams.get("death-to") || "";
+
+    return {
+        "article-name": articleName.toLowerCase().replace(/\%20/, " ").split(" "),
+        "birth-from": parseInt(birthFrom),
+        "birth-to": parseInt(birthTo),
+        "death-from": parseInt(deathFrom),
+        "death-to": parseInt(deathTo)
+    };
+
 }
 
 fetch("/res/build_sheet.json")
@@ -61,6 +95,8 @@ fetch("/res/build_sheet.json")
     let query = window.location.search;
     if (query !== "") {
         let parsedQuery = parseQuery(query);
+        console.log("Parsed Query");
+        console.log(parsedQuery);
         search(parsedQuery, buildSheet);
     }
 });

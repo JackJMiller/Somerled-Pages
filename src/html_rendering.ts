@@ -320,7 +320,6 @@ function renderAdvancedSearchForm() {
         <form id="advanced-search">
             <h2 style="margin-bottom: 2rem;">Search the encyclopedia...</h2>
             <input type="text" class="vertical-margin text-box" id="adv-srch-article-name" placeholder="Article name"/>
-            <input type="text" class="vertical-margin text-box" id="adv-srch-text-in-article" placeholder="Text in article"/>
             <h3>Birth</h3>
             <div class="two-columns">
                 <input type="text" class="vertical-margin text-box" id="adv-srch-birth-from" placeholder="From"/>

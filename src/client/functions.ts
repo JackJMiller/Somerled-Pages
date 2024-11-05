@@ -26,7 +26,7 @@ function htmlString(html: string): string {
 function submitSearch() {
     let value = (document.getElementById("search") as HTMLInputElement).value;
     let query = value.replace(/\s+/g, "%20");
-    window.location.href = `/search.html?q=${query}`;
+    window.location.href = `/search.html?article-name=${query}`;
 }
 
 function submitAdvancedSearch() {
@@ -46,8 +46,8 @@ function submitAdvancedSearch() {
 }
 
 function considerParamInQuery(paramID: string, params: string[]) {
-    let paramValue = (document.getElementById(`adv-srch-${paramID}`) as HTMLInputElement).value.trim();
-    paramValue = paramValue.replace(/\s+/g, "%20");
+    let paramValue = (document.getElementById(`adv-srch-${paramID}`) as HTMLInputElement).value;
+    paramValue = paramValue.trim().toLowerCase().replace(/\s+/g, "%20");
     if (paramValue) params.push(`${paramID}=${paramValue}`);
 }
 

@@ -11,3 +11,10 @@ interface PageData {
     imageSrc: string
 }
 
+interface SearchQuery {
+    "article-name": string[],
+    "birth-from": number,
+    "birth-to": number,
+    "death-from": number,
+    "death-to": number
+}
