@@ -6,7 +6,7 @@
 
 function search(query: SearchQuery, buildSheet: any) {
 
-    document.getElementById("search-results-heading")!.innerHTML = `Search results for "${query["article-name"].join(" ")}"`;
+    populateSearchForm(query);
 
     let keys = Object.keys(buildSheet.pageData);
 
@@ -31,6 +31,20 @@ function search(query: SearchQuery, buildSheet: any) {
             document.getElementById("search-results")!.innerHTML += renderArticleFeature(key, pageData);
         }
     }
+
+}
+
+function populateSearchForm(query: SearchQuery) {
+
+    element("search-results-heading")!.innerHTML = `Search results for "${query["article-name"].join(" ")}"`;
+
+    element("adv-srch-article-name")!.value = query["article-name"].join(" ");
+
+    if (!Number.isNaN(query["birth-from"])) element("adv-srch-birth-from")!.value = query["birth-from"];
+    if (!Number.isNaN(query["birth-to"])) element("adv-srch-birth-to")!.value = query["birth-to"];
+
+    if (!Number.isNaN(query["death-from"])) element("adv-srch-death-from")!.value = query["death-from"];
+    if (!Number.isNaN(query["death-to"])) element("adv-srch-death-to")!.value = query["death-to"];
 
 }
 

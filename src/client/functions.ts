@@ -51,6 +51,10 @@ function considerParamInQuery(paramID: string, params: string[]) {
     if (paramValue) params.push(`${paramID}=${paramValue}`);
 }
 
+function element(id: string): any {
+    return document.getElementById(id);
+}
+
 document.getElementById("search-form")!.addEventListener("submit", event => {
     event.preventDefault();
     submitSearch();
