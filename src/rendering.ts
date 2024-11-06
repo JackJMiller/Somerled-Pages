@@ -20,7 +20,7 @@ export function renderArticle(source: InlineElement[], metadata: Metadata, build
 }
 
 export function renderSearchPage(buildData: BuildData): string {
-    return HTMLRendering.renderSearchPage();
+    return HTMLRendering.renderSearchPage(buildData);
 }
 
 export function renderCitation(id: string) {

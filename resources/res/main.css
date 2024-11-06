@@ -9,7 +9,6 @@
     --infobox-width: 350px;
     --box-padding: 6px;
     --size-default: 300px;
-    --size-large: 500px;
     --transition-short: 150ms;
     --colour-border: #999999;
 }
@@ -25,6 +24,10 @@
 .header-inner {
     display: grid;
     grid-template-columns: 1fr auto;
+}
+
+.header-inner h1 {
+    font-size: 18px;
 }
 
 .caption {
@@ -77,6 +80,7 @@ a {
     font-family: inherit;
     font-weight: inherit;
     text-decoration: none;
+    color: inherit;
 }
 
 h1 {
@@ -167,34 +171,14 @@ footer a {
     grid-template-columns: 1fr var(--infobox-width);
 }
 
-.small-text {
-    font-size: 15px;
-    line-height: 20px;
-}
-
-.massive-text {
-    font-size: 45px;
-    line-height: 60px;
-}
-
-.medium-text {
-    font-size: 21px;
-    line-height: 28px;
-}
-
-.large-text {
-    font-size: 30px;
-    line-height: 40px;
-}
-
 .logo-somerled {
     font-family: "Libre Baskerville", serif;
     font-weight: 500;
     color: black;
 }
 
-.sub-subtitle {
-    font-size: 1rem;
+.framework-credit {
+    font-size: 16px;
 }
 
 .logo-pages {
@@ -366,10 +350,6 @@ img {
 
 .default {
     width: var(--size-default);
-}
-
-.large {
-    width: var(--size-large);
 }
 
 .right-box {

@@ -95,6 +95,7 @@ export interface BuildData {
 
 export interface ProjectPackage {
     name: string,
+    description: string,
     authors: string[],
     contributors: string[]
 }

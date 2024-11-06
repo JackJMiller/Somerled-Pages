@@ -11,7 +11,7 @@ import { BuildData, ImageDefinition, InfoBox, InlineElement, Metadata, PageData 
 
 function renderArticle(source: InlineElement[], metadata: Metadata, buildData: BuildData): string {
 
-    let headerHTML = renderHeader();
+    let headerHTML = renderHeader(buildData);
     let articleHeaderHTML = renderArticleHeader(source, metadata);
     let renderedBody = renderBody(source, metadata, buildData);
     let navbar = renderNavbar(metadata);
@@ -281,9 +281,9 @@ function renderHomepage(buildData: BuildData): string {
             </head>
             <body>
 
-                ${renderHeader()}
+                ${renderHeader(buildData)}
 
-                ${renderHomepageLead()}
+                ${renderHomepageLead(buildData)}
 
                 ${renderArticleFeatures("Featured Articles", buildData.configuration.features, buildData)}
 
@@ -297,16 +297,16 @@ function renderHomepage(buildData: BuildData): string {
     `);
 }
 
-function renderHomepageLead(): string {
+function renderHomepageLead(buildData: BuildData): string {
     return htmlString(`
         <div class="body">
             
             <div class="inner-container">
                 <div class="homepage-top">
                     <div>
-                        <h1 class="massive-text">${renderLogo()}</h1>
-                        <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</p>
-                        <p>At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
+                        <h1>${renderLogo(buildData)}</h1>
+                        ${renderSomerledPagesCredit()}
+                        ${buildData.projectPackage.description.split("\n").map(e => `<p>${e}</p>`).join("")}
                     </div>
                     ${renderAdvancedSearchForm()}
                 </div>
@@ -366,7 +366,7 @@ function renderFooter(): string {
         <footer>
             <div class="container">
                 <div class="footer-inner grid">
-                    <h1>${renderLogo()}</h1>
+                    <h1>${renderSomerledPagesLogo()}</h1>
                     <div class="four-grid align-centre">
                         <span><a href="/">Home</a></span>
                         <span><a href="/explore.html">Explore</a></span>
@@ -421,7 +421,17 @@ function renderGalleryImage(src: string, caption: string): string {
 
 }
 
-function renderLogo(): string {
+function renderLogo(buildData: BuildData): string {
+    let name = buildData.projectPackage.name;
+    let size = 1000 / name.length;
+    return htmlString(`
+        <a href="/">
+            <span style="font-size: ${size}px; font-family: 'Libre Baskerville', serif;">${name}</span>
+        </a>
+    `);
+}
+
+function renderSomerledPagesLogo(): string {
     return htmlString(`
         <a href="/">
             <span class="logo-somerled">Somerled</span> <span class="logo-pages">Pages</span>
@@ -429,7 +439,7 @@ function renderLogo(): string {
     `);
 }
 
-function renderHeader(): string {
+function renderHeader(buildData: BuildData): string {
     return htmlString(`
         <div class="header">
             <div class="container">
@@ -457,7 +467,7 @@ function renderImage(element: any, buildData: BuildData): string {
 
 }
 
-function renderSearchPage(): string {
+function renderSearchPage(buildData: BuildData): string {
     return htmlString(`
         <!DOCTYPE html>
         <html>
@@ -471,7 +481,7 @@ function renderSearchPage(): string {
             </head>
             <body>
 
-                ${renderHeader()}
+                ${renderHeader(buildData)}
 
                 <div class="inner-inner-container">
                     ${renderAdvancedSearchForm()}
@@ -520,11 +530,16 @@ function renderArticleHeader(source: InlineElement[], metadata: Metadata): strin
             <div class="container">
                 <h1 class="page-title">${metadata.info.name}</h1>
                 ${subtitle}
-                <span class="sub-subtitle">A family encyclopedia created with ${renderLogo()}</span>
+                ${renderSomerledPagesCredit()}
             </div>
         </div>
     `);
 
+}
+
+
+function renderSomerledPagesCredit(): string {
+    return `<p class="framework-credit">Created with ${renderSomerledPagesLogo()}</p>`;
 }
 
 function renderTestimonialRefListing(element: TestimonialRefListing): string {
