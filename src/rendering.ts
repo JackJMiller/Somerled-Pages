@@ -9,7 +9,7 @@ import { MONTHS } from "./constants";
 import { BuildData, ImageDefinition, InfoBox, InlineElement, Metadata } from "./interfaces";
 import { markImage, recordRefListing, throwError, throwWarning } from "./functions";
 import { BirthCertificateRefListing, BookRefListing, CensusRefListing, DeathCertificateRefListing, JournalRefListing, LazyRefListing, MarriageCertificateRefListing, NewspaperRefListing, QuickRefListing, RefListing, TestimonialRefListing, ValuationRollRefListing, WebsiteRefListing } from "./ref_listing_interfaces";
-import { validateInfoBox, validateInfoTag } from "./validation";
+import { errorCheckReference, validateInfoBox, validateInfoTag } from "./validation";
 
 export function renderHomepage(buildData: BuildData): string {
     return HTMLRendering.renderHomepage(buildData);
@@ -56,6 +56,7 @@ export function renderElement(element: InlineElement | RefListing | InfoBox, met
         return "";
     }
     else if (element.type == "ref-listing") {
+        errorCheckReference(element as RefListing, buildData);
         recordRefListing(element as RefListing, buildData);
         return "";
     }

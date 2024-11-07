@@ -213,7 +213,7 @@ function substituteLinksAndCitations(text: string, buildData: BuildData): string
 
     }
 
-    buildData.citations = citations;
+    buildData.citations = buildData.citations.concat(citations);
 
     for (let link of links) {
         text = text.replaceAll(`[[${link}]]`, renderUnparsedLink(link, buildData));
