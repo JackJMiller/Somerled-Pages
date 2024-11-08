@@ -6,6 +6,11 @@
 
 import { RefListing } from "./ref_listing_interfaces";
 
+export interface ErrorNotice {
+    "attribute": string,
+    "value": any
+}
+
 export interface InfoBox {
     "type": string,
     "image": string,

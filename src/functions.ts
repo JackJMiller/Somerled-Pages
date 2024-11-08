@@ -7,7 +7,7 @@
 import fs from "fs";
 import { TREE_CONNECTORS } from "./constants";
 import { loadBuildConfiguration, packageBuild, parseRawArticle, readArticle, savePage } from "./file_io";
-import { BuildConfiguration, BuildData, BuildSheet, InfoBox, InfoTag, Metadata, PageData, ProjectPackage, Reference, TreeNode } from "./interfaces";
+import { BuildConfiguration, BuildData, BuildSheet, ErrorNotice, InfoBox, InfoTag, Metadata, PageData, ProjectPackage, Reference, TreeNode } from "./interfaces";
 import { RefListing } from "./ref_listing_interfaces";
 import { htmlString, renderArticle, renderHomepage, renderSearchPage } from "./rendering";
 import { renderTreeHTML } from "./tree_rendering";
@@ -278,4 +278,8 @@ export function markImage(imageName: string, buildData: BuildData) {
     if (!fs.existsSync(`media/${imageName}`)) {
         throwError(`Cannot find image '${imageName}'.`, buildData.location);
     }
+}
+
+export function recordErrorNotice(attribute: string, value: any, errors: ErrorNotice[]) {
+    errors.push({ attribute, value });
 }

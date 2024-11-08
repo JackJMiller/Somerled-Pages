@@ -423,10 +423,10 @@ function renderGalleryImage(src: string, caption: string): string {
 
 function renderLogo(buildData: BuildData): string {
     let name = buildData.projectPackage.name;
-    let size = 1000 / name.length;
+    let size = Math.max(1000 / name.length, 36);
     return htmlString(`
         <a href="/">
-            <span style="font-size: ${size}px; font-family: 'Libre Baskerville', serif;">${name}</span>
+            <span style="color: black; font-size: ${size}px; font-family: 'Libre Baskerville', serif;">${name}</span>
         </a>
     `);
 }
