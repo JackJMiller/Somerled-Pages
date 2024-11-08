@@ -8,7 +8,7 @@ import HTMLRendering from "./html_rendering";
 import { MONTHS } from "./constants";
 import { BuildData, ImageDefinition, InfoBox, InlineElement, Metadata } from "./interfaces";
 import { markImage, recordRefListing, throwError, throwWarning } from "./functions";
-import { BirthCertificateRefListing, BookRefListing, CensusRefListing, DeathCertificateRefListing, JournalRefListing, LazyRefListing, MarriageCertificateRefListing, NewspaperRefListing, QuickRefListing, RefListing, TestimonialRefListing, ValuationRollRefListing, WebsiteRefListing } from "./ref_listing_interfaces";
+import { BirthCertificateRefListing, BookRefListing, CensusRefListing, DeathCertificateRefListing, JournalRefListing, LazyRefListing, MarriageCertificateRefListing, NewspaperRefListing, RefListing, TestimonialRefListing, ValuationRollRefListing, WebsiteRefListing } from "./ref_listing_interfaces";
 import { errorCheckReference, validateInfoBox, validateInfoTag } from "./validation";
 
 export function renderHomepage(buildData: BuildData): string {
@@ -56,8 +56,8 @@ export function renderElement(element: InlineElement | RefListing | InfoBox, met
         return "";
     }
     else if (element.type == "ref-listing") {
-        errorCheckReference(element as RefListing, buildData);
-        recordRefListing(element as RefListing, buildData);
+        errorCheckReference(element, buildData);
+        recordRefListing(element, buildData);
         return "";
     }
     else if (element.type == "gallery") {

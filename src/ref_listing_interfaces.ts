@@ -5,9 +5,10 @@
 */
 
 export type RefListing = TestimonialRefListing | CensusRefListing | DeathCertificateRefListing | BirthCertificateRefListing | MarriageCertificateRefListing | ValuationRollRefListing | LazyRefListing | BookRefListing | JournalRefListing | NewspaperRefListing | WebsiteRefListing;
+export type RefSourceType = "book" | "census" | "birth-certificate" | "death-certificate" | "lazy" | "marriage-certificate" | "newspaper" | "testimonial" | "valuation-roll" | "webpage" | "journal";
 
 export interface BookRefListing {
-    "type": string,
+    "type": "book",
     "id": string,
     "source-type": string,
     "source-title": string,
@@ -19,7 +20,7 @@ export interface BookRefListing {
 }
 
 export interface CensusRefListing {
-    "type": string,
+    "type": "census",
     "id": string,
     "source-type": string,
     "year": string,
@@ -28,7 +29,7 @@ export interface CensusRefListing {
 };
 
 export interface BirthCertificateRefListing {
-    "type": string,
+    "type": "birth-certificate",
     "id": string,
     "source-type": string,
     "name": string,
@@ -39,7 +40,7 @@ export interface BirthCertificateRefListing {
 };
 
 export interface DeathCertificateRefListing {
-    "type": string,
+    "type": "death-certificate",
     "id": string,
     "source-type": string,
     "name": string,
@@ -50,7 +51,7 @@ export interface DeathCertificateRefListing {
 };
 
 export interface LazyRefListing {
-    "type": string,
+    "type": "lazy",
     "id": string,
     "source-type": string,
     "source-value": string,
@@ -58,7 +59,7 @@ export interface LazyRefListing {
 };
 
 export interface MarriageCertificateRefListing {
-    "type": string,
+    "type": "marriage-certificate",
     "id": string,
     "source-type": string,
     "party-one": string,
@@ -70,7 +71,7 @@ export interface MarriageCertificateRefListing {
 };
 
 export interface NewspaperRefListing {
-    "type": string,
+    "type": "newspaper",
     "id": string,
     "source-type": string,
     "name-of-publication": string,
@@ -82,7 +83,7 @@ export interface NewspaperRefListing {
 };
 
 export interface TestimonialRefListing {
-    "type": string,
+    "type": "testimonial",
     "id": string,
     "source-type": string,
     "name": string,
@@ -91,7 +92,7 @@ export interface TestimonialRefListing {
 };
 
 export interface ValuationRollRefListing {
-    "type": string,
+    "type": "valuation-roll",
     "id": string,
     "source-type": string,
     "source-location": string,
@@ -101,7 +102,7 @@ export interface ValuationRollRefListing {
 };
 
 export interface WebsiteRefListing {
-    "type": string,
+    "type": "webpage",
     "id": string,
     "source-type": string,
     "name-of-website": string,
@@ -109,14 +110,8 @@ export interface WebsiteRefListing {
     "date-retrieved": string
 };
 
-export interface QuickRefListing {
-    "type": string,
-    "id": string,
-    "quick-id": string
-};
-
 export interface JournalRefListing {
-    "type": string,
+    "type": "journal",
     "id": string,
     "source-type": string,
     "name-of-publication": string,

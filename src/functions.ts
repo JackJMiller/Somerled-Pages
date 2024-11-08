@@ -198,7 +198,7 @@ export function throwWarning(message: string, location: string, buildData: Build
     }
 }
 
-export function recordRefListing(element: RefListing, buildData: BuildData) {
+export function recordRefListing(element: any, buildData: BuildData) {
     buildData.inDocumentRefListings[element["id"]] = element;
 }
 

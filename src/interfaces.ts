@@ -179,3 +179,8 @@ export interface TreeNode {
 export interface TreeNodes {
     [index: string]: TreeNode
 }
+
+export interface RefModelAttribute {
+    "name": string,
+    "types": string[]
+}
