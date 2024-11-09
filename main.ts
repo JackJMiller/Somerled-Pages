@@ -8,14 +8,14 @@ import { build, initialiseBuildData } from "./src/functions";
 import { colourString, createBuildData, createInitialMetadata, shouldBeBuilt, throwError, updateBuildData } from "./src/functions";
 
 const PROJECT_DIRECTORY = process.argv[2];
-
 const ARGS = process.argv.slice(3);
-
-const START = Date.now();
 
 if (ARGS[0] === "build") {
 
     let buildName = ARGS[1];
+
+    const START = Date.now();
+
     let buildData = initialiseBuildData(PROJECT_DIRECTORY, buildName);
 
     build(buildData);

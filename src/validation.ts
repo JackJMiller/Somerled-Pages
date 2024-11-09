@@ -20,10 +20,12 @@ export function validateInfoTag(infoTag: InfoTag, metadata: Metadata, buildData:
 
 }
 
+// TODO
 export function validateInfoBox(infoBox: InfoBox, metadata: Metadata, buildData: BuildData) {
 
 }
 
+// print any errors contained in a reference definition
 export function errorCheckReference(reference: any, buildData: BuildData) {
     let errors = errorCheckRef(reference);
     for (let error of errors) {
@@ -31,6 +33,7 @@ export function errorCheckReference(reference: any, buildData: BuildData) {
     }
 }
 
+// check that a reference is properly defined // return any errors contained in the definition
 export function errorCheckRef(ref: any): ErrorNotice[] {
 
     let errors = new Array();
@@ -42,11 +45,15 @@ export function errorCheckRef(ref: any): ErrorNotice[] {
     let refKeys = Object.keys(ref);
 
     for (let attribute of model) {
+
+        // record an error if a mandatory attribute inside the reference is missing
         if (!refKeys.includes(attribute.name)) {
             if (!attribute.types.includes("undefined")) {
                 recordErrorNotice(attribute.name, undefined, errors);
             }
         }
+
+        // record an error if an attribute inside the reference is of an invalid type
         else if (!attribute.types.includes(ref[attribute.name].constructor.name)) {
             recordErrorNotice(attribute.name, ref[attribute.name], errors);
         }

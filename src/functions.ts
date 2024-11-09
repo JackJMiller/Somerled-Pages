@@ -141,8 +141,7 @@ function createEmptyInfoBox(): InfoBox {
         "type": "infobox",
         "image": "silhouette.png",
         "image-caption": "",
-        "entries": {
-        }
+        "entries": {}
     }
 }
 
@@ -203,15 +202,24 @@ export function recordRefListing(element: any, buildData: BuildData) {
 }
 
 export function initialiseBuildData(projectDirectory: string, buildName: string) {
+
+    // load quick references
     let quickReferences = require(`${projectDirectory}/data/quick_references.json`);
-    if (!fs.existsSync(`data/builds/${buildName}.json`)) {
-        throwError(`There is no build called '${buildName}'.`, "build_configurations.json");
+    if (!fs.existsSync(`${projectDirectory}/data/quick_references.json`)) {
+        throwError(`Project is missing file 'data/quick_references.json'.`, "BUILD");
     }
+
+    // load the build configuration
     let buildConfiguration = loadBuildConfiguration(projectDirectory, buildName);
-    buildConfiguration.allArticles = fs.readdirSync("data/wiki_source/");
+
+    // load project package
     let projectPackage = require(`${projectDirectory}/somerled-package.json`);
+
+    // initialise the buildData object
     let buildData = createBuildData(projectDirectory, projectPackage, quickReferences, buildName, buildConfiguration);
+
     return buildData;
+
 }
 
 export function createBuildData(projectDirectory: string, projectPackage: ProjectPackage, quickReferences: { [index: string]: Reference }, name: string, configuration: BuildConfiguration): BuildData {
@@ -237,6 +245,7 @@ export function createBuildData(projectDirectory: string, projectPackage: Projec
     };
 }
 
+// update the buildData object for the handling of the next article source file
 export function updateBuildData(buildData: BuildData, filetype: string, filename: string) {
     buildData.filetype = filetype;
     buildData.filename = filename;
@@ -245,6 +254,7 @@ export function updateBuildData(buildData: BuildData, filetype: string, filename
     buildData.inDocumentRefListings = {};
 }
 
+// determine whether a given file is to be rendered in the build
 export function shouldBeBuilt(filetype: string, filename: string, buildData: BuildData): boolean {
     if (buildData.configuration.members.includes(filename)) return true;
     else return false;
@@ -273,6 +283,7 @@ export function getLinkTarget(string: string) {
     return contentValues[1];
 }
 
+// mark an image referenced in an article source for later inclusion in the build
 export function markImage(imageName: string, buildData: BuildData) {
     buildData.imagesRendered.push(imageName);
     if (!fs.existsSync(`media/${imageName}`)) {
