@@ -21,14 +21,7 @@ function renderArticle(source: InlineElement[], metadata: Metadata, buildData: B
     return htmlString(`
         <!DOCTYPE html>
         <html>
-            <head>
-                <meta charset="UTF-8"/>
-                <meta name="viewport" content="width=device-width"/>
-                <title>${metadata["name"]} - A Somerled Pages family encyclopedia</title>
-                <link rel="stylesheet" href="../res/main.css" type="text/css" charset="utf-8"/>
-                <link rel="stylesheet" href="../res/article.css" type="text/css" charset="utf-8"/>
-                <link rel="icon" href="../res/favicon.png" type="image/png"/>
-            </head>
+            ${renderHead(["main.css", "article.css"])}
             <body>
                 ${headerHTML}
                 ${articleHeaderHTML}
@@ -271,14 +264,7 @@ function renderHomepage(buildData: BuildData): string {
     return htmlString(`
         <!DOCTYPE html>
         <html>
-            <head>
-                <meta charset="UTF-8" />
-                <meta name="viewport" content="width=device-width" />
-                <title>Somerled Pages</title>
-                <link rel="stylesheet" href="../res/main.css" type="text/css" charset="utf-8"/>
-                <link rel="stylesheet" href="../res/homepage.css" type="text/css" charset="utf-8"/>
-                <link rel="icon" href="../res/favicon.png" type="image/png"/>
-            </head>
+            ${renderHead(["main.css", "homepage.css"])}
             <body>
 
                 ${renderHeader(buildData)}
@@ -361,6 +347,13 @@ function renderArticleFeature(articleName: string, pageData: PageData): string {
 
 }
 
+function renderExtraStylesheets(stylesheets: string[] | null): string {
+    if (!stylesheets) return "";
+    return stylesheets.map((stylesheet: string) => htmlString(`
+        <link rel="stylesheet" href="../res/${stylesheet}" type="text/css" charset="utf-8"/>
+    `)).join("");
+}
+
 function renderFooter(): string {
     return htmlString(`
         <footer>
@@ -439,6 +432,18 @@ function renderSomerledPagesLogo(): string {
     `);
 }
 
+function renderHead(extraStylesheets: string[] | null = null): string {
+    return htmlString(`
+        <head>
+            <meta charset="UTF-8" />
+            <meta name="viewport" content="width=device-width" />
+            <title>Somerled Pages</title>
+            ${renderExtraStylesheets(extraStylesheets)}
+            <link rel="icon" href="../res/favicon.png" type="image/png"/>
+        </head>
+    `);
+}
+
 function renderHeader(buildData: BuildData): string {
     return htmlString(`
         <div class="header">
@@ -471,14 +476,7 @@ function renderSearchPage(buildData: BuildData): string {
     return htmlString(`
         <!DOCTYPE html>
         <html>
-            <head>
-                <meta charset="UTF-8" />
-                <meta name="viewport" content="width=device-width" />
-                <title>Somerled Pages</title>
-                <link rel="stylesheet" href="../res/main.css" type="text/css" charset="utf-8"/>
-                <link rel="stylesheet" href="../res/homepage.css" type="text/css" charset="utf-8"/>
-                <link rel="icon" href="../res/favicon.png" type="image/png"/>
-            </head>
+            ${renderHead(["main.css", "homepage.css"])}
             <body>
 
                 ${renderHeader(buildData)}
@@ -497,6 +495,18 @@ function renderSearchPage(buildData: BuildData): string {
 
                 <script src="../res/functions.js" type="text/javascript"></script>
                 <script src="../res/search.js" type="text/javascript"></script>
+            </body>
+        </html>
+    `);
+}
+
+function renderTreePage(buildData: BuildData): string {
+    return htmlString(`
+        <!DOCTYPE html>
+        <html>
+            ${renderHead(["main.css", "tree.css"])}
+            <body>
+                <h1>Tree goes here</h1>
             </body>
         </html>
     `);
@@ -645,6 +655,7 @@ export = {
     renderInfoBox,
     renderSearchPage,
     renderStandardElement,
+    renderTreePage,
     renderArticleHeader,
     renderHeader,
     renderTestimonialRefListing,

@@ -9,7 +9,7 @@ import { TREE_CONNECTORS } from "./constants";
 import { loadBuildConfiguration, packageBuild, parseRawArticle, readArticle, savePage } from "./file_io";
 import { BuildConfiguration, BuildData, BuildSheet, ErrorNotice, InfoBox, InfoTag, Metadata, PageData, ProjectPackage, Reference, TreeNode } from "./interfaces";
 import { RefListing } from "./ref_listing_interfaces";
-import { htmlString, renderArticle, renderHomepage, renderSearchPage } from "./rendering";
+import { htmlString, renderArticle, renderHomepage, renderSearchPage, renderTreePage } from "./rendering";
 import { renderTreeHTML } from "./tree_rendering";
 
 export function build(buildData: BuildData) {
@@ -24,8 +24,8 @@ export function build(buildData: BuildData) {
 
     savePage("index.html", renderHomepage(buildData));
     savePage("search.html", renderSearchPage(buildData));
+    savePage("tree.html", renderTreePage(buildData));
 
-    renderAndSaveTreePage(buildData);
     packageBuild(buildData);
 
 }
@@ -96,25 +96,6 @@ export function regexMatchArticles(expressions: string[]): string[] {
 
     return [... new Set(output)];
 
-}
-
-// TODO
-function renderAndSaveTreePage(buildData: BuildData) {
-    let treeRendered = renderTreeHTML(buildData.tree);
-    let rendered = htmlString(`
-        <!DOCTYPE html>
-        <html>
-            <head>
-                <meta charset="UTF-8" />
-                <meta name="viewport" content="width=device-width" />
-                <title>Somerled Pages</title>
-            </head>
-            <body>
-                ${treeRendered}
-            </body>
-        </html>
-    `);
-    savePage("tree.html", rendered);
 }
 
 function renderAndSaveArticle(filetype: string, filename: string, buildData: BuildData) {

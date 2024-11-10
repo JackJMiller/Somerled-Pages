@@ -19,6 +19,10 @@ export function renderArticle(source: InlineElement[], metadata: Metadata, build
     return HTMLRendering.renderArticle(source, metadata, buildData);
 }
 
+export function renderTreePage(buildData: BuildData): string {
+    return HTMLRendering.renderTreePage(buildData);
+}
+
 export function renderSearchPage(buildData: BuildData): string {
     return HTMLRendering.renderSearchPage(buildData);
 }
