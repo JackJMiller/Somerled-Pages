@@ -4,7 +4,18 @@
 **  Licensed under version 3 of the GNU General Public License
 */
 
-import { Tree, TreeNode } from "./interfaces";
+interface Tree {
+    ROOT_NODE: string,
+    nodes: TreeNodes
+}
+
+interface TreeNode {
+    connections: any
+}
+
+interface TreeNodes {
+    [index: string]: TreeNode
+}
 
 interface NodePlacement {
     id: string,
@@ -17,7 +28,7 @@ interface NodePlacements {
 }
 
 // TODO: modularise and move html-rendering to html_rendering
-export function renderTreeHTML(tree: Tree): string {
+function renderTreeHTML(tree: Tree): string {
     let currentNode = tree.nodes[tree.ROOT_NODE];
     const nodes = getNodeRelativePositions(tree, tree.ROOT_NODE, "");
     // TODO: modularise this
@@ -35,7 +46,7 @@ export function renderTreeHTML(tree: Tree): string {
     return output;
 }
 
-export function getNodeRelativePositions(tree: Tree, root: string, parentalDirection: string): NodePlacement[] {
+function getNodeRelativePositions(tree: Tree, root: string, parentalDirection: string): NodePlacement[] {
     let nodes = [];
     let x = 0;
     let d = 1

@@ -9,6 +9,12 @@ import { RefListing, TestimonialRefListing, CensusRefListing, DeathCertificateRe
 import { htmlString, isSplitFormat, renderDate, renderElement, renderRefListing, renderQuickRefListing } from "./rendering";
 import { BuildData, ImageDefinition, InfoBox, InlineElement, Metadata, PageData } from "./interfaces";
 
+function renderScriptImports(scripts: string[]): string {
+    return scripts.map((script: string) => htmlString(`
+        <script src="../res/${script}" type="text/javascript"></script>
+    `)).join("");
+}
+
 function renderArticle(source: InlineElement[], metadata: Metadata, buildData: BuildData): string {
 
     let headerHTML = renderHeader(buildData);
@@ -40,9 +46,7 @@ function renderArticle(source: InlineElement[], metadata: Metadata, buildData: B
                     </div>
                     ${renderFooter()}
                 </div>
-
-                <script src="../res/functions.js" type="text/javascript"></script>
-                <script src="../res/article.js" type="text/javascript"></script>
+                ${renderScriptImports(["functions.js", "article.js"])}
             </body>
         </html>
     `);
@@ -277,7 +281,7 @@ function renderHomepage(buildData: BuildData): string {
 
                 ${renderFooter()}
 
-                <script src="../res/functions.js" type="text/javascript"></script>
+                ${renderScriptImports(["functions.js"])}
             </body>
         </html>
     `);
@@ -493,8 +497,7 @@ function renderSearchPage(buildData: BuildData): string {
 
                 ${renderFooter()}
 
-                <script src="../res/functions.js" type="text/javascript"></script>
-                <script src="../res/search.js" type="text/javascript"></script>
+                ${renderScriptImports(["functions.js", "search.js"])}
             </body>
         </html>
     `);
@@ -506,7 +509,8 @@ function renderTreePage(buildData: BuildData): string {
         <html>
             ${renderHead(["main.css", "tree.css"])}
             <body>
-                <h1>Tree goes here</h1>
+                ${renderHeader(buildData)}
+                <canvas id="tree-canvas"/>
             </body>
         </html>
     `);

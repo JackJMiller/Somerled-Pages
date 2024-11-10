@@ -9,8 +9,7 @@ import { TREE_CONNECTORS } from "./constants";
 import { loadBuildConfiguration, packageBuild, parseRawArticle, readArticle, savePage } from "./file_io";
 import { BuildConfiguration, BuildData, BuildSheet, ErrorNotice, InfoBox, InfoTag, Metadata, PageData, ProjectPackage, Reference, TreeNode } from "./interfaces";
 import { RefListing } from "./ref_listing_interfaces";
-import { htmlString, renderArticle, renderHomepage, renderSearchPage, renderTreePage } from "./rendering";
-import { renderTreeHTML } from "./tree_rendering";
+import { renderArticle, renderHomepage, renderSearchPage, renderTreePage } from "./rendering";
 
 export function build(buildData: BuildData) {
 
