@@ -6,7 +6,7 @@
 
 import HTMLRendering from "./html_rendering";
 import { MONTHS } from "./constants";
-import { BuildData, ImageDefinition, InfoBox, InlineElement, Metadata } from "./interfaces";
+import { BuildData, ImageDefinition, InfoBox, InlineElement, Metadata, Tree } from "./interfaces";
 import { markImage, recordRefListing, throwError, throwWarning } from "./functions";
 import { BirthCertificateRefListing, BookRefListing, CensusRefListing, DeathCertificateRefListing, JournalRefListing, LazyRefListing, MarriageCertificateRefListing, NewspaperRefListing, RefListing, TestimonialRefListing, ValuationRollRefListing, WebsiteRefListing } from "./ref_listing_interfaces";
 import { errorCheckReference, validateInfoBox, validateInfoTag } from "./validation";
@@ -43,9 +43,7 @@ export function renderDate(rawDate: string): string {
     let month = (date[1] === "?") ? "" : MONTHS[parseInt(date[1])];
     let year = (date[2] === "?") ? "" : date[2];
 
-    return [circa, day, month, year].join(" ").trim().replace(/\s+/g, " ");
-
-}
+    return [circa, day, month, year].join(" ").trim().replace(/\s+/g, " "); }
 
 export function renderElement(element: InlineElement | RefListing | InfoBox, metadata: Metadata, buildData: BuildData): string {
     if (element.type === "element") {
@@ -151,3 +149,6 @@ export function htmlString(html: string): string {
     return html.trim().replace(/\s+/g, " ");
 }
 
+export function renderTreeNodesScript(tree: Tree) {
+    return `const TREE_NODES = ${JSON.stringify(tree, null, 4)};\n`;
+}

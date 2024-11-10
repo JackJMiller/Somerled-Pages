@@ -27,6 +27,30 @@ interface NodePlacements {
     [index: string]: NodePlacement
 }
 
+function createCanvas(id: string): HTMLCanvasElement {
+    let canvas: HTMLCanvasElement = document.createElement("canvas");
+    canvas.id = id;
+    canvas.width = document.body.clientWidth;
+    canvas.height = window.innerHeight - HEADER!.clientHeight;
+    return canvas;
+}
+
+function fixCanvas() {
+    CANVAS.width = document.body.clientWidth;
+    CANVAS.height = window.innerHeight - HEADER!.clientHeight;
+}
+
+function render() {
+    fixCanvas();
+    ctx!.fillStyle = "#ff00ff";
+    ctx!.fillRect(0, 0, CANVAS.width, CANVAS.height);
+    renderTree()
+}
+
+function renderTree() {
+
+}
+
 // TODO: modularise and move html-rendering to html_rendering
 function renderTreeHTML(tree: Tree): string {
     let currentNode = tree.nodes[tree.ROOT_NODE];
@@ -77,3 +101,14 @@ function renderFamilyTreeNode(node: NodePlacement, layers: number, treeWidth: nu
         </div>
 `;
 }
+
+const HEADER = element("header");
+
+const CANVAS = createCanvas("tree-canvas");
+const ctx = CANVAS.getContext("2d");
+
+element("canvas-container")!.appendChild(CANVAS);
+
+setInterval(() => {
+    render();
+}, 1000);

@@ -281,7 +281,7 @@ function renderHomepage(buildData: BuildData): string {
 
                 ${renderFooter()}
 
-                ${renderScriptImports(["functions.js"])}
+                ${renderScriptImports(["functions.js", "homepage.ts"])}
             </body>
         </html>
     `);
@@ -450,7 +450,7 @@ function renderHead(extraStylesheets: string[] | null = null): string {
 
 function renderHeader(buildData: BuildData): string {
     return htmlString(`
-        <div class="header">
+        <div id="header">
             <div class="container">
                 <div class="header-inner">
                     <h1></h1>
@@ -508,9 +508,11 @@ function renderTreePage(buildData: BuildData): string {
         <!DOCTYPE html>
         <html>
             ${renderHead(["main.css", "tree.css"])}
-            <body>
+            <body onresize="fixCanvas()">
                 ${renderHeader(buildData)}
-                <canvas id="tree-canvas"/>
+                <div id="canvas-container">
+                </div>
+                ${renderScriptImports(["tree_nodes.js", "functions.js", "tree.js"])}
             </body>
         </html>
     `);

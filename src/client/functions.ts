@@ -59,8 +59,3 @@ document.getElementById("search-form")!.addEventListener("submit", event => {
     event.preventDefault();
     submitSearch();
 });
-
-document.getElementById("advanced-search")!.addEventListener("submit", event => {
-    event.preventDefault();
-    submitAdvancedSearch();
-});
