@@ -4,34 +4,12 @@
 **  Licensed under version 3 of the GNU General Public License
 */
 
-interface Tree {
-    ROOT_NODE: string,
-    nodes: TreeNodes
-}
-
-interface TreeNode {
-    connections: any
-}
-
-interface TreeNodes {
-    [index: string]: TreeNode
-}
-
-interface NodePlacement {
-    id: string,
-    x: number,
-    y: number
-}
-
-interface NodePlacements {
-    [index: string]: NodePlacement
-}
-
 function createCanvas(id: string): HTMLCanvasElement {
     let canvas: HTMLCanvasElement = document.createElement("canvas");
     canvas.id = id;
     canvas.width = document.body.clientWidth;
     canvas.height = window.innerHeight - HEADER!.clientHeight;
+    element("canvas-container")!.appendChild(canvas);
     return canvas;
 }
 
@@ -44,62 +22,20 @@ function render() {
     fixCanvas();
     ctx!.fillStyle = "#ff00ff";
     ctx!.fillRect(0, 0, CANVAS.width, CANVAS.height);
-    renderTree()
+    renderTree();
 }
 
 function renderTree() {
+    let currentNode = CLIENT_TREE.nodes[CLIENT_TREE.ROOT_NODE];
+    renderNode();
+}
+
+function renderNode() {
 
 }
 
-// TODO: modularise and move html-rendering to html_rendering
-function renderTreeHTML(tree: Tree): string {
-    let currentNode = tree.nodes[tree.ROOT_NODE];
-    const nodes = getNodeRelativePositions(tree, tree.ROOT_NODE, "");
-    // TODO: modularise this
-    let layers = 0;
-    for (let node of nodes) {
-        if (node.y > layers) layers = node.y;
-    }
-    const treeWidth = 1200;
-    const treeHeight = 800;
-    let output = `<div style="display: block; width: ${treeWidth}px; height: ${treeHeight}px;">`;
-    for (let node of nodes) {
-        output = output + renderFamilyTreeNode(node, layers, treeWidth, treeHeight);
-    }
-    output = output + "</div>"
-    return output;
-}
-
-function getNodeRelativePositions(tree: Tree, root: string, parentalDirection: string): NodePlacement[] {
-    let nodes = [];
-    let x = 0;
-    let d = 1
-    for (let char of parentalDirection) {
-        d *= 0.5;
-        x = (char === "M" ? x - d : x + d);
-    }
-    nodes.push({ id: root, x, y: parentalDirection.length });
-    if (!Object.keys(tree.nodes).includes(root)) {
-        return nodes;
-    }
-    const currentNode = tree.nodes[root];
-    if (currentNode.connections["Mother"]) {
-        nodes = nodes.concat(getNodeRelativePositions(tree, currentNode.connections["Mother"], parentalDirection + "M"))
-    }
-    if (currentNode.connections["Father"]) {
-        nodes = nodes.concat(getNodeRelativePositions(tree, currentNode.connections["Father"], parentalDirection + "F"))
-    }
-    return nodes;
-}
-
-function renderFamilyTreeNode(node: NodePlacement, layers: number, treeWidth: number, treeHeight: number): string {
-    const layer = layers - node.y;
-    return `
-        <div style="font-size: ${2 * Math.pow(0.5, node.y)}rem; position: absolute; top: ${(Math.pow(0.5, node.y)) * treeHeight}px; left: ${treeWidth * (node.x / 2 + 1)}px; display: block; background: yellow; transform: translateX(-50%);">
-            <h1>${node.id}</h1>
-            <h2>D.O.B - D.O.D</h2>
-        </div>
-`;
+function getNodePosition(root: string, parentalDirection: string): Vector2 {
+    return { x: 0, y: 0 };
 }
 
 const HEADER = element("header");
@@ -107,8 +43,7 @@ const HEADER = element("header");
 const CANVAS = createCanvas("tree-canvas");
 const ctx = CANVAS.getContext("2d");
 
-element("canvas-container")!.appendChild(CANVAS);
-
 setInterval(() => {
     render();
 }, 1000);
+

@@ -6,6 +6,18 @@
 
 import { RefListing } from "./ref_listing_interfaces";
 
+export interface ClientTree {
+    "ROOT_NODE": string,
+    "nodes": { [index: string]: ClientTreeNode }
+}
+
+export interface ClientTreeNode {
+    "id": string,
+    "x": number,
+    "y": number,
+    "connections": any
+}
+
 export interface ErrorNotice {
     "attribute": string,
     "value": any

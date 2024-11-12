@@ -4,6 +4,18 @@
 **  Licensed under version 3 of the GNU General Public License
 */
 
+interface ClientTree {
+    ROOT_NODE: string,
+    nodes: { [index: string]: ClientTreeNode }
+}
+
+interface ClientTreeNode {
+    id: string,
+    x: number,
+    y: number,
+    connections: any
+}
+
 interface PageData {
     name: string,
     born: string,
@@ -17,4 +29,9 @@ interface SearchQuery {
     "birth-to": number,
     "death-from": number,
     "death-to": number
+}
+
+interface Vector2 {
+    x: number,
+    y: number
 }

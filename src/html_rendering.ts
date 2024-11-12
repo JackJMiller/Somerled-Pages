@@ -281,7 +281,7 @@ function renderHomepage(buildData: BuildData): string {
 
                 ${renderFooter()}
 
-                ${renderScriptImports(["functions.js", "homepage.ts"])}
+                ${renderScriptImports(["functions.js", "homepage.js"])}
             </body>
         </html>
     `);
@@ -497,7 +497,7 @@ function renderSearchPage(buildData: BuildData): string {
 
                 ${renderFooter()}
 
-                ${renderScriptImports(["functions.js", "search.js"])}
+                ${renderScriptImports(["build_sheet.js", "functions.js", "search.js"])}
             </body>
         </html>
     `);

@@ -7,9 +7,9 @@
 import fs from "fs";
 import { TREE_CONNECTORS } from "./constants";
 import { loadBuildConfiguration, packageBuild, parseRawArticle, readArticle, savePage } from "./file_io";
-import { BuildConfiguration, BuildData, BuildSheet, ErrorNotice, InfoBox, InfoTag, Metadata, PageData, ProjectPackage, Reference, TreeNode } from "./interfaces";
+import { BuildConfiguration, BuildData, BuildSheet, ClientTree, ClientTreeNode, ErrorNotice, InfoBox, InfoTag, Metadata, PageData, ProjectPackage, Reference, Tree, TreeNode } from "./interfaces";
 import { RefListing } from "./ref_listing_interfaces";
-import { renderArticle, renderHomepage, renderSearchPage, renderTreeNodesScript, renderTreePage } from "./rendering";
+import { renderArticle, renderHomepage, renderSearchPage, renderTreePage } from "./rendering";
 
 export function build(buildData: BuildData) {
 
@@ -17,14 +17,31 @@ export function build(buildData: BuildData) {
 
     bugCheckBuild(buildData);
 
-    savePage("res/build_sheet.json", JSON.stringify(createBuildSheet(buildData), null, 4) + "\n");
-    savePage("res/tree_nodes.js", renderTreeNodesScript(buildData.tree));
+    savePage("res/build_sheet.js", "const BUILD_SHEET = " + JSON.stringify(createBuildSheet(buildData), null, 4) + "\n");
+    savePage("res/tree_nodes.js", "const CLIENT_TREE = " + JSON.stringify(constructClientTree(buildData.tree), null, 4) + "\n");
 
     savePage("index.html", renderHomepage(buildData));
     savePage("search.html", renderSearchPage(buildData));
     savePage("tree.html", renderTreePage(buildData));
 
     packageBuild(buildData);
+
+}
+
+function constructClientTree(tree: Tree): ClientTree {
+
+    let clientTree = {
+        ROOT_NODE: tree.ROOT_NODE,
+        nodes: new Object() as { [index: string]: ClientTreeNode }
+    };
+
+    let IDs = Object.keys(tree.nodes);
+
+    for (let id of IDs) {
+        clientTree.nodes[id] = { id: id, connections: tree.nodes[id].connections, x: 0, y: 0 };
+    }
+
+    return clientTree;
 
 }
 

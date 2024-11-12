@@ -4,18 +4,18 @@
 **  Licensed under version 3 of the GNU General Public License
 */
 
-function search(query: SearchQuery, buildSheet: any) {
+function search(query: SearchQuery) {
 
     populateSearchForm(query);
 
-    let keys = Object.keys(buildSheet.pageData);
+    let keys = Object.keys(BUILD_SHEET.pageData);
 
     let articleName = query["article-name"];
 
     let returns: any = {};
 
     for (let key of keys) {
-        let pageData = buildSheet.pageData[key];
+        let pageData = BUILD_SHEET.pageData[key];
         let matchFactor = getSearchMatchFactor(query, pageData);
         if (matchFactor > 0) {
             if (!returns[matchFactor]) returns[matchFactor] = [key];
@@ -27,7 +27,7 @@ function search(query: SearchQuery, buildSheet: any) {
 
     for (let matchFactor of matchFactors) {
         for (let key of returns[matchFactor.toString()]) {
-            let pageData = buildSheet.pageData[key];
+            let pageData = BUILD_SHEET.pageData[key];
             document.getElementById("search-results")!.innerHTML += renderArticleFeature(key, pageData);
         }
     }
@@ -103,14 +103,14 @@ function parseQuery(query: string): SearchQuery {
 
 }
 
-fetch("/res/build_sheet.json")
-.then(res => res.json())
-.then(buildSheet => {
-    let query = window.location.search;
-    if (query !== "") {
-        let parsedQuery = parseQuery(query);
-        console.log("Parsed Query");
-        console.log(parsedQuery);
-        search(parsedQuery, buildSheet);
-    }
+let query = window.location.search;
+
+if (query !== "") {
+    let parsedQuery = parseQuery(query);
+    search(parsedQuery);
+}
+
+document.getElementById("advanced-search")!.addEventListener("submit", event => {
+    event.preventDefault();
+    submitAdvancedSearch();
 });

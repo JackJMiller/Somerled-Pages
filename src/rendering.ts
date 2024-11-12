@@ -148,7 +148,3 @@ export function isSplitFormat(articleType: string): boolean {
 export function htmlString(html: string): string {
     return html.trim().replace(/\s+/g, " ");
 }
-
-export function renderTreeNodesScript(tree: Tree) {
-    return `const TREE_NODES = ${JSON.stringify(tree, null, 4)};\n`;
-}
