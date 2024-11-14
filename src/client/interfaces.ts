@@ -4,6 +4,10 @@
 **  Licensed under version 3 of the GNU General Public License
 */
 
+interface BuildSheet {
+    pageData: { [index: string]: PageData }
+}
+
 interface ClientTree {
     ROOT_NODE: string,
     nodes: { [index: string]: ClientTreeNode }

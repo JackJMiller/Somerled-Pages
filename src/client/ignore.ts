@@ -1,2 +1,2 @@
 let CLIENT_TREE: any = { };
-let BUILD_SHEET: any = { };
+let BUILD_SHEET: BuildSheet = { pageData: {} };

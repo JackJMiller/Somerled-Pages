@@ -9,7 +9,7 @@ function createCanvas(id: string): HTMLCanvasElement {
     canvas.id = id;
     canvas.width = document.body.clientWidth;
     canvas.height = window.innerHeight - HEADER!.clientHeight;
-    element("canvas-container")!.appendChild(canvas);
+    // element("canvas-container")!.appendChild(canvas);
     return canvas;
 }
 
@@ -27,11 +27,27 @@ function render() {
 
 function renderTree() {
     let currentNode = CLIENT_TREE.nodes[CLIENT_TREE.ROOT_NODE];
-    renderNode();
+    treeContainer!.innerHTML = renderUnit("Jack_Miller");
 }
 
-function renderNode() {
+function renderUnit(id: string): string {
+    let pageData = BUILD_SHEET.pageData[`wiki/${id}`];
+    let motherID = "Jack_Miller";
+    let fatherID = "Jack_Miller";
+    return htmlString(`
+        <div id="tree-${id}-parents" class="tree-parents">
+            ${renderSiblingsRow(motherID)}
+            ${renderSiblingsRow(fatherID)}
+        </div>
+        <div id="tree-${id}-siblings" class="tree-siblings">
+            ${renderSiblingsRow(id)}
+        </div>
+    `);
+}
 
+function renderSiblingsRow(id: string): string {
+    let pageData = BUILD_SHEET.pageData[`wiki/${id}`];
+    return renderArticleFeature(`wiki/${id}`, pageData);
 }
 
 function getNodePosition(root: string, parentalDirection: string): Vector2 {
@@ -42,6 +58,7 @@ const HEADER = element("header");
 
 const CANVAS = createCanvas("tree-canvas");
 const ctx = CANVAS.getContext("2d");
+const treeContainer = element("tree-container");
 
 setInterval(() => {
     render();
