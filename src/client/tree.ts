@@ -32,8 +32,9 @@ function renderTree() {
 
 function renderUnit(id: string): string {
     let pageData = BUILD_SHEET.pageData[`wiki/${id}`];
-    let motherID = "Jack_Miller";
-    let fatherID = "Jack_Miller";
+    let motherID = pageData.mother;
+    let fatherID = pageData.father;
+    console.log({ motherID, fatherID });
     return htmlString(`
         <div id="tree-${id}-parents" class="tree-parents">
             ${renderSiblingsRow(motherID)}
@@ -46,8 +47,17 @@ function renderUnit(id: string): string {
 }
 
 function renderSiblingsRow(id: string): string {
+    return renderTreeNode(id);
+}
+
+function renderTreeNode(id: string): string {
     let pageData = BUILD_SHEET.pageData[`wiki/${id}`];
-    return renderArticleFeature(`wiki/${id}`, pageData);
+    return htmlString(`
+        <div class="tree-node">
+            <h1>${pageData.name}</h1>
+            <h2>${pageData.born} — ${pageData.died}</h2>
+        </div>
+    `);
 }
 
 function getNodePosition(root: string, parentalDirection: string): Vector2 {

@@ -128,6 +128,8 @@ function createPageData(filetype: string, filename: string, metadata: Metadata):
         name: metadata.name,
         born: metadata.born,
         died: metadata.died,
+        mother: metadata.mother,
+        father: metadata.father,
         imageSrc: metadata.infobox.image
     };
 }
@@ -163,6 +165,8 @@ export function createInitialMetadata(name: string, type: string): Metadata {
         "headings": [],
         "born": "",
         "died": "",
+        "mother": "",
+        "father": "",
         "images": []
     };
 }
@@ -195,6 +199,13 @@ export function throwWarning(message: string, location: string, buildData: Build
 
 export function recordRefListing(element: any, buildData: BuildData) {
     buildData.inDocumentRefListings[element["id"]] = element;
+}
+
+// TODO: error check
+export function parseLink(unparsed: string) {
+    let link = unparsed.replace(/\[\[/g, "").replace(/\]\]/g, "");
+    let split = link.split("|");
+    return { placeholder: split[0], target: split[1] };
 }
 
 export function initialiseBuildData(projectDirectory: string, buildName: string) {

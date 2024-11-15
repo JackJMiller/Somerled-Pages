@@ -1,3 +1,16 @@
-#tree-canvas {
+.tree-node {
+    display: block;
+    width: 16rem;
+    height: 6rem;
+    background: white;
+    padding: 1rem;
+    border: 0.1rem solid black;
+}
 
+.tree-node h1 {
+    font-size: 1.5rem;
+}
+
+.tree-node h2 {
+    font-size: 1.2rem;
 }

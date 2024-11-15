@@ -4,7 +4,7 @@
 **  Licensed under version 3 of the GNU General Public License
 */
 
-import { markImage, throwError, throwWarning } from "./functions";
+import { markImage, parseLink, throwError, throwWarning } from "./functions";
 import { RefListing, TestimonialRefListing, CensusRefListing, DeathCertificateRefListing, BirthCertificateRefListing, MarriageCertificateRefListing, ValuationRollRefListing, LazyRefListing, BookRefListing, JournalRefListing, NewspaperRefListing, WebsiteRefListing } from "./ref_listing_interfaces";
 import { htmlString, isSplitFormat, renderDate, renderElement, renderRefListing, renderQuickRefListing } from "./rendering";
 import { BuildData, ImageDefinition, InfoBox, InlineElement, Metadata, PageData } from "./interfaces";
@@ -202,7 +202,7 @@ function substituteLinksAndCitations(text: string, buildData: BuildData): string
         }
         else if (q === "end-of-link") {
             if (c === "]") {
-                links.push(v);
+                links.push("[[" + v + "]]");
                 q = "text";
                 v = "";
             }
@@ -213,7 +213,7 @@ function substituteLinksAndCitations(text: string, buildData: BuildData): string
     buildData.citations = buildData.citations.concat(citations);
 
     for (let link of links) {
-        text = text.replaceAll(`[[${link}]]`, renderUnparsedLink(link, buildData));
+        text = text.replaceAll(link, renderUnparsedLink(link, buildData));
     }
 
     let index = 1;
@@ -225,10 +225,8 @@ function substituteLinksAndCitations(text: string, buildData: BuildData): string
     return text;
 }
 
-function renderUnparsedLink(content: string, buildData: BuildData): string {
-    let contentValues = content.split("|");
-    let placeholder = contentValues[0];
-    let target = contentValues[1];
+function renderUnparsedLink(unparsed: string, buildData: BuildData): string {
+    let { placeholder, target } = parseLink(unparsed);
     if (buildData.configuration.members.includes(target)) {
         return renderLink(placeholder, target);
     }

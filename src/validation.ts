@@ -5,7 +5,7 @@
 */
 
 import { BuildData, ErrorNotice, InfoBox, InfoTag, Metadata } from "./interfaces";
-import { recordErrorNotice, throwError } from "./functions";
+import { parseLink, recordErrorNotice, throwError } from "./functions";
 import { RefListing, RefSourceType } from "./ref_listing_interfaces";
 import { RefListingModels } from "./ref_listing_models";
 import { extractDate } from "./sanitisation";
@@ -22,6 +22,13 @@ export function validateInfoTag(infoTag: InfoTag, metadata: Metadata, buildData:
 
 // TODO
 export function validateInfoBox(infoBox: InfoBox, metadata: Metadata, buildData: BuildData) {
+
+    if (infoBox.entries["Mother"]) {
+        metadata["mother"] = parseLink(infoBox.entries["Mother"]).target;
+    }
+    if (infoBox.entries["Father"]) {
+        metadata["father"] = parseLink(infoBox.entries["Father"]).target;
+    }
 
 }
 

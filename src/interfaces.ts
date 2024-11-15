@@ -54,6 +54,8 @@ export interface Metadata {
     "headings": string[],
     "born": string,
     "died": string,
+    "mother": string,
+    "father": string,
     "images": ImageDefinition[]
 }
 
@@ -86,6 +88,8 @@ export interface PageData {
     name: string,
     born: string,
     died: string,
+    mother: string,
+    father: string,
     imageSrc: string
 }
 
