@@ -2,6 +2,7 @@
     background: red;
     margin: 20px;
 }
+
 .tree-node {
     display: block;
     width: 160px;
@@ -10,6 +11,11 @@
     padding: 10px;
     border: 1px solid black;
     margin: auto;
+    color: black;
+}
+
+.empty-tree-node {
+    opacity: 0;
 }
 
 .tree-node h1 {

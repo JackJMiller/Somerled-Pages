@@ -65,17 +65,17 @@ function renderTreeNode(id: string): string {
     let pageData = BUILD_SHEET.pageData[`wiki/${id}`];
 
     if (!pageData) return htmlString(`
-        <div class="tree-node">
+        <div class="tree-node empty-tree-node">
             <h1>ANONYMOUS</h1>
             <h2>Unknown</h2>
         </div>
     `);
 
     return htmlString(`
-        <div class="tree-node">
+        <a href="/wiki/${id}.html" target="_blank" class="tree-node">
             <h1>${pageData.name}</h1>
             <h2>${pageData.born} — ${pageData.died}</h2>
-        </div>
+        </a>
     `);
 
 }
