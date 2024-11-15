@@ -1,16 +1,33 @@
+#tree-container {
+    background: red;
+    margin: 20px;
+}
 .tree-node {
     display: block;
-    width: 16rem;
-    height: 6rem;
+    width: 160px;
+    height: 60px;
     background: white;
-    padding: 1rem;
-    border: 0.1rem solid black;
+    padding: 10px;
+    border: 1px solid black;
+    margin: auto;
 }
 
 .tree-node h1 {
-    font-size: 1.5rem;
+    font-size: 15px;
 }
 
 .tree-node h2 {
-    font-size: 1.2rem;
+    font-size: 12px;
+}
+
+.unit-top {
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-gap: 50px;
+    align-content: center;
+    background: #eeeeff;
+}
+
+.unit-bottom {
+    background: #ddddff;
 }

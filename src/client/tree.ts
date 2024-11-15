@@ -27,23 +27,33 @@ function render() {
 
 function renderTree() {
     let currentNode = CLIENT_TREE.nodes[CLIENT_TREE.ROOT_NODE];
-    treeContainer!.innerHTML = renderUnit("Jack_Miller");
+    treeContainer!.innerHTML = renderUnit("Jack_Miller", 4);
 }
 
-function renderUnit(id: string): string {
+function renderUnit(id: string, depth: number): string {
+
     let pageData = BUILD_SHEET.pageData[`wiki/${id}`];
-    let motherID = pageData.mother;
-    let fatherID = pageData.father;
-    console.log({ motherID, fatherID });
-    return htmlString(`
-        <div id="tree-${id}-parents" class="tree-parents">
-            ${renderSiblingsRow(motherID)}
-            ${renderSiblingsRow(fatherID)}
-        </div>
-        <div id="tree-${id}-siblings" class="tree-siblings">
+
+    let motherID = (pageData) ? pageData.mother : "";
+    let fatherID = (pageData) ? pageData.father : "";
+
+    let output = htmlString(`
+        <div id="tree-${id}-siblings" class="unit-bottom">
             ${renderSiblingsRow(id)}
         </div>
     `);
+
+    if (depth > 0) {
+        output = htmlString(`
+            <div id="tree-${id}-parents" class="unit-top">
+                ${renderUnit(motherID, depth - 1)}
+                ${renderUnit(fatherID, depth - 1)}
+            </div>
+        `) + output;
+    }
+
+    return htmlString(`<div>${output}</div>`);
+
 }
 
 function renderSiblingsRow(id: string): string {
@@ -51,13 +61,23 @@ function renderSiblingsRow(id: string): string {
 }
 
 function renderTreeNode(id: string): string {
+
     let pageData = BUILD_SHEET.pageData[`wiki/${id}`];
+
+    if (!pageData) return htmlString(`
+        <div class="tree-node">
+            <h1>ANONYMOUS</h1>
+            <h2>Unknown</h2>
+        </div>
+    `);
+
     return htmlString(`
         <div class="tree-node">
             <h1>${pageData.name}</h1>
             <h2>${pageData.born} — ${pageData.died}</h2>
         </div>
     `);
+
 }
 
 function getNodePosition(root: string, parentalDirection: string): Vector2 {
@@ -70,7 +90,9 @@ const CANVAS = createCanvas("tree-canvas");
 const ctx = CANVAS.getContext("2d");
 const treeContainer = element("tree-container");
 
-setInterval(() => {
-    render();
-}, 1000);
+render();
 
+// setInterval(() => {
+//     render();
+// }, 1000);
+//
