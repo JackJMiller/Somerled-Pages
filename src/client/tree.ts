@@ -20,14 +20,12 @@ function fixCanvas() {
 
 function render() {
     fixCanvas();
-    ctx!.fillStyle = "#ff00ff";
-    ctx!.fillRect(0, 0, CANVAS.width, CANVAS.height);
-    renderTree();
+    renderTree("Jack_Miller");
 }
 
-function renderTree() {
+function renderTree(id: string) {
     let currentNode = CLIENT_TREE.nodes[CLIENT_TREE.ROOT_NODE];
-    treeContainer!.innerHTML = renderUnit("Jack_Miller", 4);
+    treeElement!.innerHTML = renderUnit(id, 2);
 }
 
 function renderUnit(id: string, depth: number): string {
@@ -52,7 +50,7 @@ function renderUnit(id: string, depth: number): string {
         `) + output;
     }
 
-    return htmlString(`<div>${output}</div>`);
+    return htmlString(`<div class="tree-unit">${output}</div>`);
 
 }
 
@@ -72,10 +70,10 @@ function renderTreeNode(id: string): string {
     `);
 
     return htmlString(`
-        <a href="/wiki/${id}.html" target="_blank" class="tree-node">
+        <button onclick="renderTree('${id}')" class="tree-node">
             <h1>${pageData.name}</h1>
             <h2>${pageData.born} — ${pageData.died}</h2>
-        </a>
+        </button>
     `);
 
 }
@@ -88,11 +86,6 @@ const HEADER = element("header");
 
 const CANVAS = createCanvas("tree-canvas");
 const ctx = CANVAS.getContext("2d");
-const treeContainer = element("tree-container");
+const treeElement = element("tree");
 
 render();
-
-// setInterval(() => {
-//     render();
-// }, 1000);
-//

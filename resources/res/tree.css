@@ -1,9 +1,24 @@
 #tree-container {
     display: block;
+    width: 90vw;
+    height: 80vh;
+    margin: auto;
+    margin-top: 10px;
+    overflow: hidden;
+    border: 2px solid var(--colour-border);
+    border-radius: 10px;
+}
+
+#tree {
+    display: block;
     width: fit-content;
     height: fit-content;
-    background: red;
-    margin: 20px;
+    margin-left: 50%;
+    transform: translateX(-50%);
+}
+
+.tree-unit {
+    margin-bottom: 40px;
 }
 
 .tree-node {

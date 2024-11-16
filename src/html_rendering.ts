@@ -509,6 +509,8 @@ function renderTreePage(buildData: BuildData): string {
             <body onresize="fixCanvas()">
                 ${renderHeader(buildData)}
                 <div id="tree-container">
+                    <div id="tree">
+                    </div>
                 </div>
                 ${renderScriptImports(["build_sheet.js", "tree_nodes.js", "functions.js", "tree.js"])}
             </body>
