@@ -133,9 +133,12 @@ function completePageData(filetype: string, filename: string, metadata: Metadata
     pageData.imageSrc = metadata.infobox.image;
 }
 
-export function evalArticleSelection(siblings: string[]): string[] {
+export function evalArticleSelection(expression: string[], fieldName: string, buildData: BuildData): string[] {
+    if (expression.constructor.name !== "Array") {
+        throwError(`Invalid selection of articles for '${fieldName}' attribute. Value must be of type 'Array', not '${expression.constructor.name}'.`, buildData.location);
+    }
     let output = [];
-    for (let sibling of siblings) {
+    for (let sibling of expression) {
         if (isLink(sibling)) output.push(parseLink(sibling).target);
         else output.push(sibling);
     }

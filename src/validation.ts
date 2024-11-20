@@ -21,7 +21,9 @@ export function validateInfoTag(infoTag: InfoTag, metadata: Metadata, buildData:
 }
 
 // TODO
-export function validateInfoBox(infoBox: InfoBox, metadata: Metadata, pageData: PageData) {
+export function validateInfoBox(infoBox: InfoBox, metadata: Metadata, buildData: BuildData) {
+
+    let pageData = buildData.pageData[metadata.id];
 
     if (infoBox.entries["Mother"]) {
         metadata["mother"] = extractVersatilePlaceholder(infoBox.entries["Mother"]);
@@ -30,10 +32,10 @@ export function validateInfoBox(infoBox: InfoBox, metadata: Metadata, pageData: 
         metadata["father"] = extractVersatilePlaceholder(infoBox.entries["Father"]);
     }
     if (infoBox.entries["Siblings"]) {
-        pageData["siblings"] = evalArticleSelection(infoBox.entries["Siblings"]);
+        pageData["siblings"] = evalArticleSelection(infoBox.entries["Siblings"], "Siblings", buildData);
     }
     if (infoBox.entries["Children"]) {
-        pageData["children"] = evalArticleSelection(infoBox.entries["Children"]);
+        pageData["children"] = evalArticleSelection(infoBox.entries["Children"], "Children", buildData);
     }
 
 }
