@@ -24,10 +24,15 @@
     display: block;
     width: 160px;
     height: 60px;
-    background: white;
     padding: 10px;
-    border: 1px solid black;
+    border: 1px solid white;
+    background: white;
     color: black;
+}
+
+.highlighted-tree-node {
+    background: white;
+    border: 1px solid black;
 }
 
 .empty-tree-node {

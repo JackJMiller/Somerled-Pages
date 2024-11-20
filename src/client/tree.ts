@@ -25,10 +25,10 @@ function render() {
 
 function renderTree(id: string) {
     let currentNode = CLIENT_TREE.nodes[CLIENT_TREE.ROOT_NODE];
-    treeElement!.innerHTML = renderUnit(id, 2, true, true);
+    treeElement!.innerHTML = renderUnit(id, id, 2, true, true);
 }
 
-function renderUnit(id: string, depth: number, renderSiblings: boolean, renderChildren: boolean): string {
+function renderUnit(id: string, highlight: string, depth: number, renderSiblings: boolean, renderChildren: boolean): string {
 
     let pageData = BUILD_SHEET.pageData[id];
 
@@ -39,15 +39,15 @@ function renderUnit(id: string, depth: number, renderSiblings: boolean, renderCh
 
     let output = htmlString(`
         <div id="tree-${id}-siblings" class="unit-row unit-floor">
-            ${renderSiblingsRow([id].concat(siblings))}
+            ${renderSiblingsRow([id].concat(siblings), highlight)}
         </div>
     `);
 
     if (depth > 0) {
         output = htmlString(`
             <div id="tree-${id}-parents" class="unit-row unit-top">
-                ${renderUnit(motherID, depth - 1, false, false)}
-                ${renderUnit(fatherID, depth - 1, false, false)}
+                ${renderUnit(motherID, "", depth - 1, false, false)}
+                ${renderUnit(fatherID, "", depth - 1, false, false)}
             </div>
         `) + output;
     }
@@ -65,11 +65,11 @@ function renderUnit(id: string, depth: number, renderSiblings: boolean, renderCh
 
 }
 
-function renderSiblingsRow(siblings: string[]): string {
+function renderSiblingsRow(siblings: string[], highlight: string = ""): string {
 
     return htmlString(`
         <div style="margin: auto; width: fit-content; display: grid; grid-gap: 1rem; grid-template-columns: ${"1fr ".repeat(siblings.length)};">
-            ${(siblings.length > 0) ? renderTreeNodes(siblings) : renderEmptyTreeNode()}
+            ${(siblings.length > 0) ? renderTreeNodes(siblings, highlight) : renderEmptyTreeNode()}
         </div>
     `);
 
@@ -84,16 +84,16 @@ function renderEmptyTreeNode(): string {
     `);
 }
 
-function renderTreeNode(id: string): string {
-    return (id) ? renderNonEmptyTreeNode(id) : renderEmptyTreeNode();
+function renderTreeNode(id: string, highlighted: boolean): string {
+    return (id) ? renderNonEmptyTreeNode(id, highlighted) : renderEmptyTreeNode();
 }
 
-function renderNonEmptyTreeNode(id: string): string {
+function renderNonEmptyTreeNode(id: string, highlighted: boolean): string {
 
     let pageData = BUILD_SHEET.pageData[id];
 
     return htmlString(`
-        <button ${pageData ? `onclick="renderTree('${id}')"` : ""} class="tree-node">
+        <button ${pageData ? `onclick="renderTree('${id}')"` : ""} class="tree-node ${highlighted ? "highlighted-tree-node" : ""}">
             <h1>${pageData ? pageData.name : id}</h1>
             <h2>${pageData ? pageData.born : "Unknown"} — ${pageData ? pageData.died : "Unknown"}</h2>
         </button>
@@ -101,8 +101,8 @@ function renderNonEmptyTreeNode(id: string): string {
 
 }
 
-function renderTreeNodes(ids: string[]): string {
-    return ids.map((id: string) => renderTreeNode(id)).join("");
+function renderTreeNodes(ids: string[], highlight: string): string {
+    return ids.map((id: string) => renderTreeNode(id, highlight === id)).join("");
 }
 
 function getNodePosition(root: string, parentalDirection: string): Vector2 {
