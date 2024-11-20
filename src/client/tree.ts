@@ -85,28 +85,17 @@ function renderEmptyTreeNode(): string {
 }
 
 function renderTreeNode(id: string): string {
+    return (id) ? renderNonEmptyTreeNode(id) : renderEmptyTreeNode();
+}
+
+function renderNonEmptyTreeNode(id: string): string {
 
     let pageData = BUILD_SHEET.pageData[id];
 
-    if (!pageData) {
-        if (id) {
-            return htmlString(`
-                <button class="tree-node">
-                    <h1>${id}</h1>
-                    <h2>Unknown — Unknown</h2>
-                </button>
-            `);
-        }
-        else {
-            return renderEmptyTreeNode();
-
-        }
-    }
-
     return htmlString(`
-        <button onclick="renderTree('${id}')" class="tree-node">
-            <h1>${pageData.name}</h1>
-            <h2>${pageData.born} — ${pageData.died}</h2>
+        <button ${pageData ? `onclick="renderTree('${id}')"` : ""} class="tree-node">
+            <h1>${pageData ? pageData.name : id}</h1>
+            <h2>${pageData ? pageData.born : "Unknown"} — ${pageData ? pageData.died : "Unknown"}</h2>
         </button>
     `);
 
