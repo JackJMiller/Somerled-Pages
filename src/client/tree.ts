@@ -25,49 +25,63 @@ function render() {
 
 function renderTree(id: string) {
     let currentNode = CLIENT_TREE.nodes[CLIENT_TREE.ROOT_NODE];
-    treeElement!.innerHTML = renderUnit(id, 2, true);
+    treeElement!.innerHTML = renderUnit(id, 2, true, true);
 }
 
-function renderUnit(id: string, depth: number, renderSiblings: boolean): string {
+function renderUnit(id: string, depth: number, renderSiblings: boolean, renderChildren: boolean): string {
 
     let pageData = BUILD_SHEET.pageData[id];
 
     let motherID = (pageData) ? pageData.mother : "";
     let fatherID = (pageData) ? pageData.father : "";
+    let siblings = (pageData && renderSiblings) ? pageData.siblings : [];
+    let children = (pageData && renderChildren) ? pageData.children : [];
 
     let output = htmlString(`
-        <div id="tree-${id}-siblings" class="unit-bottom">
-            ${renderSiblingsRow(id, renderSiblings)}
+        <div id="tree-${id}-siblings" class="unit-row unit-floor">
+            ${renderSiblingsRow([id].concat(siblings))}
         </div>
     `);
 
     if (depth > 0) {
         output = htmlString(`
-            <div id="tree-${id}-parents" class="unit-top">
-                ${renderUnit(motherID, depth - 1, false)}
-                ${renderUnit(fatherID, depth - 1, false)}
+            <div id="tree-${id}-parents" class="unit-row unit-top">
+                ${renderUnit(motherID, depth - 1, false, false)}
+                ${renderUnit(fatherID, depth - 1, false, false)}
             </div>
         `) + output;
+    }
+
+    if (renderChildren) {
+        output += htmlString(`
+            <div id="tree-${id}-children" class="unit-row unit-sub-floor">
+                ${renderSiblingsRow(children)}
+            </div>
+        `);
+
     }
 
     return htmlString(`<div class="tree-unit">${output}</div>`);
 
 }
 
-function renderSiblingsRow(id: string, renderSiblings: boolean): string {
-
-    // TEMP
-    let younger: string[] = (renderSiblings) ? BUILD_SHEET.pageData[id].siblings : [];
-    let older: string[] = (renderSiblings) ? [] : [];
+function renderSiblingsRow(siblings: string[]): string {
 
     return htmlString(`
-        <div style="margin: auto; width: fit-content; display: grid; grid-gap: 1rem; grid-template-columns: ${"1fr ".repeat(1 + younger.length + older.length)};">
-            ${renderTreeNodes(younger)}
-            ${renderTreeNode(id)}
-            ${renderTreeNodes(older)}
+        <div style="margin: auto; width: fit-content; display: grid; grid-gap: 1rem; grid-template-columns: ${"1fr ".repeat(siblings.length)};">
+            ${(siblings.length > 0) ? renderTreeNodes(siblings) : renderEmptyTreeNode()}
         </div>
     `);
 
+}
+
+function renderEmptyTreeNode(): string {
+    return htmlString(`
+        <button class="tree-node empty-tree-node">
+            <h1>Unknown</h1>
+            <h2>Unknown — Unknown</h2>
+        </button>
+    `);
 }
 
 function renderTreeNode(id: string): string {
@@ -84,12 +98,7 @@ function renderTreeNode(id: string): string {
             `);
         }
         else {
-            return htmlString(`
-                <button class="tree-node empty-tree-node">
-                    <h1>${id}</h1>
-                    <h2>Unknown — Unknown</h2>
-                </button>
-            `);
+            return renderEmptyTreeNode();
 
         }
     }

@@ -133,7 +133,7 @@ function completePageData(filetype: string, filename: string, metadata: Metadata
     pageData.imageSrc = metadata.infobox.image;
 }
 
-export function selectSiblings(siblings: string[]): string[] {
+export function evalArticleSelection(siblings: string[]): string[] {
     let output = [];
     for (let sibling of siblings) {
         if (isLink(sibling)) output.push(parseLink(sibling).target);
@@ -170,6 +170,7 @@ export function initialisePageData(id: string): PageData {
         "mother": "",
         "father": "",
         "siblings": [],
+        "children": [],
         "imageSrc": ""
     }
 }

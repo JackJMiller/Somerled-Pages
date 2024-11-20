@@ -5,7 +5,7 @@
 */
 
 import { BuildData, ErrorNotice, InfoBox, InfoTag, Metadata, PageData } from "./interfaces";
-import { isLink, parseLink, recordErrorNotice, selectSiblings, throwError } from "./functions";
+import { evalArticleSelection, isLink, parseLink, recordErrorNotice, throwError } from "./functions";
 import { RefListing, RefSourceType } from "./ref_listing_interfaces";
 import { RefListingModels } from "./ref_listing_models";
 import { extractDate } from "./sanitisation";
@@ -30,7 +30,10 @@ export function validateInfoBox(infoBox: InfoBox, metadata: Metadata, pageData: 
         metadata["father"] = extractVersatilePlaceholder(infoBox.entries["Father"]);
     }
     if (infoBox.entries["Siblings"]) {
-        pageData["siblings"] = selectSiblings(infoBox.entries["Siblings"]);
+        pageData["siblings"] = evalArticleSelection(infoBox.entries["Siblings"]);
+    }
+    if (infoBox.entries["Children"]) {
+        pageData["children"] = evalArticleSelection(infoBox.entries["Children"]);
     }
 
 }
