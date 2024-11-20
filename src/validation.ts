@@ -4,8 +4,8 @@
 **  Licensed under version 3 of the GNU General Public License
 */
 
-import { BuildData, ErrorNotice, InfoBox, InfoTag, Metadata } from "./interfaces";
-import { parseLink, recordErrorNotice, throwError } from "./functions";
+import { BuildData, ErrorNotice, InfoBox, InfoTag, Metadata, PageData } from "./interfaces";
+import { isLink, parseLink, recordErrorNotice, selectSiblings, throwError } from "./functions";
 import { RefListing, RefSourceType } from "./ref_listing_interfaces";
 import { RefListingModels } from "./ref_listing_models";
 import { extractDate } from "./sanitisation";
@@ -21,15 +21,22 @@ export function validateInfoTag(infoTag: InfoTag, metadata: Metadata, buildData:
 }
 
 // TODO
-export function validateInfoBox(infoBox: InfoBox, metadata: Metadata, buildData: BuildData) {
+export function validateInfoBox(infoBox: InfoBox, metadata: Metadata, pageData: PageData) {
 
     if (infoBox.entries["Mother"]) {
-        metadata["mother"] = parseLink(infoBox.entries["Mother"]).target;
+        metadata["mother"] = extractVersatilePlaceholder(infoBox.entries["Mother"]);
     }
     if (infoBox.entries["Father"]) {
-        metadata["father"] = parseLink(infoBox.entries["Father"]).target;
+        metadata["father"] = extractVersatilePlaceholder(infoBox.entries["Father"]);
+    }
+    if (infoBox.entries["Siblings"]) {
+        pageData["siblings"] = selectSiblings(infoBox.entries["Siblings"]);
     }
 
+}
+
+export function extractVersatilePlaceholder(value: string): string {
+    return (isLink(value)) ? parseLink(value).target : value;
 }
 
 // print any errors contained in a reference definition

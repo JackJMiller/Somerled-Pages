@@ -5,7 +5,7 @@
 */
 
 import { build, initialiseBuildData } from "./src/functions";
-import { colourString, createBuildData, createInitialMetadata, shouldBeBuilt, throwError, updateBuildData } from "./src/functions";
+import { colourString, createBuildData, shouldBeBuilt, throwError, updateBuildData } from "./src/functions";
 
 const PROJECT_DIRECTORY = process.argv[2];
 const ARGS = process.argv.slice(3);

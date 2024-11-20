@@ -28,12 +28,11 @@
     background: white;
     padding: 10px;
     border: 1px solid black;
-    margin: auto;
     color: black;
 }
 
 .empty-tree-node {
-    opacity: 0;
+    opacity: 0%;
 }
 
 .tree-node h1 {

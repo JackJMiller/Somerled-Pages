@@ -49,6 +49,7 @@ export interface Metadata {
     "infobox-rendered": string,
     "info": InfoTag,
     "type": string,
+    "id": string,
     "name": string,
     "article-type": string,
     "headings": string[],
@@ -90,6 +91,7 @@ export interface PageData {
     died: string,
     mother: string,
     father: string,
+    siblings: string[],
     imageSrc: string
 }
 

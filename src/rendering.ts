@@ -137,7 +137,8 @@ export function renderInfoBox(infobox: InfoBox, metadata: Metadata, buildData: B
     if (infobox.image) {
         markImage(infobox.image, buildData);
     }
-    validateInfoBox(infobox, metadata, buildData);
+    let pageData = buildData.pageData[metadata.id];
+    validateInfoBox(infobox, metadata, pageData);
     return HTMLRendering.renderInfoBox(infobox, metadata, buildData);
 }
 

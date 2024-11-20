@@ -26,6 +26,7 @@ interface PageData {
     died: string,
     mother: string,
     father: string
+    siblings: string[],
     imageSrc: string
 }
 

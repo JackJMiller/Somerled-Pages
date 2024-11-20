@@ -328,7 +328,7 @@ function renderArticleFeatures(heading: string, articleNames: string[], buildDat
         <div class="inner-container">
             <h1 class="heading">${heading}</h1>
             <div class="four-grid">
-                ${articleNames.map((articleName: string) => renderArticleFeature(articleName, buildData.pageData["wiki/" + articleName])).join("")}
+                ${articleNames.map((articleName: string) => renderArticleFeature(articleName, buildData.pageData[articleName])).join("")}
             </div>
         </div>
     `);
@@ -512,6 +512,7 @@ function renderTreePage(buildData: BuildData): string {
                     <div id="tree">
                     </div>
                 </div>
+                ${renderFooter()}
                 ${renderScriptImports(["build_sheet.js", "tree_nodes.js", "functions.js", "tree.js"])}
             </body>
         </html>

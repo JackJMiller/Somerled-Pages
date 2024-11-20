@@ -115,23 +115,31 @@ export function regexMatchArticles(expressions: string[]): string[] {
 
 function renderAndSaveArticle(filetype: string, filename: string, buildData: BuildData) {
     const c = readArticle(buildData);
-    const metadata = createInitialMetadata(filetype, filename);
+    const metadata = initialiseMetadata(filename, filetype);
+    buildData.pageData[filename] = initialisePageData(filename);
     const source = parseRawArticle(c, metadata, buildData);
     const rendered = renderArticle(source, metadata, buildData);
-    buildData.pageData[`${filetype}/${filename}`] = createPageData(filetype, filename, metadata);
+    completePageData(filetype, filename, metadata, buildData.pageData[filename]);
     buildData.tree.nodes[filename] = createTreeNode(metadata.infobox.entries);
     savePage(`${filetype}/${filename}.html`, rendered);
 }
 
-function createPageData(filetype: string, filename: string, metadata: Metadata): PageData {
-    return {
-        name: metadata.name,
-        born: metadata.born,
-        died: metadata.died,
-        mother: metadata.mother,
-        father: metadata.father,
-        imageSrc: metadata.infobox.image
-    };
+function completePageData(filetype: string, filename: string, metadata: Metadata, pageData: PageData) {
+    pageData.name = metadata.name;
+    pageData.born = metadata.born;
+    pageData.died = metadata.died;
+    pageData.mother = metadata.mother;
+    pageData.father = metadata.father;
+    pageData.imageSrc = metadata.infobox.image;
+}
+
+export function selectSiblings(siblings: string[]): string[] {
+    let output = [];
+    for (let sibling of siblings) {
+        if (isLink(sibling)) output.push(parseLink(sibling).target);
+        else output.push(sibling);
+    }
+    return output;
 }
 
 function createEmptyInfoBox(): InfoBox {
@@ -154,13 +162,26 @@ export function createInfoObject(): InfoTag {
     };
 }
 
-export function createInitialMetadata(name: string, type: string): Metadata {
+export function initialisePageData(id: string): PageData {
+    return {
+        "name": "",
+        "born": "",
+        "died": "",
+        "mother": "",
+        "father": "",
+        "siblings": [],
+        "imageSrc": ""
+    }
+}
+
+export function initialiseMetadata(id: string, type: string): Metadata {
     return {
         "infobox": createEmptyInfoBox(),
         "infobox-rendered": "",
         "info": createInfoObject(),
         "type": type,
-        "name": name,
+        "id": id,
+        "name": "",
         "article-type": "",
         "headings": [],
         "born": "",
