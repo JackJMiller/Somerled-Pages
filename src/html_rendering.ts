@@ -5,7 +5,7 @@
 */
 
 import { markImage, parseLink, throwError, throwWarning } from "./functions";
-import { RefListing, TestimonialRefListing, CensusRefListing, DeathCertificateRefListing, BirthCertificateRefListing, MarriageCertificateRefListing, ValuationRollRefListing, LazyRefListing, BookRefListing, JournalRefListing, NewspaperRefListing, WebsiteRefListing } from "./ref_listing_interfaces";
+import { RefListing, TestimonialRefListing, CensusRefListing, DeathCertificateRefListing, BirthCertificateRefListing, MarriageCertificateRefListing, ValuationRollRefListing, LazyRefListing, BookRefListing, JournalRefListing, NewspaperRefListing, WebsiteRefListing, ElectoralRegisterRefListing } from "./ref_listing_interfaces";
 import { htmlString, isSplitFormat, renderDate, renderElement, renderRefListing, renderQuickRefListing } from "./rendering";
 import { BuildData, ImageDefinition, InfoBox, InlineElement, Metadata, PageData } from "./interfaces";
 
@@ -17,7 +17,6 @@ function renderScriptImports(scripts: string[]): string {
 
 function renderArticle(source: InlineElement[], metadata: Metadata, buildData: BuildData): string {
 
-    let headerHTML = renderHeader(buildData);
     let articleHeaderHTML = renderArticleHeader(source, metadata);
     let renderedBody = renderBody(source, metadata, buildData);
     let navbar = renderNavbar(metadata);
@@ -29,7 +28,7 @@ function renderArticle(source: InlineElement[], metadata: Metadata, buildData: B
         <html>
             ${renderHead(["main.css", "article.css"])}
             <body>
-                ${headerHTML}
+                ${renderHeader(false, buildData)}
                 ${articleHeaderHTML}
                 ${navbar}
                 <div class="main-body">
@@ -269,7 +268,7 @@ function renderHomepage(buildData: BuildData): string {
             ${renderHead(["main.css", "homepage.css"])}
             <body>
 
-                ${renderHeader(buildData)}
+                ${renderHeader(false, buildData)}
 
                 ${renderHomepageLead(buildData)}
 
@@ -286,13 +285,16 @@ function renderHomepage(buildData: BuildData): string {
 }
 
 function renderHomepageLead(buildData: BuildData): string {
+
+    let logoSize = Math.max(1000 / buildData.projectPackage.name.length, 36) + "px";
+
     return htmlString(`
         <div class="body">
             
             <div class="inner-container">
                 <div class="homepage-top">
                     <div>
-                        <h1>${renderLogo(buildData)}</h1>
+                        <h1>${renderLogo(logoSize, buildData)}</h1>
                         ${renderSomerledPagesCredit()}
                         ${buildData.projectPackage.description.split("\n").map(e => `<p>${e}</p>`).join("")}
                     </div>
@@ -301,6 +303,7 @@ function renderHomepageLead(buildData: BuildData): string {
             </div>
         </div>
     `);
+
 }
 
 function renderAdvancedSearchForm() {
@@ -416,12 +419,11 @@ function renderGalleryImage(src: string, caption: string): string {
 
 }
 
-function renderLogo(buildData: BuildData): string {
+function renderLogo(size: string, buildData: BuildData): string {
     let name = buildData.projectPackage.name;
-    let size = Math.max(1000 / name.length, 36);
     return htmlString(`
         <a href="/">
-            <span style="color: black; font-size: ${size}px; font-family: 'Libre Baskerville', serif;">${name}</span>
+            <span style="color: black; font-size: ${size}; font-family: 'Libre Baskerville', serif;">${name}</span>
         </a>
     `);
 }
@@ -446,12 +448,12 @@ function renderHead(extraStylesheets: string[] | null = null): string {
     `);
 }
 
-function renderHeader(buildData: BuildData): string {
+function renderHeader(includeLogo: boolean, buildData: BuildData): string {
     return htmlString(`
         <div id="header">
             <div class="container">
                 <div class="header-inner">
-                    <h1></h1>
+                    <h1>${(includeLogo) ? renderLogo("auto", buildData): ""}</h1>
                     <form id="search-form">
                         <input id="search" class="text-box" type="text" placeholder="Search"/>
                     </form>
@@ -481,7 +483,7 @@ function renderSearchPage(buildData: BuildData): string {
             ${renderHead(["main.css", "homepage.css"])}
             <body>
 
-                ${renderHeader(buildData)}
+                ${renderHeader(false, buildData)}
 
                 <div class="inner-inner-container">
                     ${renderAdvancedSearchForm()}
@@ -507,7 +509,7 @@ function renderTreePage(buildData: BuildData): string {
         <html>
             ${renderHead(["main.css", "tree.css"])}
             <body onresize="fixCanvas()">
-                ${renderHeader(buildData)}
+                ${renderHeader(false, buildData)}
                 <div id="tree-container">
                     <div id="tree">
                     </div>
@@ -642,6 +644,11 @@ function renderWebsiteRefListing(element: WebsiteRefListing): string {
     return `<div class="reference">${element.id}. Website <a href="${element["source-link"]}">${element["name-of-website"]}</a>. Retrieved ${element["date-retrieved"]}.</div>`;
 }
 
+function renderElectoralRegisterRefListing(element: ElectoralRegisterRefListing, buildData: BuildData): string {
+    buildData.sourcesCited.push(element.link);
+    return `<div class="reference">${element.id}. The <a href="/sources/${element["link"]}">${element["year"]} electoral register</a>.</div>`;
+}
+
 function renderCitation(id: string) {
     return `<sup><a href="">[${id}]</a></sup>`;
 }
@@ -674,6 +681,7 @@ export = {
     renderLazyRefListing,
     renderBookRefListing,
     renderJournalRefListing,
+    renderElectoralRegisterRefListing,
     renderNewspaperRefListing,
     renderWebsiteRefListing,
     renderCitation

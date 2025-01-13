@@ -4,8 +4,8 @@
 **  Licensed under version 3 of the GNU General Public License
 */
 
-export type RefListing = TestimonialRefListing | CensusRefListing | DeathCertificateRefListing | BirthCertificateRefListing | MarriageCertificateRefListing | ValuationRollRefListing | LazyRefListing | BookRefListing | JournalRefListing | NewspaperRefListing | WebsiteRefListing;
-export type RefSourceType = "book" | "census" | "birth-certificate" | "death-certificate" | "lazy" | "marriage-certificate" | "newspaper" | "testimonial" | "valuation-roll" | "webpage" | "journal";
+export type RefListing = TestimonialRefListing | CensusRefListing | DeathCertificateRefListing | BirthCertificateRefListing | MarriageCertificateRefListing | ValuationRollRefListing | LazyRefListing | BookRefListing | JournalRefListing | NewspaperRefListing | WebsiteRefListing | ElectoralRegisterRefListing;
+export type RefSourceType = "book" | "census" | "birth-certificate" | "death-certificate" | "lazy" | "marriage-certificate" | "newspaper" | "testimonial" | "valuation-roll" | "webpage" | "journal" | "electoral-register";
 
 export interface BookRefListing {
     "type": "book",
@@ -118,4 +118,12 @@ export interface JournalRefListing {
     "source-date": string,
     "pages": string,
     "source-link": string
+};
+
+export interface ElectoralRegisterRefListing {
+    "type": "electoral-register",
+    "id": string,
+    "source-type": string,
+    "year": string
+    "link": string
 };

@@ -8,7 +8,7 @@ import HTMLRendering from "./html_rendering";
 import { MONTHS } from "./constants";
 import { BuildData, ImageDefinition, InfoBox, InlineElement, Metadata, Tree } from "./interfaces";
 import { markImage, recordRefListing, throwError, throwWarning } from "./functions";
-import { BirthCertificateRefListing, BookRefListing, CensusRefListing, DeathCertificateRefListing, JournalRefListing, LazyRefListing, MarriageCertificateRefListing, NewspaperRefListing, RefListing, TestimonialRefListing, ValuationRollRefListing, WebsiteRefListing } from "./ref_listing_interfaces";
+import { BirthCertificateRefListing, BookRefListing, CensusRefListing, DeathCertificateRefListing, ElectoralRegisterRefListing, JournalRefListing, LazyRefListing, MarriageCertificateRefListing, NewspaperRefListing, RefListing, TestimonialRefListing, ValuationRollRefListing, WebsiteRefListing } from "./ref_listing_interfaces";
 import { errorCheckReference, validateInfoBox, validateInfoTag } from "./validation";
 
 export function renderHomepage(buildData: BuildData): string {
@@ -117,6 +117,9 @@ export function renderRefListing(element: RefListing, buildData: BuildData): str
     }
     else if (element["source-type"] == "valuation-roll") {
         return HTMLRendering.renderValuationRollRefListing(element as ValuationRollRefListing, buildData);
+    }
+    else if (element["source-type"] == "electoral-register") {
+        return HTMLRendering.renderElectoralRegisterRefListing(element as ElectoralRegisterRefListing, buildData);
     }
     else {
         throwError(`Found reference listing with invalid source-type attribute of '${element["source-type"]}'.`, buildData.location, buildData);

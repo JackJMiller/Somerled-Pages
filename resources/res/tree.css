@@ -1,4 +1,5 @@
 #tree-container {
+    background: #cccccc;
     display: block;
     width: 90vw;
     height: 80vh;
@@ -13,8 +14,7 @@
     display: block;
     width: fit-content;
     height: fit-content;
-    margin-left: 50%;
-    transform: translateX(-50%);
+    margin: auto;
 }
 
 .tree-unit {
@@ -23,20 +23,27 @@
 .tree-node {
     display: block;
     width: 160px;
-    height: 60px;
+    height: 70px;
     padding: 10px;
-    border: 1px solid white;
-    background: white;
+    border: 2px solid white;
+    background: transparent;
     color: black;
+}
+
+.tree-node:hover {
+    background: white;
+}
+
+.clickable-tree-node {
+    background: #eeeeee;
 }
 
 .highlighted-tree-node {
     background: white;
-    border: 1px solid black;
+    border: 2px solid black;
 }
 
 .empty-tree-node {
-    opacity: 0%;
 }
 
 .tree-node h1 {
@@ -48,8 +55,7 @@
 }
 
 .unit-row {
-    background: #ddddff;
-    margin-top: 40px;
+    margin-top: 30px;
 }
 
 .unit-top {
@@ -57,7 +63,6 @@
     grid-template-columns: auto auto;
     grid-gap: 50px;
     align-content: center;
-    background: #eeeeff;
 }
 
 .unit-floor {
