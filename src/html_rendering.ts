@@ -658,7 +658,6 @@ function renderLink(placeholder: string, target: string) {
 }
 
 export = {
-    htmlString,
     renderArticle,
     renderArticleFeatures,
     renderHomepage,

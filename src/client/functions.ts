@@ -7,7 +7,7 @@
 function renderArticleFeature(articleName: string, pageData: PageData): string {
 
     return htmlString(`
-        <a href="/${articleName}.html" class="article-feature" style="background-image: url('http://localhost:3000/media/${pageData.imageSrc}');">
+        <a href="/wiki/${articleName}.html" class="article-feature" style="background-image: url('http://localhost:3000/media/${pageData.imageSrc}');">
             <div class="article-feature-mask">
                 <div class="article-feature-inner">
                     <h1>${pageData.name}</h1>
