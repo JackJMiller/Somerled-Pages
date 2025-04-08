@@ -1,6 +1,6 @@
 /*
 **  Somerled Pages - A program for creating family encyclopedias
-**  Copyright (C) 2023-2024 Jack J. Miller
+**  Copyright (C) 2023-2025 Jack J. Miller
 **  Licensed under version 3 of the GNU General Public License
 */
 
