@@ -497,7 +497,7 @@ function renderSearchPage(buildData: BuildData): string {
 
                 ${renderFooter()}
 
-                ${renderScriptImports(["build_sheet.js", "functions.js", "search.js"])}
+                ${renderScriptImports(["values.js", "build_sheet.js", "functions.js", "search.js"])}
             </body>
         </html>
     `);

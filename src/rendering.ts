@@ -43,7 +43,8 @@ export function renderDate(rawDate: string): string {
     let month = (date[1] === "?") ? "" : MONTHS[parseInt(date[1])];
     let year = (date[2] === "?") ? "" : date[2];
 
-    return [circa, day, month, year].join(" ").trim().replace(/\s+/g, " "); }
+    return [circa, day, month, year].join(" ").trim().replace(/\s+/g, " ");
+}
 
 export function renderElement(element: InlineElement | RefListing | InfoBox, metadata: Metadata, buildData: BuildData): string {
     if (element.type === "element") {
