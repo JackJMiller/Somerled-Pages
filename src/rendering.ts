@@ -63,20 +63,21 @@ export function renderElement(element: InlineElement | RefListing | InfoBox, met
         recordRefListing(element, buildData);
         return "";
     }
-    else if (element.type == "gallery") {
-        return renderGallery(element as InlineElement, buildData);
+    else if (element.type == "carousel-gallery") {
+        return renderCarouselGallery(element as InlineElement, buildData);
     }
     else {
+        throwError(`Found object of unrecognised type '${element.type}'.`, buildData.location, buildData, false);
         return "";
     }
 }
 
-export function renderGallery(element: any, buildData: BuildData): string { 
-    return HTMLRendering.renderGallery(element, buildData);
+export function renderCarouselGallery(element: any, buildData: BuildData): string { 
+    return HTMLRendering.renderCarouselGallery(element, buildData);
 }
 
-function renderGalleryImage(src: string, caption: string): string {
-    return HTMLRendering.renderGalleryImage(src, caption);
+function renderCarouselGalleryImage(src: string, caption: string): string {
+    return HTMLRendering.renderCarouselGalleryImage(src, caption);
 }
 
 export function renderQuickRefListing(key: string, index: number, buildData: BuildData): string {

@@ -73,8 +73,6 @@ elif [[ $# -ge 2 && "$1" == "add-media" ]]; then
         else
             echo $MEDIA_NAME
             cp $MEDIA_NAME media/$MEDIA_NAME
-            mat2 --inplace media/$MEDIA_NAME
-            cp res/metadata_boilerplate.json media/$MEDIA_NAME.json
         fi
 
     done

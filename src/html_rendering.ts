@@ -383,11 +383,11 @@ function renderFooter(): string {
 }
 
 
-function renderGallery(element: any, buildData: BuildData): string { 
+function renderCarouselGallery(element: any, buildData: BuildData): string { 
 
     let galleryItems: string[] = element.images.map((image: ImageDefinition) => {
         markImage(image.src, buildData);
-        return renderGalleryImage(image.src, image.caption || "<i>No caption provided</i>");
+        return renderCarouselGalleryImage(image.src, image.caption || "<i>No caption provided</i>");
     });
 
     return htmlString(`
@@ -406,7 +406,7 @@ function renderGallery(element: any, buildData: BuildData): string {
 
 }
 
-function renderGalleryImage(src: string, caption: string): string {
+function renderCarouselGalleryImage(src: string, caption: string): string {
 
     return htmlString(
         `<div class="gallery-image-container">
@@ -662,8 +662,8 @@ export = {
     renderArticleFeatures,
     renderHomepage,
     renderFooter,
-    renderGallery,
-    renderGalleryImage,
+    renderCarouselGallery,
+    renderCarouselGalleryImage,
     renderImage,
     renderInfoBox,
     renderSearchPage,
