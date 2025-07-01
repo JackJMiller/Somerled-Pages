@@ -79,6 +79,7 @@ a {
     font-family: inherit;
     font-weight: inherit;
     text-decoration: none;
+    color: inherit;
 }
 
 h1 {
@@ -135,6 +136,10 @@ footer {
 footer a {
     color: black;
     font-weight: 600;
+}
+
+.visible-link {
+    color: blue;
 }
 
 .heading {
@@ -253,7 +258,7 @@ footer a {
     color: white;
 }
 
-.gallery {
+.carousel-gallery {
     overflow: hidden;
     margin: 30px 0;
     height: 400px;
@@ -262,14 +267,14 @@ footer a {
     background-image: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,0.6), rgba(0,0,0,0));
 }
 
-.gallery-arrow-container {
+.carousel-gallery-arrow-container {
     height: 400px;
     background: #aaaaaa;
     border: none;
     background: none;
 }
 
-.gallery-image {
+.carousel-gallery-image {
     display: block;
     height: 400px;
     width: auto;
@@ -278,12 +283,13 @@ footer a {
 
 .box {
     display: block;
-    width: 100%;
+    width: calc(100% - 4px 2 * var(--box-padding));
+    height: fit-content;
     padding: var(--box-padding);
     background: white;
     border: 2px solid var(--colour-border);
-    margin-top: 40px;
     box-shadow: 8px 8px 8px #dddddd, -8px 8px 8px #dddddd, -8px -8px 8px #dddddd, 8px -8px 8px #dddddd;
+    margin-bottom: 40px;
 }
 
 .box .grid {

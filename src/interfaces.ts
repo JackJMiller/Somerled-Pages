@@ -32,7 +32,7 @@ export interface InfoBox {
 
 export interface ImageDefinition {
     "src": string,
-    "caption": string
+    "caption": string | undefined
 }
 
 export interface InfoTag {

@@ -63,6 +63,9 @@ export function renderElement(element: InlineElement | RefListing | InfoBox, met
         recordRefListing(element, buildData);
         return "";
     }
+    else if (element.type == "gallery") {
+        return renderGallery(element as InlineElement, buildData);
+    }
     else if (element.type == "carousel-gallery") {
         return renderCarouselGallery(element as InlineElement, buildData);
     }
@@ -70,6 +73,10 @@ export function renderElement(element: InlineElement | RefListing | InfoBox, met
         throwError(`Found object of unrecognised type '${element.type}'.`, buildData.location, buildData, false);
         return "";
     }
+}
+
+export function renderGallery(element: any, buildData: BuildData): string { 
+    return HTMLRendering.renderGallery(element, buildData);
 }
 
 export function renderCarouselGallery(element: any, buildData: BuildData): string { 

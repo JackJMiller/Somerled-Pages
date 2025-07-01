@@ -8,7 +8,7 @@ let galleryIndex = 0;
 
 function shiftGallery(direction: number) {
 
-    let classes = Array.from(document.getElementsByClassName("gallery-image-container") as HTMLCollectionOf<HTMLElement>)
+    let classes = Array.from(document.getElementsByClassName("carousel-gallery-image-container") as HTMLCollectionOf<HTMLElement>)
 
     for (let i = 0; i < classes.length; i++) {
         classes[i].style.display = "none";

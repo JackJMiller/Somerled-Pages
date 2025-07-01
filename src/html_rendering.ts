@@ -382,23 +382,55 @@ function renderFooter(): string {
     `);
 }
 
+function renderGallery(element: any, buildData: BuildData): string { 
+
+    let columnCount = Math.min(element.images.length, 3);
+
+    let columns: string[] = new Array(columnCount).fill("");
+
+    let gtc = "grid-template-columns:" + " 1fr".repeat(columnCount);
+
+    element.images.map((image: ImageDefinition, index: number) => {
+        markImage(image.src, buildData);
+        let render = renderGalleryImage(image.src, image.caption);
+        columns[index % columnCount] += render;
+    });
+
+    return htmlString(`
+        <div style="display: grid; ${gtc}; grid-gap: 25px;">
+            ${columns.map(column => "<div>" + column + "</div>").join("")}
+        </div>
+    `);
+
+}
+
+function renderGalleryImage(src: string, caption: string | undefined): string {
+
+    return htmlString(`
+        <a target="_blank" href="../media/${src}" class="box">
+            <img src="../media/${src}"/>
+            <p class="caption">${caption || ""}</p>
+        </a>
+    `);
+
+}
 
 function renderCarouselGallery(element: any, buildData: BuildData): string { 
 
     let galleryItems: string[] = element.images.map((image: ImageDefinition) => {
         markImage(image.src, buildData);
-        return renderCarouselGalleryImage(image.src, image.caption || "<i>No caption provided</i>");
+        return renderCarouselGalleryImage(image.src, image.caption);
     });
 
     return htmlString(`
-        <div class="gallery">
-            <button onclick="shiftGallery(-1);" class="gallery-arrow-container">
+        <div class="carousel-gallery">
+            <button onclick="shiftGallery(-1);" class="carousel-gallery-arrow-container">
                 <img style="width: 40px;" src="../res/arrow_left.svg"/>
             </button>
         <div>
         ${galleryItems.join("")}
         </div>
-            <button onclick="shiftGallery(1);" class="gallery-arrow-container">
+            <button onclick="shiftGallery(1);" class="carousel-gallery-arrow-container">
                 <img style="width: 40px;" src="../res/arrow_right.svg"/>
             </button>
         </div>`
@@ -406,13 +438,13 @@ function renderCarouselGallery(element: any, buildData: BuildData): string {
 
 }
 
-function renderCarouselGalleryImage(src: string, caption: string): string {
+function renderCarouselGalleryImage(src: string, caption: string | undefined): string {
 
-    return htmlString(
-        `<div class="gallery-image-container">
-            <img class="gallery-image" src="../media/${src}"/>
-            <div class="gallery-image-text-container">
-                <span class="gallery-image-text">${caption}</span>
+    return htmlString(`
+        <div class="carousel-gallery-image-container">
+            <img class="carousel-gallery-image" src="../media/${src}"/>
+            <div class="carousel-gallery-image-text-container">
+                <span class="carousel-gallery-image-text">${caption || ""}</span>
             </div>
         </div>`
     );
@@ -569,7 +601,7 @@ function renderCensusRefListing(element: CensusRefListing, buildData: BuildData)
     let text = `${element["year"]} census`;
     if (element["link"]) {
         buildData.sourcesCited.push(element.link);
-        text = `<a target="_blank" href="../sources/${element["link"]}">${text}</a>`;
+        text = `<a target="_blank" href="../sources/${element["link"]}" class="visible-link">${text}</a>`;
     }
     text = "The " + text;
     return `<div class="reference">${element.id}. ${text}.</div>`;
@@ -581,7 +613,7 @@ function renderDeathCertificateRefListing(element: DeathCertificateRefListing, b
     const date = element["date"] || "on an unknown date";
     if (element["link"]) {
         buildData.sourcesCited.push(element.link);
-        opening = `<a target="_blank" href="../sources/${element["link"]}">${opening}</a>`;
+        opening = `<a target="_blank" href="../sources/${element["link"]}" class="visible-link">${opening}</a>`;
     }
     return `<div class="reference">${element.id}. ${opening} of ${element["name"]}. ${ending} ${date}, ${element["place"]}.</div>`;
 }
@@ -592,7 +624,7 @@ function renderBirthCertificateRefListing(element: BirthCertificateRefListing, b
     const date = element["date"] || "on an unknown date";
     if (element["link"]) {
         buildData.sourcesCited.push(element.link);
-        opening = `<a target="_blank" href="../sources/${element["link"]}">${opening}</a>`;
+        opening = `<a target="_blank" href="../sources/${element["link"]}" class="visible-link">${opening}</a>`;
     }
     return `<div class="reference">${element.id}. ${opening} of ${element["name"]}. ${ending} ${date}, ${element["place"]}.</div>`;
 }
@@ -603,7 +635,7 @@ function renderMarriageCertificateRefListing(element: MarriageCertificateRefList
     const date = element["date"] || "on an unknown date";
     if (element["link"]) {
         buildData.sourcesCited.push(element.link);
-        opening = `<a target="_blank" href="../sources/${element["link"]}">${opening}</a>`;
+        opening = `<a target="_blank" href="../sources/${element["link"]}" class="visible-link">${opening}</a>`;
     }
     return `<div class="reference">${element.id}. ${opening} of ${element["party-one"]} and ${element["party-two"]}. ${ending} ${date}, ${element["place"]}.</div>`;
 }
@@ -612,7 +644,7 @@ function renderValuationRollRefListing(element: ValuationRollRefListing, buildDa
     // TODO: change `source-link` to `link`
     if (element["source-link"]) {
         buildData.sourcesCited.push(element["source-link"]);
-        return `<div class="reference">${element.id}. <a href="../sources/${element["source-link"]}">Valuation roll</a> at ${element["source-location"]}. Dated ${element["source-date"]}.</div>`;
+        return `<div class="reference">${element.id}. <a href="../sources/${element["source-link"]}" class="visible-link">Valuation roll</a> at ${element["source-location"]}. Dated ${element["source-date"]}.</div>`;
     }
     else {
         return `<div class="reference">${element.id}. Valuation roll at ${element["source-location"]}. Dated ${element["source-date"]}.</div>`;
@@ -621,7 +653,7 @@ function renderValuationRollRefListing(element: ValuationRollRefListing, buildDa
 
 function renderLazyRefListing(element: LazyRefListing): string {
     if (element["source-link"]) {
-        return `<div class="reference">${element.id}. <a href=\"${element["source-link"]}\">${element["source-value"]}</a></div>`;
+        return `<div class="reference">${element.id}. <a href=\"${element["source-link"]}\" class="visible-link">${element["source-value"]}</a></div>`;
     }
     else {
         return `<div class="reference">${element.id}. ${element["source-value"]}</div>`;
@@ -629,32 +661,32 @@ function renderLazyRefListing(element: LazyRefListing): string {
 }
 
 function renderBookRefListing(element: BookRefListing): string {
-    return `<div class="reference">${element.id}. ${element["last-name"]}, ${element["first-name"]} (${element["source-year"]}) <a href="${element["source-link"]}"><i>${element["source-title"]}</i></a>. pp. ${element["pages"]}</div>`;
+    return `<div class="reference">${element.id}. ${element["last-name"]}, ${element["first-name"]} (${element["source-year"]}) <a href="${element["source-link"]}" class="visible-link"><i>${element["source-title"]}</i></a>. pp. ${element["pages"]}</div>`;
 }
 
 function renderJournalRefListing(element: JournalRefListing): string {
-    return `<div class="reference">${element.id}. <a href="${element["source-link"]}">${element["name-of-publication"]}</a>. ${element["source-date"]}. pp. ${element["pages"]}</div>`;
+    return `<div class="reference">${element.id}. <a href="${element["source-link"]}" class="visible-link">${element["name-of-publication"]}</a>. ${element["source-date"]}. pp. ${element["pages"]}</div>`;
 }
 
 function renderNewspaperRefListing(element: NewspaperRefListing): string {
-    return `<div class="reference">${element.id}. <a href="${element["source-link"]}">"${element["source-title"]}"</a>. <i>${element["name-of-publication"]}</i>. ${element["source-date"]}. pp. ${element["pages"]}</div>`;
+    return `<div class="reference">${element.id}. <a href="${element["source-link"]}" class="visible-link">"${element["source-title"]}"</a>. <i>${element["name-of-publication"]}</i>. ${element["source-date"]}. pp. ${element["pages"]}</div>`;
 }
 
 function renderWebsiteRefListing(element: WebsiteRefListing): string {
-    return `<div class="reference">${element.id}. Website <a href="${element["source-link"]}">${element["name-of-website"]}</a>. Retrieved ${element["date-retrieved"]}.</div>`;
+    return `<div class="reference">${element.id}. Website <a href="${element["source-link"]}" class="visible-link">${element["name-of-website"]}</a>. Retrieved ${element["date-retrieved"]}.</div>`;
 }
 
 function renderElectoralRegisterRefListing(element: ElectoralRegisterRefListing, buildData: BuildData): string {
     buildData.sourcesCited.push(element.link);
-    return `<div class="reference">${element.id}. The <a href="/sources/${element["link"]}">${element["year"]} electoral register</a>.</div>`;
+    return `<div class="reference">${element.id}. The <a href="/sources/${element["link"]}" class="visible-link">${element["year"]} electoral register</a>.</div>`;
 }
 
 function renderCitation(id: string) {
-    return `<sup><a href="">[${id}]</a></sup>`;
+    return `<sup><a href="" class="visible-link">[${id}]</a></sup>`;
 }
 
 function renderLink(placeholder: string, target: string) {
-    return `<a href="${target}.html">${placeholder}</a>`;
+    return `<a href="${target}.html" class="visible-link">${placeholder}</a>`;
 }
 
 export = {
@@ -664,6 +696,8 @@ export = {
     renderFooter,
     renderCarouselGallery,
     renderCarouselGalleryImage,
+    renderGallery,
+    renderGalleryImage,
     renderImage,
     renderInfoBox,
     renderSearchPage,
