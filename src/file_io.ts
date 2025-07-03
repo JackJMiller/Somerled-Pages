@@ -1,5 +1,5 @@
 /*
-**  Somerled Pages - A program for creating family encyclopedias
+**  Talorgan - A program for creating family encyclopedias
 **  Copyright (C) 2023-2025 Jack J. Miller
 **  Licensed under version 3 of the GNU General Public License
 */
@@ -73,7 +73,7 @@ export function createInlineElement(q: any[], v: string, metadata: Metadata, bui
     }
 
     else {
-        throwError("Somerled Pages contains a bug.", buildData.location, buildData);
+        throwError("Talorgan contains a bug.", buildData.location, buildData);
         return { "type": "element", "tag": "p", "inner": "" };
     }
 }

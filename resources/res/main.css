@@ -174,7 +174,7 @@ footer a {
     grid-template-columns: 1fr var(--infobox-width);
 }
 
-.logo-somerled {
+.logo-talorgan {
     font-family: "Libre Baskerville", serif;
     font-weight: 500;
     color: black;
@@ -182,12 +182,6 @@ footer a {
 
 .framework-credit {
     font-size: 16px;
-}
-
-.logo-pages {
-    font-family: monospace;
-    font-weight: 700;
-    color: black;
 }
 
 .container {

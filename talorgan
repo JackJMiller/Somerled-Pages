@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# Somerled Pages - A program for creating family encyclopedias
+# Talorgan - A program for creating family encyclopedias
 # Copyright (C) 2023-2025 Jack J. Miller
 # Licensed under version 3 of the GNU General Public License
 
-PROGRAM_PATH=/home/jack/Development/Somerled-Pages
+PROGRAM_PATH=/home/jack/Development/talorgan
 
 ListBuilds() {
     echo "Available Builds:"
@@ -89,13 +89,13 @@ else
     fi
 
     echo "usage:"
-    echo "  somerled-pages init <project-name>   create a new project"
-    echo "  somerled-pages build [<build-name>]  build the encyclopedia"
-    echo "  somerled-pages new-article <name>    create a new article"
-    echo "  somerled-pages new-sheet <name>      create a new sheet"
-    echo "  somerled-pages add-media <files>     add a file to the media repository"
-    echo "  somerled-pages list-builds           list builds"
-    echo "  somerled-pages --help                display this help page"
+    echo "  talorgan init <project-name>   create a new project"
+    echo "  talorgan build [<build-name>]  build the encyclopedia"
+    echo "  talorgan new-article <name>    create a new article"
+    echo "  talorgan new-sheet <name>      create a new sheet"
+    echo "  talorgan add-media <files>     add a file to the media repository"
+    echo "  talorgan list-builds           list builds"
+    echo "  talorgan --help                display this help page"
 
 fi
 

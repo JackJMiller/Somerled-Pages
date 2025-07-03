@@ -1,5 +1,5 @@
 /*
-**  Somerled Pages - A program for creating family encyclopedias
+**  Talorgan - A program for creating family encyclopedias
 **  Copyright (C) 2023-2025 Jack J. Miller
 **  Licensed under version 3 of the GNU General Public License
 */
@@ -295,7 +295,7 @@ function renderHomepageLead(buildData: BuildData): string {
                 <div class="homepage-top">
                     <div>
                         <h1>${renderLogo(logoSize, buildData)}</h1>
-                        ${renderSomerledPagesCredit()}
+                        ${renderTalorganCredit()}
                         ${buildData.projectPackage.description.split("\n").map(e => `<p>${e}</p>`).join("")}
                     </div>
                     ${renderAdvancedSearchForm()}
@@ -364,7 +364,7 @@ function renderFooter(): string {
         <footer>
             <div class="container">
                 <div class="footer-inner grid">
-                    <h1>${renderSomerledPagesLogo()}</h1>
+                    <h1>${renderTalorganLogo()}</h1>
                     <div class="four-grid align-centre">
                         <span><a href="/">Home</a></span>
                         <span><a href="/explore.html">Explore</a></span>
@@ -460,10 +460,10 @@ function renderLogo(size: string, buildData: BuildData): string {
     `);
 }
 
-function renderSomerledPagesLogo(): string {
+function renderTalorganLogo(): string {
     return htmlString(`
         <a href="/">
-            <span class="logo-somerled">Somerled</span> <span class="logo-pages">Pages</span>
+            <span class="logo-talorgan">Talorgan</span>
         </a>
     `);
 }
@@ -473,7 +473,7 @@ function renderHead(extraStylesheets: string[] | null = null): string {
         <head>
             <meta charset="UTF-8" />
             <meta name="viewport" content="width=device-width" />
-            <title>Somerled Pages</title>
+            <title>Talorgan</title>
             ${renderExtraStylesheets(extraStylesheets)}
             <link rel="icon" href="../res/favicon.png" type="image/png"/>
         </head>
@@ -581,7 +581,7 @@ function renderArticleHeader(source: InlineElement[], metadata: Metadata): strin
             <div class="container">
                 <h1 class="page-title">${metadata.info.name}</h1>
                 ${subtitle}
-                ${renderSomerledPagesCredit()}
+                ${renderTalorganCredit()}
             </div>
         </div>
     `);
@@ -589,8 +589,8 @@ function renderArticleHeader(source: InlineElement[], metadata: Metadata): strin
 }
 
 
-function renderSomerledPagesCredit(): string {
-    return `<p class="framework-credit">Created with ${renderSomerledPagesLogo()}</p>`;
+function renderTalorganCredit(): string {
+    return `<p class="framework-credit">Created with ${renderTalorganLogo()}</p>`;
 }
 
 function renderTestimonialRefListing(element: TestimonialRefListing): string {

@@ -1,5 +1,5 @@
 /*
-**  Somerled Pages - A program for creating family encyclopedias
+**  Talorgan - A program for creating family encyclopedias
 **  Copyright (C) 2023-2025 Jack J. Miller
 **  Licensed under version 3 of the GNU General Public License
 */
@@ -245,7 +245,7 @@ export function initialiseBuildData(projectDirectory: string, buildName: string)
     let buildConfiguration = loadBuildConfiguration(projectDirectory, buildName);
 
     // load project package
-    let projectPackage = require(`${projectDirectory}/somerled-package.json`);
+    let projectPackage = require(`${projectDirectory}/talorgan-package.json`);
 
     // initialise the buildData object
     let buildData = createBuildData(projectDirectory, projectPackage, quickReferences, buildName, buildConfiguration);
