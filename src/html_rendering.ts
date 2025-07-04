@@ -462,8 +462,8 @@ function renderLogo(size: string, buildData: BuildData): string {
 
 function renderTalorganLogo(): string {
     return htmlString(`
-        <a href="/">
-            <span class="logo-talorgan">Talorgan</span>
+        <a href="/" class="talorgan-logo-container">
+            <span class="talorgan-logo">Talorgan</span>
         </a>
     `);
 }

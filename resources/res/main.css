@@ -174,10 +174,16 @@ footer a {
     grid-template-columns: 1fr var(--infobox-width);
 }
 
-.logo-talorgan {
+.talorgan-logo-container {
+    line-height: 1.5rem;
+    background: black;
+}
+
+.talorgan-logo {
+    font-size: 1rem;
     font-family: "Libre Baskerville", serif;
-    font-weight: 500;
-    color: black;
+    font-weight: 700;
+    color: white;
 }
 
 .framework-credit {

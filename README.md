@@ -1,4 +1,4 @@
-<img src="https://jackjmiller.ams3.digitaloceanspaces.com/res/somerled_pages_github_logo.png"/>
+<img src="https://jackjmiller.ams3.digitaloceanspaces.com/res/talorgan_logo_readme.png"/>
 
 
 ## About
