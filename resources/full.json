@@ -1,9 +1,9 @@
 {
-    "root": "Jack_Miller",
+    "root": "ROOT_NAME",
     "members": [
         ".*"
     ],
     "features": [
-        "Jack_Miller"
+        "ROOT_NAME"
     ]
 }

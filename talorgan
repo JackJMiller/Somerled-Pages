@@ -16,6 +16,8 @@ let "EXITCODE = 0"
 if [[ $# -eq 2 && "$1" == "init" ]]; then
 
     if [ ! -z $2 ]; then
+        read -p "Enter the name of your first article: " ROOT_NAME
+        echo $ROOT_NAME
         mkdir $2
         cd $2
         mkdir data data/builds data/draft_source data/sheet_source data/sources data/wiki_source
@@ -24,7 +26,8 @@ if [[ $# -eq 2 && "$1" == "init" ]]; then
         cp $PROGRAM_PATH/resources/quick_references.json data/quick_references.json
         cp $PROGRAM_PATH/resources/full.json data/builds/full.json
         cp $PROGRAM_PATH/resources/config.json config.json
-        cp $PROGRAM_PATH/resources/wiki_boilerplate data/wiki_source/Jack_Miller
+        sed -i "s/ROOT_NAME/${ROOT_NAME}/g" data/builds/full.json
+        talorgan new-article $ROOT_NAME
         cd ..
     else
         echo Cannot overwrite $2 already exists
@@ -46,7 +49,7 @@ elif [[ $# -eq 2 && "$1" == "new-article" ]]; then
         exit 1
     fi
 
-    cp res/wiki_boilerplate data/wiki_source/$PAGE_NAME
+    cp $PROGRAM_PATH/resources/wiki_boilerplate data/wiki_source/$PAGE_NAME
 
     echo Page created: $PAGE_NAME
 
@@ -59,7 +62,7 @@ elif [[ $# -eq 2 && "$1" == "new-sheet" ]]; then
         exit 1
     fi
 
-    cp res/sheet_boilerplate data/sheet_source/$PAGE_NAME
+    cp $PROGRAM_PATH/resources/sheet_boilerplate data/sheet_source/$PAGE_NAME
 
     echo Page created: $PAGE_NAME
 
