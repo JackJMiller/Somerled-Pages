@@ -43,11 +43,6 @@ export function packageBuild(buildData: BuildData) {
         }
     }
 
-    // copy all articles rendered in the build into the `wiki` directory
-    for (let filename of fs.readdirSync("wiki")) {
-        fs.copyFileSync(`wiki/${filename}`, `build/wiki/${filename}`);
-    }
-
 }
 
 export function readArticle(buildData: BuildData): string {

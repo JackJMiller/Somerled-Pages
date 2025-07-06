@@ -2,7 +2,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap");
 
 :root {
-    font-size: 1vw;
+    font-size: 1.2vw;
     --colour-light-grey: #f9f9f9;
     --colour-dark-grey: #222222;
     --colour-footer: white;
@@ -174,20 +174,14 @@ footer a {
     grid-template-columns: 1fr var(--infobox-width);
 }
 
-.talorgan-logo-container {
-    line-height: 1.5rem;
-    background: black;
-}
-
 .talorgan-logo {
     font-size: 1rem;
     font-family: "Libre Baskerville", serif;
     font-weight: 700;
-    color: white;
 }
 
 .framework-credit {
-    font-size: 16px;
+    font-size: 1rem;
 }
 
 .container {
@@ -219,7 +213,7 @@ footer a {
     background: none;
     border-radius: 1rem;
     padding: 1.5rem 3rem;
-    font-size: 1.2rem;
+    font-size: 1rem;
     font-weight: 600;
     width: fit-content;
 }
@@ -297,7 +291,7 @@ footer a {
 }
 
 .box .grid p {
-    font-size: 16px;
+    font-size: 1rem;
     text-align: left;
     margin: 0;
     line-height: 22px;
@@ -410,7 +404,7 @@ img {
 
 .footer-inner {
     grid-gap: 2rem;
-    font-size: 1.2rem;
+    font-size: 1rem;
     line-height: 2rem;
     padding: 1rem 0;
 }

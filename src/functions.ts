@@ -245,7 +245,7 @@ export function initialiseBuildData(projectDirectory: string, buildName: string)
     let buildConfiguration = loadBuildConfiguration(projectDirectory, buildName);
 
     // load project package
-    let projectPackage = require(`${projectDirectory}/talorgan-package.json`);
+    let projectPackage = require(`${projectDirectory}/config.json`);
 
     // initialise the buildData object
     let buildData = createBuildData(projectDirectory, projectPackage, quickReferences, buildName, buildConfiguration);

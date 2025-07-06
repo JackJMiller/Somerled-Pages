@@ -17,23 +17,25 @@ if [[ $# -eq 2 && "$1" == "init" ]]; then
 
     if [ ! -z $2 ]; then
         mkdir $2
-        cp -r $PROGRAM_PATH/res/initial-project/* $2
+        cd $2
+        mkdir data data/builds data/draft_source data/sheet_source data/sources data/wiki_source
+        mkdir media sources
+        cp $PROGRAM_PATH/resources/silhouette.png media/silhouette.png
+        cp $PROGRAM_PATH/resources/quick_references.json data/quick_references.json
+        cp $PROGRAM_PATH/resources/full.json data/builds/full.json
+        cp $PROGRAM_PATH/resources/config.json config.json
+        cp $PROGRAM_PATH/resources/wiki_boilerplate data/wiki_source/Jack_Miller
+        cd ..
     else
-        echo A project titled $2 already exists
+        echo Cannot overwrite $2 already exists
     fi
 
 elif [[ $# -eq 2 && "$1" == "build" ]]; then
 
-    rm -f build/media/* build/sources/* build/sheet/* build/wiki/* build/res/*.css wiki/*
+    rm -rf build/
+    mkdir -p build/media build/res build/sheet build/sources build/wiki
     cp $PROGRAM_PATH/resources/res/* $PROGRAM_PATH/src/client/*.js build/res/
-    node $PROGRAM_PATH/main.js $( pwd ) $@ || let "EXITCODE = 1"
-
-    if [ "$EXITCODE" == "0" ]; then
-        [ -d wiki/ ] && rm -r wiki/
-        [ -d sheet/ ] && rm -r sheet/
-        cp -r build/wiki/ wiki/
-        cp -r build/sheet/ sheet/
-    fi
+    node $PROGRAM_PATH/main.js $( pwd ) $@
 
 elif [[ $# -eq 2 && "$1" == "new-article" ]]; then
 

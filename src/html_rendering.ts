@@ -17,7 +17,7 @@ function renderScriptImports(scripts: string[]): string {
 
 function renderArticle(source: InlineElement[], metadata: Metadata, buildData: BuildData): string {
 
-    let articleHeaderHTML = renderArticleHeader(source, metadata);
+    let articleHeaderHTML = renderArticleHeader(source, metadata, buildData);
     let renderedBody = renderBody(source, metadata, buildData);
     let navbar = renderNavbar(metadata);
     let images = renderImages(metadata, buildData);
@@ -295,7 +295,7 @@ function renderHomepageLead(buildData: BuildData): string {
                 <div class="homepage-top">
                     <div>
                         <h1>${renderLogo(logoSize, buildData)}</h1>
-                        ${renderTalorganCredit()}
+                        ${renderTalorganCredit(buildData)}
                         ${buildData.projectPackage.description.split("\n").map(e => `<p>${e}</p>`).join("")}
                     </div>
                     ${renderAdvancedSearchForm()}
@@ -364,7 +364,7 @@ function renderFooter(): string {
         <footer>
             <div class="container">
                 <div class="footer-inner grid">
-                    <h1>${renderTalorganLogo()}</h1>
+                    <h1>${renderTalorganLogo("2rem")}</h1>
                     <div class="four-grid align-centre">
                         <span><a href="/">Home</a></span>
                         <span><a href="/explore.html">Explore</a></span>
@@ -460,10 +460,10 @@ function renderLogo(size: string, buildData: BuildData): string {
     `);
 }
 
-function renderTalorganLogo(): string {
+function renderTalorganLogo(fontSize: string = "1rem"): string {
     return htmlString(`
-        <a href="/" class="talorgan-logo-container">
-            <span class="talorgan-logo">Talorgan</span>
+        <a href="/">
+            <span class="talorgan-logo" style="font-size: ${fontSize};">Talorgan</span>
         </a>
     `);
 }
@@ -560,7 +560,7 @@ function renderStandardElement(element: any): string {
     return `<${tag} ${elementID} ${elementClass}>${element.inner}</${tag}>`;
 }
 
-function renderArticleHeader(source: InlineElement[], metadata: Metadata): string {
+function renderArticleHeader(source: InlineElement[], metadata: Metadata, buildData: BuildData): string {
 
     metadata["name"] = metadata["info"]["name"];
     metadata["article-type"] = metadata["info"]["article-type"];
@@ -581,7 +581,7 @@ function renderArticleHeader(source: InlineElement[], metadata: Metadata): strin
             <div class="container">
                 <h1 class="page-title">${metadata.info.name}</h1>
                 ${subtitle}
-                ${renderTalorganCredit()}
+                <h2>${renderLogo("1rem", buildData)}</h2>
             </div>
         </div>
     `);
@@ -589,8 +589,8 @@ function renderArticleHeader(source: InlineElement[], metadata: Metadata): strin
 }
 
 
-function renderTalorganCredit(): string {
-    return `<p class="framework-credit">Created with ${renderTalorganLogo()}</p>`;
+function renderTalorganCredit(buildData: BuildData): string {
+    return `<p class="framework-credit">${renderLogo("1rem", buildData)}</p>`;
 }
 
 function renderTestimonialRefListing(element: TestimonialRefListing): string {
