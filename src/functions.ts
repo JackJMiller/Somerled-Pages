@@ -6,7 +6,8 @@
 
 import fs from "fs";
 import { TREE_CONNECTORS } from "./constants";
-import { loadBuildConfiguration, packageBuild, parseRawArticle, readArticle, savePage } from "./file_io";
+import { loadBuildConfiguration, packageBuild, readArticle, savePage } from "./file_io";
+import { parseRawArticle } from "./parsing";
 import { BuildConfiguration, BuildData, BuildSheet, ClientTree, ClientTreeNode, ErrorNotice, InfoBox, InfoTag, Metadata, PageData, ProjectPackage, Reference, Tree, TreeNode } from "./interfaces";
 import { RefListing } from "./ref_listing_interfaces";
 import { renderArticle, renderHomepage, renderSearchPage, renderTreePage } from "./rendering";
