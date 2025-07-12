@@ -7,7 +7,7 @@
 import fs from "fs";
 import { TREE_CONNECTORS } from "./constants";
 import { loadBuildConfiguration, packageBuild, readArticle, savePage } from "./file_io";
-import { parseRawArticle } from "./parsing";
+import { ArticleParser } from "./parsing";
 import { BuildConfiguration, BuildData, BuildSheet, ClientTree, ClientTreeNode, ErrorNotice, InfoBox, InfoTag, Metadata, PageData, ProjectPackage, Reference, Tree, TreeNode } from "./interfaces";
 import { RefListing } from "./ref_listing_interfaces";
 import { renderArticle, renderHomepage, renderSearchPage, renderTreePage } from "./rendering";
@@ -118,7 +118,8 @@ function renderAndSaveArticle(filetype: string, filename: string, buildData: Bui
     const c = readArticle(buildData);
     const metadata = initialiseMetadata(filename, filetype);
     buildData.pageData[filename] = initialisePageData(filename);
-    const source = parseRawArticle(c, metadata, buildData);
+    let articleParser = new ArticleParser(c, metadata, buildData);
+    const source = articleParser.parsed;
     const rendered = renderArticle(source, metadata, buildData);
     completePageData(filetype, filename, metadata, buildData.pageData[filename]);
     buildData.tree.nodes[filename] = createTreeNode(metadata.infobox.entries);
