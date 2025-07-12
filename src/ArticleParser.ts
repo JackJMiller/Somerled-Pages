@@ -8,7 +8,7 @@ import { validateInfoTag } from "./validation";
 ** machine.
 */
 
-export class ArticleParser {
+class ArticleParser {
 
     // q denotes the current state
     // - ["sol"] denotes the start of a line
@@ -121,3 +121,5 @@ export class ArticleParser {
     }
 
 }
+
+export = ArticleParser;

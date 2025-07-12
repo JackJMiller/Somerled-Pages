@@ -5,9 +5,9 @@
 */
 
 import fs from "fs";
+import ArticleParser from "./ArticleParser";
 import { TREE_CONNECTORS } from "./constants";
 import { loadBuildConfiguration, packageBuild, readArticle, savePage } from "./file_io";
-import { ArticleParser } from "./parsing";
 import { BuildConfiguration, BuildData, BuildSheet, ClientTree, ClientTreeNode, ErrorNotice, InfoBox, InfoTag, Metadata, PageData, ProjectPackage, Reference, Tree, TreeNode } from "./interfaces";
 import { RefListing } from "./ref_listing_interfaces";
 import { renderArticle, renderHomepage, renderSearchPage, renderTreePage } from "./rendering";
